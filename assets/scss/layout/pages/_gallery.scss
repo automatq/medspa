@@ -1,0 +1,33 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.13 gallery css
+/*----------------------------------------*/
+
+.#{$theme-prifix}-gallery{
+    &-wrapper{
+        background: var(--tp-common-black);
+        height: 1110px;
+        overflow: hidden;
+        border-radius: 30px;
+        @media #{$lg,$md,$sm,$xs}{
+            height: 630px;
+        }
+        @media #{$sm,$xs}{
+            height: 430px;
+        }
+    }
+    &-item{
+        overflow: hidden;
+        border-radius: 20px;
+        &:hover{
+            & img{
+                transform: scale(1.1);
+            }
+        }
+        & img{
+            border-radius: 20px;
+            @include tp-transition-mul(all .6s ease);
+        }
+    }
+}

@@ -1,0 +1,101 @@
+@use '../utils' as *;
+/*----------------------------------------*/
+/*  2.1 Animations
+/*----------------------------------------*/
+@keyframes bar_anim {
+	0%, 100% {
+	  -webkit-clip-path: inset(-2px 0);
+	  clip-path: inset(-2px 0);
+	}
+	42% {
+	  -webkit-clip-path: inset(-2px 0 -2px 100%);
+	  clip-path: inset(-2px 0 -2px 100%);
+	}
+	43% {
+	  -webkit-clip-path: inset(-2px 100% -2px 0);
+	  clip-path: inset(-2px 100% -2px 0);
+	}
+}
+
+@keyframes levitate-lg {
+  0% {
+    -webkit-transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    -webkit-transform: translateY(30px) scale(1.01);
+    transform: translateY(30px) scale(1.01);
+  }
+  100% {
+    -webkit-transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@include keyframes(rotate-infinite){
+	0%{
+		transform: rotate(0deg);
+	}
+	100%{
+		transform: rotate(360deg);
+	}
+}
+.rotate-infinite{
+	-webkit-animation: rotate-infinite 15s linear infinite;
+	animation: rotate-infinite 15s linear infinite;
+}
+
+@include keyframes(rotate-infinite-2){
+	0%{
+		transform: rotate(-0deg);
+	}
+	100%{
+		transform: rotate(-360deg);
+	}
+}
+.rotate-infinite-2{
+	-webkit-animation: rotate-infinite-2 15s linear infinite;
+	animation: rotate-infinite-2 15s linear infinite;
+}
+
+@include keyframes(tpshake){
+  10% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: skew(15deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes animate-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2), 0 0 0 0 rgba(255, 255, 255, 0.2);
+    }
+    40% {
+        box-shadow: 0 0 0 50px rgba(255, 109, 74, 0.0), 0 0 0 0 rgba(255, 255, 255, 0.2);
+    }
+    80% {
+        box-shadow: 0 0 0 50px rgba(255, 109, 74, 0.0), 0 0 0 30px rgba(255, 109, 74, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 109, 74, 0.0), 0 0 0 30px rgba(255, 109, 74, 0);
+    }
+}
+
+@keyframes arrowLineRotation {
+	to {
+		transform: rotate(180deg);
+	}
+}
+
+@keyframes arrowLineRotationRev {
+	to {
+		transform: rotate(-180deg);
+	}
+}

@@ -1,0 +1,182 @@
+@use '../utils' as *;
+/*---------------------------------
+    1.1 Common Classes
+---------------------------------*/
+.w-img{
+	& img{
+		width: 100%;
+	}
+}
+.m-img{
+	& img{
+		max-width: 100%;
+	}
+}
+.fix {
+    overflow:hidden
+}
+.clear{
+    clear: both;
+}
+
+.z-index-1{
+	position: relative;
+	z-index: 1;
+}
+.z-index-2{
+	position: relative;
+	z-index: 2;
+}
+.z-index-3{
+	position: relative;
+	z-index: 3;
+}
+.z-index-4{
+	position: relative;
+	z-index: 4;
+}
+.z-index-5{
+	position: relative;
+	z-index: 5;
+}
+.z-index-6{
+	position: relative;
+	z-index: 6;
+}
+.z-index-7{
+	position: relative;
+	z-index: 7;
+}
+.z-index-8{
+	position: relative;
+	z-index: 8;
+}
+.z-index-9{
+	position: relative;
+	z-index: 9;
+}
+.z-index-10{
+	position: relative;
+	z-index: 10;
+}
+
+.gx-5{
+	--bs-gutter-x: 5px;
+}
+.gx-10{
+	--bs-gutter-x: 10px;
+}
+.gx-20{
+	--bs-gutter-x: 20px;
+}
+.gx-30{
+	--bs-gutter-x: 30px;
+}
+.gx-40{
+	--bs-gutter-x: 40px;
+}
+.gx-45{
+	--bs-gutter-x: 45px;
+}
+.gx-50{
+	--bs-gutter-x: 50px;
+	@media #{$xl,$lg,$md,$sm,$xs}{
+		--bs-gutter-x: 30px;
+	}
+}
+.gx-60{
+	--bs-gutter-x: 60px;
+	@media #{$xl,$lg,$md,$sm,$xs}{
+		--bs-gutter-x: 30px;
+	}
+}
+.gx-70{
+	--bs-gutter-x: 70px;
+	@media #{$xl,$lg,$md,$sm,$xs}{
+		--bs-gutter-x: 30px;
+	}
+}
+.gx-80{
+	--bs-gutter-x: 80px;
+	@media #{$xl,$lg,$md,$sm,$xs}{
+		--bs-gutter-x: 30px;
+	}
+}
+.gx-90{
+	--bs-gutter-x: 90px;
+	@media #{$xl,$lg,$md,$sm,$xs}{
+		--bs-gutter-x: 30px;
+	}
+}
+.gx-100{
+	--bs-gutter-x: 100px;
+	@media #{$xl,$lg,$md,$sm,$xs}{
+		--bs-gutter-x: 30px;
+	}
+}
+
+.overflow-y-visible{
+	overflow-x: hidden;
+	overflow-y: visible;
+}
+.p-relative{
+	position: relative;
+}
+.p-absolute{
+	position: absolute;
+}
+.bg-position{
+	@include tp-background();
+}
+
+.slide-transtion {
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+  & .swiper-slide{
+	width: auto;
+  }
+}
+
+.common-underline{
+	@include bgborder(currentColor, 0,0);
+	@include tp-transition(all .4s ease);
+	&:hover{
+		@include bgborder(currentColor, 0,100%);
+		@include tp-transition(all .4s ease);
+	}
+}
+.img-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.text-red{
+	color: var(--tp-theme-primary);
+}
+
+$container:(1800, 1886);
+@each $number in $container{
+  @media (min-width:1400px) {
+    .container-#{$number}{
+      max-width: #{$number}px;
+    }
+  }
+}
+
+// tp-font-famely-variables
+@each $font, $famely in $font-family {
+  @each $key, $value in $famely{
+      .tp-#{$font}-#{$key} {
+        font-family: var(--tp-#{$font}-#{$key});
+      }
+  }
+}
+
+/* Font weight */
+$font-weight: 100;
+@while $font-weight < 1000 {
+  .fw-#{$font-weight} {
+    font-weight: (#{$font-weight});
+  }
+  $font-weight: $font-weight + 100;
+}

@@ -1,0 +1,454 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.7 Contact Css
+/*----------------------------------------*/
+
+.tp-contact{
+    &-map{
+        &-wrapper{
+            width: 100%;
+            height: 680px;
+            @media #{$lg} {
+                height: 600px;
+            }
+            @media #{$md} {
+                height: 500px;
+            }
+            @media #{$xs} {
+                height: 450px;
+            }
+            & iframe{
+                width: 100%;
+                height: 100%;
+                filter: saturate(0);
+            }
+        }
+        &-icon{
+            position: relative;
+            &::after{
+                position: absolute;
+                content: '';
+                top: -5px;
+                left: -5px;
+                margin: 0 auto;
+                height: 120px;
+                width: 120px;
+                z-index: -1;
+                border-radius: 140px;
+                backdrop-filter: blur(7px);
+                transform: translate(-20%, -20%);
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid var(--tp-common-white);
+                animation: animate-pulse 3s linear infinite;
+                box-shadow: 0px 20px 50px 0px rgba(17, 16, 19, 0.14);
+            }
+            & span{
+                display: grid;
+                height: 60px;
+                width: 60px;
+                z-index: 2;
+                text-align: center;
+                border-radius: 50%;
+                place-content: center;
+                background-color: var(--tp-theme-primary);
+            }
+            &-box{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 2;
+            }
+        }
+    }
+    &-author{
+        &-thumb{
+            & img{
+                width: 60px;
+                height: 60px;
+                border-radius: 100px;
+            }
+        }
+        &-content{
+            & h6{
+                font-family: var(--tp-ff-inter);
+                font-weight: 600;
+                font-size: 18px;
+                letter-spacing: -0.02em;
+                line-height: 1;
+                margin-bottom: 0;
+            }
+            & span{
+                font-weight: 500;
+                font-size: 12px;
+                text-transform: uppercase;
+                color: rgba(30, 30, 30, 0.6);
+            }
+        }
+    }
+    &-bg{
+        background: #f6f6f6;
+        border-radius: 16px;
+        padding: 100px 60px 55px 60px;
+        @media #{$xl,$lg,$md,$sm,$xs}{
+            padding: 60px 30px 25px 30px;
+        }
+    }
+    &-tel{
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: -0.03em;
+        text-transform: uppercase;
+        color: var(--tp-common-black);
+        &:hover{
+            color: var(--tp-theme-primary);
+        }
+    }
+    &-mail{
+        font-weight: 600;
+        font-size: 42px;
+        letter-spacing: -0.04em;
+        color: var(--tp-common-black);
+        @media #{$xl,$lg,$md,$sm,$xs}{
+            font-size: 30px;
+        }
+        &:hover{
+            color: var(--tp-theme-primary);
+        }
+    }
+    &-address{
+        & h4{
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 111%;
+            text-transform: capitalize;
+            font-family: var(--tp-ff-inter);
+        }
+        & a{
+            letter-spacing: -0.02em;
+            color: rgba(1, 1, 3, 0.7);
+            line-height: 162%;
+            @media #{$xl,$lg,$md,$sm,$xs}{
+                & br{
+                    display: none;
+                }
+            }
+        }
+    }
+    &-form{
+        &-input{
+            & label{
+                font-weight: 500;
+                font-size: 16px;
+                color: var(--tp-common-black);
+                margin-bottom: 6px;
+            }
+            & input, textarea{
+                border: 1px solid rgba(30, 30, 30, 0.1);
+                border-radius: 12px;
+                background: transparent;
+                height: 60px;
+                &:focus{
+                    border-color: var(--tp-theme-primary);
+                }
+            }
+            & textarea{
+                height: 160px;
+            }
+        }
+        &-wrap{
+            @media #{$lg}{
+                margin-left: 80px;
+            }
+            @media #{$md,$sm,$xs}{
+                margin-left: 0;
+            }
+        }
+    }
+    &-me{
+        &-title{
+            font-size: 24px;
+            letter-spacing: -0.03em;
+        }
+        &-form{
+            border: 1px solid rgba(9, 9, 11, 0.1);
+            border-radius: 32px;
+            padding: 25px 50px 50px 50px;
+            @media #{$xs}{
+                padding: 25px 20px 20px 20px;
+            }
+            & .tp-input{
+                font-weight: 400;
+                font-size: 14px;
+                color: var(--tp-common-black);
+                height: 60px;
+                border-radius: 72px;
+                background: #f6f6f6;
+                border: none;
+                border: 1px solid transparent;
+                &::placeholder{
+                    font-weight: 400;
+                    font-size: 14px;
+                    color: #09090b;
+                }
+                &:focus{
+                    background: transparent;
+                    border-color: var(--tp-theme-primary);
+                }
+            }
+            & .tp-textarea{
+                height: 160px;
+                border-radius: 12px;
+            }
+        }
+        &-category{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            @media #{$xl,$lg,$md,$sm,$xs}{
+                margin-right: 0;
+            }
+            & input{
+                display: none;
+                & ~ span{
+                    font-weight: 400;
+                    font-size: 18px;
+                    color: var(--tp-common-black);
+                    border: 1px solid rgba(0, 0, 0, 0.1);
+                    border-radius: 30px;
+                    transition: all 0.4s ease;
+                    padding: 15px 30px;
+                    display: inline-block;
+                    cursor: pointer;
+                    line-height: 1;
+                    @media #{$sm,$xs}{
+                        padding: 12px 30px;
+                    }
+                    &:hover{
+                        background: var(--tp-common-black);
+                        color: var(--tp-common-white);
+                    }
+                }
+                &:checked ~ span{
+                    background: var(--tp-common-black);
+                    color: var(--tp-common-white);
+                }
+            }
+            &-wrap{
+                & h5{
+                    font-weight: 500;
+                    font-size: 24px;
+                    letter-spacing: -0.02em;
+                    color: var(--tp-common-black);
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+
+.cn-contactform{
+    &-support{
+        &-area{
+            @media #{$md,$xs} {
+                margin-bottom: 80px;
+            }
+        }
+        &-bg{
+            background-repeat: no-repeat;
+            background-size: cover;
+            object-fit: cover;
+            height: 385px;
+        }
+        &-text{
+            & span{
+                font-size: 44px;
+                font-weight: 500;
+                line-height: 52px;
+                max-width: 755px;
+                margin: 0 auto;
+                display: inline-block;
+                letter-spacing: -0.88px;
+                color: var(--tp-common-black);
+                font-family: var(--tp-ff-sequel-semi-bold);
+                @media #{$xs} {
+                    font-size: 36px;
+                }
+            }
+        }
+    }
+}
+
+.tp-contact-us{
+    &-text{
+        & p{
+            font-size: 18px;
+            font-weight: 400;
+            color: rgba(245, 247, 245, 0.50);
+        }
+        & a{
+            display: inline-block;
+            &:hover{
+                & p{
+                    color: var(--tp-common-white);
+                }
+            }
+        }
+    }
+    &-form{
+        &-ptb{
+            @media #{$xs} {
+                padding-top: 30px;
+            }
+        }
+        &-wrapper{
+            padding: 10px;
+            border-radius: 14px;
+            background: #1B1B1D;
+        }
+    }
+    &-map{
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        @media #{$md} {
+            height: 500px;
+            margin-bottom: 30px;
+        }
+        @media #{$xs} {
+            height: 450px;
+            margin-bottom: 30px;
+        }
+        & iframe{
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+    }
+    &-heading{
+        & .tp-career-title{
+            @media #{$xs} {
+                padding-bottom: 20px;
+            }
+        }
+    }
+    &-title{
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.6px;
+        text-transform: uppercase;
+        color: var(--tp-common-white);
+        @media #{$md,$xs} {
+            margin-bottom: 30px;
+        }
+    }
+    &-wrap{
+        padding: 110px;
+        @media #{$xxl} {
+            padding: 70px;
+        }
+        @media #{$xl} {
+            padding: 50px;
+        }
+        @media #{$lg,$md} {
+            padding: 30px;
+        }
+        @media #{$xs} {
+            padding: 20px;
+        }
+        & .tp-contact-form{
+            &-input{
+                & label{
+                    color: var(--tp-common-white);
+                }
+                & input,
+                & textarea{
+                    background: #302F32;
+                    border-color: #302F32;
+                    color: var(--tp-common-white);
+                    &:focus{
+                        background-color: #1B1B1D;
+                        border-color: var(--tp-common-red-3);
+                    }
+                }
+            }
+        }
+    }
+
+    &-thumb{
+        overflow: hidden;
+        border-radius: 10px;
+        margin-bottom: 40px;
+        & img{
+            width: 100%;
+            transition: .9s;
+            border-radius: 10px;
+        }
+    }
+    &-content{
+        padding: 15px;
+        border-radius: 14px;
+        background: #f6f6f6;
+        @media #{$sm,$xs} {
+            margin-top: 0;
+        }
+        &:hover{
+            & .tp-contact-us-thumb{
+                & img{
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+    &-info{
+        &-area{
+            @media #{$md,$xs} {
+                padding-bottom: 90px;
+            }
+        }
+        &-title{
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--tp-common-black);
+            font-family: var(--tp-ff-inter);
+            letter-spacing: -0.2px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(30, 30, 30, 0.10);
+        }
+        &-details{
+            margin-bottom: 45px;
+            & a{
+                font-size: 18px;
+                font-weight: 400;
+                display: block;
+                margin-bottom: 15px;
+                color: var(--tp-common-black);
+                &:hover{
+                    color: var(--tp-theme-primary);
+                }
+            }
+        }
+    }
+    &-bottom{
+        padding: 0 22px 28px;
+    }
+    &-btn{
+        & .tp-btn-yellow-green{
+            font-size: 16px;
+            font-weight: 600;
+            padding: 15px 10px;
+            border-radius: 30px;
+            display: inline-block;
+            text-transform: capitalize;
+            color: var(--tp-common-white);
+            background-color: transparent;
+            border: 1px solid rgba(30, 30, 30, 0.10);
+            &.active{
+                background-color: var(--tp-common-red-3);
+            }
+        }
+    }
+}

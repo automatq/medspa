@@ -1,0 +1,23 @@
+$colors: (
+    'common': (
+        'white': #FFFFFF,
+        'black': #1e1e1e,
+        'bubbles': #e1eeb7,
+    ),
+    'grey': (
+        '1':#5e5959,
+        '2':#f3f3f3,
+        '3':#b6bcc6,
+        '4':#f6f6f6,
+        '5':#d7cdcd,
+    ),
+    'border': (
+        '1': rgba(30, 30, 30, 0.1),
+    ),
+    'theme': (
+        'primary': #fa2837,
+    ),
+    'gradient':(
+        'primary': linear-gradient(90deg, #a020f0 0%, #00ffd1 100%),
+    ),
+);

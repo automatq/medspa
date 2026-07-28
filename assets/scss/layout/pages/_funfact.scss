@@ -1,0 +1,78 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.12 funfact css
+/*----------------------------------------*/
+
+.#{$theme-prifix}-funfact{
+    &-numbar{
+        font-size: 132px;
+        line-height: 100%;
+        letter-spacing: -0.05em;
+        @media #{$xl,$lg,$md}{
+            font-size: 115px;
+        }
+        @media #{$sm,$xs}{
+            font-size: 70px;
+        }
+    }
+    &-content{
+        &-dec{
+            @media #{$md,$sm,$xs}{
+                margin-left: 0;
+                margin-bottom: 30px;
+                & p{
+                    & br{
+                        display: none;
+                    }
+                }
+            }
+        }
+        &-wrap{
+            @media #{$md,$sm,$xs}{
+                margin-top: 0;
+            }
+        }
+    }
+    &-item{
+        position: relative;
+        padding-left: 84px;
+        @media #{$xs}{
+            flex-direction: column;
+            padding-left: 0;
+            align-items: flex-start!important;
+            &::before{
+                display: none;
+            }
+        }
+        &:not(:last-child){
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        &::before{
+            position: absolute;
+            content: "";
+            border-radius: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--tp-common-black);
+            top: 35%;
+            left: 24px;
+        }
+    }
+    &-info{
+        & span{
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--tp-common-black);
+        }
+        &-title{
+            font-size: 30px;
+            letter-spacing: -0.05em;
+            @media #{$sm,$xs}{
+                font-size: 25px;
+            }
+        }
+    }
+}

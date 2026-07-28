@@ -1,0 +1,145 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  2.4 Breadcrumb
+/*----------------------------------------*/
+
+.tp-breadcrumb{
+    &-list{
+        & ul{
+            & li{
+                font-family: var(--tp-ff-sequel-semi-bold);
+                font-size: 16px;
+                text-transform: uppercase;
+                color: var(--tp-common-black);
+                list-style: none;
+                display: inline-block;
+                position: relative;
+                &:not(:last-child){
+                    padding-right: 18px;
+                    margin-right: 10px;
+                    &::before{
+                        position: absolute;
+                        content: "";
+                        width: 7px;
+                        height: 7px;
+                        background: var(--tp-common-black);
+                        border-radius: 40px;
+                        right: 0;
+                        top: 50%;
+                        transform: translateY(-50%);
+                    }
+                } 
+                & a{
+                    &:hover{
+                        color: var(--tp-theme-primary);
+                    }
+                }
+            }
+        }
+    }
+    &-bg{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    &-title{
+        font-size: 92px;
+        line-height: 98%;
+        letter-spacing: -0.03em;
+        @media #{$xl,$lg,$md}{
+            font-size: 70px;
+        }
+        @media #{$sm,$xs}{
+            font-size: 58px;
+        }
+        @media #{$xs}{
+            font-size: 50px;
+        }
+        & span{
+            color: var(--tp-theme-primary);
+        }
+        &.fs-152{
+            font-size: 152px;
+            @media #{$xl,$lg,$md}{
+                font-size: 70px;
+            }
+            @media #{$sm,$xs}{
+                font-size: 58px;
+            }
+            @media #{$xs}{
+                font-size: 50px;
+            }
+        }
+    }
+    &-subtitle{
+        font-size: 18px;;
+        letter-spacing: -0.02em;
+        color: var(--tp-common-black);
+        position: relative;
+        padding-left: 16px;
+        display: inline-block;
+        &::before{
+            position: absolute;
+            content: '';
+            border-radius: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--tp-common-black);
+            left: 0;
+            top: 9px;
+        }
+        & svg{
+            margin-left: 5px;
+        }
+    }
+    &-dec{
+        font-size: 18px;
+        line-height: 156%;
+        letter-spacing: -0.02em;
+        color: #535058;
+        @media #{$sm,$xs}{
+            & br{
+                display: none;
+            }
+        }
+        &.ml-240{
+            margin-left: 240px;
+            @media #{$xl,$lg,$md,$sm,$xs}{
+                margin-left: 0;
+            }
+        }
+        &-wrap{
+            @media #{$sm,$xs}{
+                margin-left: 0;
+                flex-direction: column;
+            }
+        }
+    }
+    &-date{
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+        color: var(--tp-common-black);
+        @media #{$sm,$xs}{
+            margin-right: 30px;
+        }
+    }
+    &-border{
+        border-bottom: 1px solid var(--tp-border-1);
+    }
+    &-shape{
+        position: absolute;
+        top: 0;
+        right: 260px;
+        @media #{$xl,$lg,$md,$sm,$xs}{
+            right: 0;
+        }
+    }
+}
+

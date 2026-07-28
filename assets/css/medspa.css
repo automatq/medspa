@@ -1,0 +1,514 @@
+/* =====================================================================
+   Lumina Aesthetics — brand overrides on top of the motion-graphic theme
+   (kept separate from vendor main.css so the base theme stays intact)
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Brand palette
+   The base theme ships a bright white page and a punchy red accent
+   (--tp-theme-primary: #fa2837, used ~123x throughout main.css). For the
+   med spa we warm the page to a muted peach and swap the red for a muted
+   teal — peach's near-complement — which reads calm/clinical and keeps
+   enough depth to carry white button text. Overriding the single accent
+   variable re-tints every accent site-wide in one place.
+   --------------------------------------------------------------------- */
+:root {
+  --md-bg-peach: #eecab0;      /* deeper muted peach page background */
+  --tp-theme-primary: #8a5a6b; /* muted plum accent (echoes the lavender logo) */
+
+  /* The base theme's "black" (#1e1e1e) is a cold neutral that reads stark on
+     the warm peach — most visibly on the solid nav pills and CTAs. Warm it to
+     a soft espresso brown so buttons, headings and copy all harmonize with the
+     peach while keeping crisp, AA-legible contrast. Because buttons and text
+     both resolve from these two variables, one override re-tints the whole
+     site (same single-variable strategy as the accent above). */
+  --tp-common-black: #2a1c15;  /* warm espresso (was #1e1e1e) — buttons + headings */
+  --tp-grey-1: #574a42;        /* warm taupe body copy (was cold #5e5959) */
+}
+
+/* Page background. Only index.html sets its body bg via data-bg-color
+   (an inline style applied by main.js), so it is updated in the markup;
+   every other page inherits this rule. */
+body {
+  background-color: var(--md-bg-peach);
+}
+
+/* The theme desaturates the hero photo (filter: saturate(0)).
+   A warm, in-color hero suits a med spa far better and matches the
+   full-color results gallery below. */
+.mg-hero-bg img {
+  filter: saturate(1.04) contrast(1.02) brightness(1.01) !important;
+}
+
+/* Soft left-to-right dark gradient so the white hero copy and badge
+   stay crisp over a bright, colorful photograph. */
+.mg-hero-spacing-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 60px;
+  background: linear-gradient(
+    100deg,
+    rgba(38, 20, 16, 0.55) 0%,
+    rgba(38, 20, 16, 0.24) 40%,
+    rgba(38, 20, 16, 0) 66%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .mg-hero-spacing-inner::before {
+    border-radius: 30px;
+  }
+}
+
+/* The footer email is a display-size link; the brand address is longer than
+   the theme's placeholder, so scale it responsively to avoid overflow. */
+.mg-footer-email.tp-footer-email {
+  font-size: clamp(26px, 4vw, 58px);
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+/* Treatments mega-menu: the four column titles wrap to either one line
+   ("Laser") or two ("Skin & Facials"), so their underline dividers — and the
+   service lists beneath them — used to land at different heights. Give every
+   title block the same height (enough for two lines) and vertically center the
+   title within it, so all four dividers and lists line up. */
+.mg-main-menu nav ul li .tp-megamenu-title-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 66px;
+}
+
+/* Header nav has 7 pill items (theme shipped ~6); keep them on one line by
+   tightening the pills and never wrapping. */
+.mg-main-menu > nav > ul {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.mg-main-menu > nav > ul > li {
+  margin-right: 4px;
+}
+.mg-main-menu > nav > ul > li > a {
+  padding: 8px 14px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+/* white-space:nowrap on the header ul above is inherited; reset it inside the
+   dropdown/mega-menu panels so their items wrap and stack vertically. */
+.mg-main-menu .tp-submenu {
+  white-space: normal;
+}
+/* Header logo — the circular badge; sized generously and horizontally
+   centered in the header. */
+.mg-header-logo img {
+  height: 82px !important;
+  width: auto !important;
+}
+@media (min-width: 1200px) {
+  .mg-header-style .row.align-items-center {
+    position: relative;
+  }
+  .mg-header-style .mg-header-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin-left: 0 !important;
+  }
+}
+@media (max-width: 1199px) {
+  .mg-header-logo.ml-60 {
+    margin-left: 0;
+  }
+}
+/* Inner pages use a different header (logo left, menu centered); enlarge that
+   logo to match, without moving it (centering would collide with the menu). */
+header .tp-header-logo img {
+  height: 70px;
+  width: auto;
+}
+
+/* =====================================================================
+   Treatments "pro" mega menu — an editorial 3-zone panel (intro + numbered
+   service list + dark feature card w/ Fresha CTA). Keeps the theme's
+   hover-to-open + absolute positioning; only the width/skin/content restyle.
+   ===================================================================== */
+.tp-main-menu nav ul li .tp-megamenu.anima-mega {
+  width: 820px;
+  max-width: calc(100vw - 32px);
+  padding: 0;
+  background: #fbf4ec;
+  border: 1px solid rgba(42, 28, 21, 0.08);
+  border-radius: 22px;
+  box-shadow: 0 34px 80px -24px rgba(42, 28, 21, 0.38);
+  overflow: hidden;
+}
+.anima-mega-inner {
+  display: grid;
+  grid-template-columns: 1.25fr 0.9fr;
+  grid-template-areas:
+    "intro feature"
+    "list  feature";
+  gap: 6px 30px;
+  padding: 32px 34px;
+}
+.anima-mega-eyebrow {
+  display: block;
+  font-family: var(--tp-ff-inter, "Inter", sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tp-theme-primary);
+  margin-bottom: 12px;
+}
+.anima-mega-intro {
+  grid-area: intro;
+}
+.anima-mega-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 25px;
+  line-height: 1.2;
+  color: var(--tp-common-black);
+  margin: 0 0 16px;
+  max-width: 320px;
+}
+.anima-mega-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tp-common-black);
+  border-bottom: 1px solid rgba(42, 28, 21, 0.25);
+  padding-bottom: 2px;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.anima-mega-all:hover {
+  color: var(--tp-theme-primary);
+  border-color: var(--tp-theme-primary);
+}
+.anima-mega-all svg {
+  transition: transform 0.2s ease;
+}
+.anima-mega-all:hover svg {
+  transform: translate(2px, -2px);
+}
+.anima-mega-list {
+  grid-area: list;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(42, 28, 21, 0.1);
+  align-self: start;
+}
+.anima-mega-list > li {
+  border-bottom: 1px solid rgba(42, 28, 21, 0.1);
+}
+.anima-mega-list > li > a {
+  display: grid !important;
+  grid-template-columns: 28px 1fr 20px;
+  align-items: start;
+  gap: 4px 12px;
+  padding: 13px 10px !important;
+  margin: 0 -10px;
+  border-radius: 12px;
+  transition: background 0.18s ease;
+}
+.anima-mega-list > li > a:hover {
+  background: rgba(47, 110, 100, 0.06);
+}
+.anima-mega-num {
+  font-family: var(--tp-ff-inter, "Inter", sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tp-grey-1);
+  padding-top: 3px;
+}
+.anima-mega-body {
+  display: flex;
+  flex-direction: column;
+}
+.anima-mega-item-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.25;
+  color: var(--tp-common-black);
+  transition: color 0.18s ease;
+}
+.anima-mega-list > li > a:hover .anima-mega-item-title {
+  color: var(--tp-theme-primary);
+}
+.anima-mega-item-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--tp-grey-1);
+  margin-top: 3px;
+}
+.anima-mega-arrow {
+  color: var(--tp-grey-1);
+  display: flex;
+  align-items: center;
+  padding-top: 4px;
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+.anima-mega-list > li > a:hover .anima-mega-arrow {
+  color: var(--tp-theme-primary);
+  transform: translate(2px, -2px);
+}
+.anima-mega-feature {
+  grid-area: feature;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  background: var(--tp-common-black);
+  color: #f5e9dd;
+  border-radius: 16px;
+  padding: 26px 24px;
+}
+.anima-mega-feature .anima-mega-eyebrow.soft {
+  color: #9ec7bf;
+}
+.anima-mega-feature-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  line-height: 1.25;
+  color: #ffffff;
+  margin: 0 0 10px;
+}
+.anima-mega-feature-body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(245, 233, 221, 0.75);
+  margin: 0 0 auto;
+}
+.anima-mega-cta {
+  margin-top: 22px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: var(--tp-common-black);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: 40px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.anima-mega-cta:hover {
+  background: var(--tp-theme-primary);
+  color: #ffffff;
+}
+.anima-mega-cta svg {
+  transition: transform 0.2s ease;
+}
+.anima-mega-cta:hover svg {
+  transform: translate(2px, -2px);
+}
+/* Mobile / offcanvas: collapse to a simple stacked link list. */
+@media only screen and (max-width: 1199px) {
+  .tp-main-menu nav ul li .tp-megamenu.anima-mega,
+  .anima-mega {
+    width: auto;
+    max-width: 100%;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .anima-mega-inner {
+    display: block;
+    padding: 0;
+  }
+  .anima-mega-intro,
+  .anima-mega-feature,
+  .anima-mega-arrow,
+  .anima-mega-item-desc {
+    display: none;
+  }
+  .anima-mega-list {
+    border-top: 0;
+  }
+  .anima-mega-list > li > a {
+    grid-template-columns: 26px 1fr;
+    padding: 9px 0;
+    margin: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Book Now page — the live WellnessLiving <wl-appointments-widget> is a
+   web component that renders in its own shadow DOM, so it brings its own
+   styling. We only frame it: reserve height so the page doesn't jump while
+   it loads, cap the width so the scheduler isn't stretched on desktop, and
+   tint the intro/fallback copy to match the brand.
+   --------------------------------------------------------------------- */
+.tp-booking-intro p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--tp-grey-1);
+}
+.tp-booking-intro a,
+.tp-booking-fallback a {
+  color: var(--tp-theme-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.tp-booking-widget {
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: 560px; /* holds space until the scheduler paints */
+}
+wl-appointments-widget {
+  display: block;
+  width: 100%;
+}
+.tp-booking-fallback {
+  font-size: 15px;
+  color: var(--tp-grey-1);
+}
+
+/* ---------------------------------------------------------------------
+   Sticky Call / Book action buttons — fixed to the bottom-right corner on
+   every page. The markup lives OUTSIDE #smooth-wrapper (right after the
+   back-to-top button) so ScrollSmoother's transform on #smooth-content
+   doesn't break position:fixed. Sits at z-index 99: above page content,
+   below the menu/search overlays (which live at 995+).
+   --------------------------------------------------------------------- */
+.mg-sticky-cta {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+.mg-sticky-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 22px;
+  border-radius: 50px;
+  font-family: var(--tp-ff-inter);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--tp-common-white);
+  box-shadow: 0 10px 24px -6px rgba(38, 20, 16, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  white-space: nowrap;
+}
+.mg-sticky-cta__btn:hover {
+  color: var(--tp-common-white);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px -6px rgba(38, 20, 16, 0.45);
+}
+.mg-sticky-cta__call {
+  background-color: var(--tp-common-black);
+}
+.mg-sticky-cta__book {
+  background-color: var(--tp-theme-primary);
+}
+.mg-sticky-cta__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Raise the theme's back-to-top button above the CTA stack so they never
+   overlap (it shares the bottom-right corner). */
+.back-to-top-wrapper {
+  bottom: 150px !important;
+}
+
+@media (max-width: 767px) {
+  .back-to-top-wrapper {
+    right: 20px;
+    bottom: 140px !important;
+  }
+}
+/* Compact the stack on phones so it stays thumb-reachable and unobtrusive. */
+@media (max-width: 575px) {
+  .mg-sticky-cta {
+    right: 14px;
+    bottom: 14px;
+    gap: 10px;
+  }
+  .mg-sticky-cta__btn {
+    padding: 11px 17px;
+    font-size: 14px;
+  }
+}
+
+/* Inner pages center the nav, so anchor+center the panel on its trigger to
+   keep it inside the viewport (the homepage's left-aligned menu keeps the
+   theme default of opening from the trigger's left edge). */
+@media only screen and (min-width: 1200px) {
+  .tp-main-menu:not(.mg-main-menu) nav ul li .tp-megamenu.anima-mega {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(6px);
+  }
+  .tp-main-menu:not(.mg-main-menu) nav ul li:hover .tp-megamenu.anima-mega {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* =====================================================================
+   Refocused hero — one clear H1, a dominant primary CTA, real trust line
+   (replaces the marquee word-slider + tag pills + scroll cue).
+   ===================================================================== */
+.mg-hero-spacing-inner { min-height: 600px; }
+.anima-hero { max-width: 660px; padding-top: 44px; }
+.anima-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #f6ece2; margin-bottom: 22px;
+}
+.anima-hero-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--tp-theme-primary); box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+.anima-hero-title {
+  font-size: clamp(40px, 5.2vw, 72px); line-height: 1.04; letter-spacing: -0.01em;
+  color: #fff; margin: 0 0 22px;
+}
+.anima-hero-sub {
+  font-size: 18px; line-height: 1.6; color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 34px; max-width: 520px;
+}
+.anima-hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+.anima-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 600; line-height: 1; padding: 16px 30px; border-radius: 40px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.anima-btn:hover { transform: translateY(-1px); }
+.anima-btn--primary { background: #fff; color: var(--tp-common-black); }
+.anima-btn--primary:hover { background: var(--tp-theme-primary); color: #fff; }
+.anima-btn--ghost { background: rgba(255, 255, 255, 0.06); color: #fff; border: 1px solid rgba(255, 255, 255, 0.55); }
+.anima-btn--ghost:hover { background: rgba(255, 255, 255, 0.16); border-color: #fff; }
+.anima-hero-trust { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: #f4e9e4; font-size: 14px; }
+.anima-hero-trust strong { color: #fff; }
+.anima-hero-stars { color: #f2c777; letter-spacing: 2px; font-size: 15px; }
+.anima-hero-sep { opacity: 0.5; }
+@media only screen and (max-width: 991px) {
+  .anima-hero { margin-left: 0 !important; padding: 14px 2px 0; max-width: 100%; }
+  .anima-hero-eyebrow { font-size: 11px; letter-spacing: 0.1em; }
+  .anima-hero-title { font-size: clamp(30px, 8.2vw, 42px); overflow-wrap: break-word; }
+  .anima-hero-title br { display: none; }
+  .anima-hero-sub { font-size: 15px; max-width: 100%; margin-bottom: 26px; }
+  .anima-hero-cta { gap: 10px; }
+  .anima-btn { padding: 14px 24px; font-size: 14px; }
+  .anima-hero-trust { font-size: 13px; gap: 8px; }
+}
+/* Never allow a stray element to create a horizontal scrollbar on mobile. */
+@media only screen and (max-width: 991px) {
+  html, body { overflow-x: hidden; }
+}

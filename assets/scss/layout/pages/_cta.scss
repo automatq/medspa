@@ -1,0 +1,35 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.8 cta css
+/*----------------------------------------*/
+
+.ca-cta{
+    &-shape{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: -1;
+        width: 40%;
+        -webkit-animation: levitate-lg 4s ease-in-out infinite;
+        animation: levitate-lg 4s ease-in-out infinite;
+        -webkit-animation-delay: 1s;
+        animation-delay: 1s;
+        &-2{
+            position: absolute;
+            right: 80px;
+            bottom: -80px;
+            -webkit-animation: levitate-lg 4s ease-in-out infinite;
+            animation: levitate-lg 4s ease-in-out infinite;
+            -webkit-animation-delay: 1s;
+            animation-delay: 1s;
+        }
+    }
+    &-scale {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: -40px;
+        z-index: -1;
+    }
+}

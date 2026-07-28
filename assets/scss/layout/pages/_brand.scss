@@ -1,0 +1,51 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.4 brand css
+/*----------------------------------------*/
+
+.ca-brand{
+    &-slider{
+        &-active{
+            position: relative;
+            &::before{
+                position: absolute;
+                content: "";
+                width: 230px;
+                height: 100%;
+                background: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
+                left: 0;
+                top: 0;
+                z-index: 3;
+            }
+            &::after{
+                position: absolute;
+                content: "";
+                width: 230px;
+                height: 100%;
+                background: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
+                right: 0;
+                top: 0;
+                z-index: 3;
+                transform: rotate(-180deg);
+            }
+        }
+    }
+}
+
+.cs-brand{
+    &-logo{
+        & img{
+            opacity: .5;
+            transition: all .4s ease;
+            &:hover{
+                opacity: 1;
+            }
+        }
+    }
+    &-slider{
+        &-active{
+            margin-right: -200px;
+        }
+    }
+}

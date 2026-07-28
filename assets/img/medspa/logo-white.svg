@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Anima Medspa">
+  <!-- outer ring -->
+  <circle cx="200" cy="200" r="186" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+  <!-- botanical emblem (calla-lily sprig) -->
+  <g fill="#ffffff">
+    <path d="M200 200 C189 174 186 138 197 100 C199 93 201 93 203 100 C214 138 211 174 200 200 Z"/>
+    <path d="M200 198 C177 184 148 163 141 127 C139 116 147 111 155 119 C176 138 192 167 200 198 Z"/>
+    <path d="M200 198 C223 184 252 163 259 127 C261 116 253 111 245 119 C224 138 208 167 200 198 Z"/>
+  </g>
+  <path d="M200 198 L200 224" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M182 222 C191 230 209 230 218 222" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <text x="201" y="300" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="66" letter-spacing="7" fill="#ffffff">ANIMA</text>
+  <text x="201" y="345" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="37" letter-spacing="1" fill="#ffffff">Medspa</text>
+</svg>

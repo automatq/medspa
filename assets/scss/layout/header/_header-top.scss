@@ -1,0 +1,186 @@
+@use '../../utils' as *;
+/*----------------------------------------*/
+/*  3.1 Header Style top
+/*----------------------------------------*/
+
+.shop-header{
+    &-top{
+        background: var(--tp-common-bubbles);
+        padding: 6px 0;
+        &-slider{
+            &-text{
+                & p{
+                    font-weight: 500;
+                    font-size: 14px;
+                    letter-spacing: -0.02em;
+                    color: var(--tp-common-black);
+                    & a{
+                        font-weight: 600;
+                        &:hover{
+                            color: #1e1e1eba;
+                        }
+                        & svg{
+                            margin-left: 5px;
+                        }
+                    }
+                }
+            }
+            &-active{
+                margin: 0 100px;
+                @media #{$xl,$lg,$md,$sm,$xs}{
+                    margin: 0 30px;
+                }
+            }
+        }
+        &-navigation{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            margin: 0 65px;
+            @media #{$xl,$lg,$md,$sm,$xs}{
+                margin: 0 15px;
+            }
+            & span{
+                color: var(--tp-common-black);
+                transition: all .4s ease;
+                &:hover{
+                    color: #1e1e1eba;
+                }
+            }
+        }
+        &-menu{
+            &-item{
+                position: relative;
+                & > span{
+                    position: relative;
+                    display: inline-block;
+                    font-weight: 600;
+                    font-size: 14px;
+                    color: var(--tp-common-black);
+                    padding-right: 20px;
+                    &::after{
+                        position: absolute;
+                        content: '\f107';
+                        font-family: var(--tp-ff-fontawesome);
+                        margin-left: 7px;
+                    }
+
+                    &:hover{
+                        cursor: pointer;
+                    }
+                }
+                & ul{
+                    position: absolute;
+                    top: 125%;
+                    right: 0;
+                    z-index: 4;
+                    background-color: var(--tp-common-white);
+                    padding: 10px 15px;
+                    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+                    visibility: hidden;
+                    opacity: 0;
+                    min-width: max-content;
+                    @include tp-transition(.2s);
+
+                    &.shop-lang-list-open,
+                    &.shop-currency-list-open,
+                    &.shop-setting-list-open{
+                        top: 100%;
+                        visibility: visible;
+                        opacity: 1;
+                    }
+
+                    & li{
+                        list-style: none;
+                        & a{
+                            font-size: 14px;
+                            color: var(--tp-common-black);
+                            &:hover{
+                                color: #1e1e1eba;
+                            }
+                            & img{
+                                width: 20px;
+                                border-radius: 100px;
+                                margin-right: 6px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &-menu{
+        & ul{
+            & li{
+                display: inline-block;
+                &:not(:last-child){
+                    margin-right: 36px;
+                    @media #{$xl,$lg,$md,$sm,$xs}{
+                        margin-right: 20px;
+                    }
+                }
+                & a{
+                    font-weight: 600;
+                    font-size: 14px;
+                    letter-spacing: -0.02em;
+                    color: var(--tp-common-black);
+                    &:hover{
+                        color: #1e1e1eba;
+                    }
+                }
+            }
+        }
+    }
+    &-currency{
+        & ul{
+            & li{
+                &:not(:last-child){
+                    margin-bottom: 7px;
+                }
+            }
+        }
+        &-toggle{
+            & img{
+                width: 20px;
+                margin-right: 3px;
+            }
+        }
+    }
+    &-cart{
+        &-btn{
+            position: relative;
+            & span{
+                width: 22px;
+                height: 22px;
+                background: var(--tp-theme-primary);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                font-size: 12px;
+                position: absolute;
+                color: var(--tp-common-white);
+                top: -7px;
+                right: -12px;
+            }
+            &:hover{
+                color: #1e1e1eba;
+            }
+        }
+    }
+    &-right{
+        & .tp-menu-bar {
+            margin-top: 3px;
+        }
+        & .tp-search-click{
+            margin-top: 1px;
+        }
+    }
+    &-main{
+        padding: 18px 0;
+    }
+}

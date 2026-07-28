@@ -1,0 +1,46 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.19 process css
+/*----------------------------------------*/
+
+.#{$theme-prifix}-process{
+    &-count{
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 50%;
+        color: var(--tp-common-white);
+        background: var(--tp-common-black);
+    }
+    &-title{
+        font-size: 24px;
+        line-height: 117%;
+    }
+    &-dec{
+        font-size: 18px;
+        line-height: 144%;
+        @media #{$xxl,$xl,$lg,$md,$sm,$xs}{
+            & br{
+                display: none;
+            }
+        }
+    }
+    &-border{
+        transform: translateY(32px);
+        & svg{
+            color: var(--tp-common-black);
+        }
+    }
+    &-bottom{
+        &-para{
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--tp-common-black);
+            border: 1px solid rgba(000, 000, 000, 0.1);
+            border-radius: 100px;
+            display: inline-block;
+            padding: 8px 30px 8px 30px;
+        }
+    }
+}

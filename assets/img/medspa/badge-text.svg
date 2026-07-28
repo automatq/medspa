@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <path id="circlePath" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/>
+  </defs>
+  <text fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="14.5" letter-spacing="2.2">
+    <textPath href="#circlePath" startOffset="0">BOOK YOUR CONSULTATION&#160;&#160;·&#160;&#160;MEDICAL AESTHETICS&#160;&#160;·&#160;&#160;</textPath>
+  </text>
+</svg>

@@ -1,0 +1,5 @@
+//Office-pc
+sass --watch "C:\Users\Admin\Dropbox\Harun Pure\cunnet\assets\scss\main.scss":"C:\Users\Admin\Dropbox\Harun Pure\cunnet\assets\css\main.css"
+
+// Home-pc
+sass --watch "C:\Users\Office PC 08\Desktop\Dropbox\Harun Pure\cunnet\assets\scss\main.scss":"C:\Users\Office PC 08\Desktop\Dropbox\Harun Pure\cunnet\assets\css\main.css"

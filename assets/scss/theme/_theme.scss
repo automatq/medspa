@@ -1,0 +1,305 @@
+@use '../utils' as *;
+/*-----------------------------------------------------------------------------------
+
+    Template Name: Cunnet - Creative Portfolio Agency HTML Template
+    Author: Theme_Pure
+    Support: https://help.themepure.net/support/
+    Description: Cunnet - Creative Portfolio Agency HTML Template
+    Version: 1.0.2
+
+-----------------------------------------------------------------------------------
+
+/************ TABLE OF CONTENTS ***************
+
+	-----------------
+    01. THEME CSS
+	-----------------
+		1.1 Common Classes
+		1.2 Default Spacing
+		
+	-----------------
+    02. COMPONENTS css
+	-----------------
+		2.1 Animations
+		2.2 Animated Headline css start
+		2.3 Back to top
+		2.4 Breadcrumb
+		2.5 Buttons
+		2.6 Cart
+		7.7 Checkout css
+		2.8 Magic Cursor
+		2.9 Nice Select
+		2.10 Preloader
+		2.11 search style
+		2.12 Section Title
+		2.13 select
+
+	-----------------
+    03. HEADER CSS
+	-----------------
+		3.1 Header Style top
+		3.2 Header main
+
+    ---------------------------------
+	04. MENU CSS
+	---------------------------------
+		4.1 Mobile Menu
+		4.2 Mobile Menu
+		4.3 offcanvas scss
+
+	---------------------------------
+	05. BLOG CSS
+	---------------------------------
+		5.1 Blog css
+		5.2 Postbox css
+		5.3 Recent Post css
+		5.4 Sidebar css
+
+	---------------------------------
+	06. FOOTER CSS
+	---------------------------------
+		6.1 Footer Style 1
+	
+	---------------------------------
+	07. PAGES CSS
+	---------------------------------
+		7.1 about css
+		7.2 awards
+		7.3 banner
+		7.4 brand css
+		7.5 Career Css
+		7.6 cetagory css
+		7.7 Contact Css
+		7.8 cta css
+		7.9 dark css
+		7.10 error css
+		7.11 faq css
+		7.12 funfact css
+		7.13 gallery css
+		7.14 hero css
+		7.15 Login Css
+		7.16 payment css
+		7.17 portfolio
+		7.18 Price
+		7.19 process css
+		7.20 product css
+		7.21 profile css start
+		7.22 service css
+		7.23 skill css
+		7.24 testimonial css
+		7.25 testimonial css
+
+
+**********************************************/
+
+
+/*----------------------------------------*/
+/*  1.1 Theme Default
+/*----------------------------------------*/
+
+@import url($font-url);
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/*---------------------------------
+	typography css start 
+---------------------------------*/
+body {
+	font-size: 16px;
+	line-height: 28px;
+	font-weight: normal;
+	color: var(--tp-common-black);
+	font-family: var(--tp-ff-body);
+}
+
+img{
+	max-width: 100%;
+}
+
+a{
+	text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin-top: 0px;
+	font-weight: 500;
+	line-height: 1.2;
+	@include tp-transition(color);
+	color: var(--tp-common-black);
+	font-family: var(--tp-ff-heading);
+}
+
+h1 {
+	font-size: 40px;
+}
+  
+h2 {
+font-size: 36px;
+}
+
+h3 {
+font-size: 28px;
+}
+
+h4 {
+font-size: 24px;
+}
+
+h5 {
+font-size: 20px;
+}
+
+h6 {
+font-size: 16px;
+}
+
+ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+p {
+	font-size: 16px;
+	font-weight: 400;
+	margin-bottom: 15px;
+	line-height: 26px;
+	font-family: var(--tp-ff-p);
+	color: var(--tp-grey-1);
+}
+
+
+a,
+button,
+p,
+input,
+select,
+textarea,
+li,
+.transition-3{
+	@extend %transition;
+}
+
+a:not([href]):not([class]), 
+a:not([href]):not([class]):hover {
+	color: inherit;
+	text-decoration: none;
+}
+
+a:focus,
+.button:focus {
+	text-decoration: none;
+	outline: none;
+}
+
+a:focus,
+a:hover{
+	color: inherit;
+	text-decoration: none;
+}
+
+a,
+button {
+	color: inherit;
+	outline: none;
+	border: none;
+	background: transparent;
+}
+
+button:hover{
+	cursor: pointer;
+}
+
+button:focus{
+    outline: 0; 
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+.capitalize {
+	text-transform: capitalize;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+input[type="url"],
+textarea{
+	outline: none;
+	height: 56px;
+	width: 100%;
+	line-height: 56px;
+	font-size: 14px;
+	padding-left: 26px;
+	padding-right: 26px;
+	color: var(--tp-common-black);
+	border: 1px solid var(--tp-common-black);
+	background-color: var(--tp-common-white);
+	@include tp-placeholder{
+		color: var(--tp-common-black);
+	}
+	&:focus{
+		border-color: var(--tp-common-black);
+		&::placeholder{
+			opacity: 0;
+		}
+	}
+
+}
+
+textarea{
+	line-height: 1.4;
+	padding-top: 17px;
+	padding-bottom: 17px;
+}
+
+input[type="color"] {
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	background: none;
+	border: 0;
+	cursor: pointer;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	border-radius: 50%;
+}
+
+*::-moz-selection {
+	background: var(--tp-common-black);
+	color: var(--tp-common-white);
+	text-shadow: none;
+}
+::-moz-selection {
+	background: var(--tp-common-black);
+	color: var(--tp-common-white);
+	text-shadow: none;
+}
+::selection {
+	background: var(--tp-common-black);
+	color: var(--tp-common-white);
+	text-shadow: none;
+}
+
+*::-moz-placeholder {
+	color: var(--tp-common-black);
+	font-size: 14px;
+	opacity: 1;
+}
+*::placeholder {
+	color: var(--tp-common-black);
+	font-size: 14px;
+	opacity: 1;
+}

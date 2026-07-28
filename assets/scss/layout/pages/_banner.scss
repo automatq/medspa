@@ -1,0 +1,27 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.3 banner
+/*----------------------------------------*/
+
+.#{$theme-prifix}-banner{
+    &-thumb{
+        height: 820px;
+        @media #{$xl,$lg}{
+            height: 620px;
+        }
+        @media #{$md,$sm,$xs}{
+            height: 420px;
+        }
+    }
+    &-about{
+        height: 780px;
+        border-radius: 24px;
+        @media #{$xl,$lg}{
+            height: 620px;
+        }
+        @media #{$md,$sm,$xs}{
+            height: 420px;
+        }
+    }
+}

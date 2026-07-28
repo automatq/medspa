@@ -1,0 +1,183 @@
+@use '../../utils' as *;
+/*----------------------------------------*/
+/*  5.1 Blog css
+/*----------------------------------------*/
+
+.mp-blog{
+    &-title{
+        font-size: 24px;
+        line-height: 133%;
+        letter-spacing: -0.04em;
+        @media #{$xxl,$xl,$lg,$md,$sm,$xs} {
+            & br{
+                display: none;
+            }
+        }
+    }
+    &-date{
+        font-weight: 500;
+        color: var(--tp-common-black);
+        & span{
+            color: #837e7e;
+        }
+    }
+    &-thumb{
+        border-radius: 12px;
+        overflow: hidden;
+        & img{
+            border-radius: 12px;
+        }
+    }
+}
+
+.cs-blog{
+    &-title{
+        font-size: 38px;
+        line-height: 110%;
+        letter-spacing: -0.04em;
+        @media #{$xxl,$xl,$lg,$md,$sm,$xs}{
+            font-size: 32px;
+            & br{
+                display: none;
+            }
+        }
+        @media #{$xl,$lg,$md,$sm,$xs}{
+            font-size: 30px;
+        }
+        &-wrap{
+            @media #{$md,$sm,$xs}{
+                margin-bottom: 20px;
+            }
+        }
+    }
+    &-thumb{
+        border-radius: 24px;
+        & img{
+            border-radius: 24px;
+            filter: saturate(0);
+            transition: all .6s ease;
+        }
+    }
+    &-tag{
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: -0.05em;
+        text-transform: uppercase;
+        color: var(--tp-common-black);
+        border-radius: 50px;
+        padding: 10px 24px;
+        background: var(--tp-common-white);
+        position: absolute;
+        line-height: 1;
+        top: 32px;
+        left: 32px;
+        transition: all .5s ease;
+        &:hover{
+            background: var(--tp-theme-primary);
+            color: var(--tp-common-white);
+        }
+    }
+    &-item{
+        &:hover{
+            & .cs-blog-thumb{
+                & img{
+                    transform: scale(1.1);
+                    filter: saturate(1);
+                }
+            }
+        }
+        &-2{
+            & .cs-blog-thumb img {
+                filter: saturate(1);
+            }
+        }
+    }
+}
+
+.tp-blog{
+    &-tag{
+        border-top: 1px solid  rgba(30, 30, 30, 0.08);
+        border-bottom: 1px solid  rgba(30, 30, 30, 0.08);
+        padding: 5px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        & a{
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            color: #575454;
+            border-radius: 37px;
+            padding: 12px 30px;
+            display: inline-block;
+            line-height: 1;
+            &:hover{
+                background: #f5f5f5;
+                color: var(--tp-common-black);
+            }
+        }
+        &-2{
+            background: rgba(30, 30, 30, 0.03);
+            border: none;
+            box-shadow: 0 1px 0 0 rgba(30, 30, 30, 0.08), 0 -1px 0 0 rgba(30, 30, 30, 0.08);
+            & a{
+                &:hover{
+                    background: #e5e5e5;
+                }
+            }
+        }
+    }
+    &-masonary{
+        &-content{
+            margin-right: -30px;
+            @media #{$xl,$lg,$md,$sm,$xs} {
+                margin-right: 0;
+            }
+            & .cs-blog-thumb img {
+                filter: saturate(1);
+            }
+        }
+    }
+}
+
+.tp-blog{
+    &-list{
+        &-item{
+            border: 1px solid rgba(9, 9, 11, 0.1);
+            border-radius: 24px;
+            padding: 32px 30px 2px 32px;
+            @media #{$xs} {
+                padding: 20px 20px 2px 20px;
+            }
+            &:hover{
+                & .tp-blog-list-thumb{
+                    & img{
+                        transform: scale(1.1);
+                    }
+                }
+            }
+        }
+        &-content{
+            @media #{$lg,$md,$sm,$xs}{
+                margin-left: 0;
+            }
+            & p{
+                @media #{$sm,$xs}{
+                    & br{
+                        display: none;
+                    }
+                }
+            }
+        }
+        &-thumb{
+            border-radius: 12px;
+            @media #{$lg,$md,$sm,$xs}{
+                margin-right: 0;
+            }
+            & img{
+                transition: all .6s ease;
+            }
+        }
+    }
+}

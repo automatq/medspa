@@ -1,0 +1,29 @@
+@use '../../utils' as *;
+
+/*----------------------------------------*/
+/*  7.23 skill css
+/*----------------------------------------*/
+
+.tp-skill{
+    &-item{
+        background: #f8f8f8;
+        border-radius: 24px;
+        padding: 71px 20px;
+        @media #{$xl}{
+            padding: 40px 20px;
+        }
+    }
+    &-icon{
+        width: 70px;
+        height: 70px;
+    }
+    &-text{
+        font-weight: 600;
+        font-size: 28px;
+        letter-spacing: -0.04em;
+        color: var(--tp-common-black);
+        @media #{$xl}{
+            font-size: 24px;
+        }
+    }
+}
