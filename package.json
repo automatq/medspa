@@ -9,6 +9,6 @@
     "images": "node scripts/fetch-service-images.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   }
 }

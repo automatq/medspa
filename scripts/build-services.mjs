@@ -332,6 +332,7 @@ await writeFile(
   "vercel.json",
   `${JSON.stringify(
     {
+      outputDirectory: ".",
       cleanUrls: true,
       trailingSlash: true,
       redirects,
@@ -348,4 +349,3 @@ await writeFile(
 );
 
 console.log(`Generated ${services.length} service pages and ${redirects.length} legacy redirects.`);
-
