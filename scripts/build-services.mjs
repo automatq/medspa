@@ -323,9 +323,16 @@ for (const [index, item] of services.entries()) {
   await writeFile(`${directory}/index.html`, renderService(item, index));
 }
 
-const redirects = services.map((item) => {
-  const sourcePath = new URL(item.legacyUrl).pathname.replace(/\/$/, "");
-  return { source: sourcePath, destination: `/services/${item.slug}/`, permanent: true };
+const redirects = services.flatMap((item) => {
+  const sourcePath = new URL(item.legacyUrl).pathname;
+  const destination = `/services/${item.slug}/`;
+
+  // Vercel normalizes requests to trailing-slash URLs before evaluating custom
+  // redirects. Match that normalized path and omit no-op mappings where the
+  // legacy and clean routes are already identical.
+  return sourcePath === destination
+    ? []
+    : [{ source: sourcePath, destination, permanent: true }];
 });
 
 await writeFile(

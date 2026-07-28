@@ -199,12 +199,24 @@ test("all discovery surfaces link to individual service pages", () => {
 
 test("Vercel redirects preserve every current WordPress slug", async () => {
   const config = JSON.parse(await readFile(join(root, "vercel.json"), "utf8"));
-  assert.equal(config.redirects.length, 25);
+  const changedLegacyPaths = services.filter(
+    (item) => new URL(item.legacyUrl).pathname !== `/services/${item.slug}/`
+  );
+  assert.equal(config.redirects.length, changedLegacyPaths.length);
   for (const item of services) {
-    const source = new URL(item.legacyUrl).pathname.replace(/\/$/, "");
+    const source = new URL(item.legacyUrl).pathname;
+    const destination = `/services/${item.slug}/`;
+    if (source === destination) {
+      assert.equal(
+        config.redirects.some((redirect) => redirect.source === source),
+        false,
+        `${source} should resolve directly instead of redirecting to itself`
+      );
+      continue;
+    }
     assert.deepEqual(
       config.redirects.find((redirect) => redirect.source === source),
-      { source, destination: `/services/${item.slug}/`, permanent: true }
+      { source, destination, permanent: true }
     );
   }
 });

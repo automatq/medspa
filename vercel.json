@@ -4,127 +4,122 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/services/botox-dysoprt-in-etobicoke",
+      "source": "/services/botox-dysoprt-in-etobicoke/",
       "destination": "/services/botox-dysport/",
       "permanent": true
     },
     {
-      "source": "/services/dermal-fillers",
-      "destination": "/services/dermal-fillers/",
-      "permanent": true
-    },
-    {
-      "source": "/services/submental-fat-injection-in-etobicoke",
+      "source": "/services/submental-fat-injection-in-etobicoke/",
       "destination": "/services/submental-fat-injection/",
       "permanent": true
     },
     {
-      "source": "/services/sculptra-in-etobicoke",
+      "source": "/services/sculptra-in-etobicoke/",
       "destination": "/services/sculptra/",
       "permanent": true
     },
     {
-      "source": "/services/prp-skin-rejuvenation-in-etobicoke",
+      "source": "/services/prp-skin-rejuvenation-in-etobicoke/",
       "destination": "/services/prp-skin-rejuvenation/",
       "permanent": true
     },
     {
-      "source": "/services/prp-hair-restoration-in-etobicoke",
+      "source": "/services/prp-hair-restoration-in-etobicoke/",
       "destination": "/services/prp-hair-restoration/",
       "permanent": true
     },
     {
-      "source": "/services/mesotherapy-in-etobicoke",
+      "source": "/services/mesotherapy-in-etobicoke/",
       "destination": "/services/mesotherapy/",
       "permanent": true
     },
     {
-      "source": "/services/iv-therapy-in-etobicoke",
+      "source": "/services/iv-therapy-in-etobicoke/",
       "destination": "/services/iv-therapy/",
       "permanent": true
     },
     {
-      "source": "/services/microneedling-pdrn-in-etobicoke",
+      "source": "/services/microneedling-pdrn-in-etobicoke/",
       "destination": "/services/microneedling-pdrn/",
       "permanent": true
     },
     {
-      "source": "/services/hydradermabrasian-in-etobicoke",
+      "source": "/services/hydradermabrasian-in-etobicoke/",
       "destination": "/services/hydradermabrasion/",
       "permanent": true
     },
     {
-      "source": "/services/korean-glass-skin-facial-in-etobicoke",
+      "source": "/services/korean-glass-skin-facial-in-etobicoke/",
       "destination": "/services/korean-glass-skin-facial/",
       "permanent": true
     },
     {
-      "source": "/services/signature-facial-in-etobicoke",
+      "source": "/services/signature-facial-in-etobicoke/",
       "destination": "/services/signature-facial/",
       "permanent": true
     },
     {
-      "source": "/services/chemical-peels-in-etobicoke",
+      "source": "/services/chemical-peels-in-etobicoke/",
       "destination": "/services/chemical-peels/",
       "permanent": true
     },
     {
-      "source": "/services/dermaplaning-in-etobicoke",
+      "source": "/services/dermaplaning-in-etobicoke/",
       "destination": "/services/dermaplaning/",
       "permanent": true
     },
     {
-      "source": "/services/private-area-brightening-in-etobicoke",
+      "source": "/services/private-area-brightening-in-etobicoke/",
       "destination": "/services/intimate-brightening/",
       "permanent": true
     },
     {
-      "source": "/services/laser-hair-removal-in-etobicoke",
+      "source": "/services/laser-hair-removal-in-etobicoke/",
       "destination": "/services/laser-hair-removal/",
       "permanent": true
     },
     {
-      "source": "/services/laser-pigment-removal-in-etobicoke",
+      "source": "/services/laser-pigment-removal-in-etobicoke/",
       "destination": "/services/pigment-removal/",
       "permanent": true
     },
     {
-      "source": "/services/laser-tattoo-removal-in-etobicoke",
+      "source": "/services/laser-tattoo-removal-in-etobicoke/",
       "destination": "/services/laser-tattoo-removal/",
       "permanent": true
     },
     {
-      "source": "/services/carbon-laser-peel-in-etobicoke",
+      "source": "/services/carbon-laser-peel-in-etobicoke/",
       "destination": "/services/carbon-laser-peel/",
       "permanent": true
     },
     {
-      "source": "/services/weight-management-program-in-etobicoke",
+      "source": "/services/weight-management-program-in-etobicoke/",
       "destination": "/services/weight-management/",
       "permanent": true
     },
     {
-      "source": "/services/ems-body-contouring-in-etobicoke",
+      "source": "/services/ems-body-contouring-in-etobicoke/",
       "destination": "/services/ems-body-contouring/",
       "permanent": true
     },
     {
-      "source": "/services/full-body-swedish-massage",
+      "source": "/services/full-body-swedish-massage/",
       "destination": "/services/swedish-massage/",
       "permanent": true
     },
     {
-      "source": "/services/microblading-in-etobicoke",
+      "source": "/services/microblading-in-etobicoke/",
       "destination": "/services/microblading/",
       "permanent": true
     },
     {
-      "source": "/services/lash-lift-tint-in-etobicoke",
+      "source": "/services/lash-lift-tint-in-etobicoke/",
       "destination": "/services/lash-lift-tint/",
       "permanent": true
     },
     {
-      "source": "/services/brow-lamination-in-etobicoke",
+      "source": "/services/brow-lamination-in-etobicoke/",
       "destination": "/services/brow-lamination/",
       "permanent": true
     }
