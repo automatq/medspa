@@ -241,15 +241,29 @@ test("Vercel redirects preserve every current WordPress slug", async () => {
 test("motion is progressive, dependency-free, reduced-motion safe, and below budget", async () => {
   const css = await readFile(join(root, "assets/css/medspa.css"), "utf8");
   const runtime = await readFile(join(root, "assets/js/medspa.js"), "utf8");
+  const homepage = htmlByFile.get("index.html");
 
   assert.ok(gzipSync(runtime).byteLength < 12_000, "motion runtime must stay below 12KB compressed");
   assert.doesNotMatch(runtime, /\b(?:jQuery|gsap|THREE|Swiper)\b/, "motion runtime must not restore legacy dependencies");
   assert.match(runtime, /IntersectionObserver/);
   assert.match(runtime, /requestAnimationFrame/);
   assert.match(runtime, /prefers-reduced-motion/);
+  assert.match(runtime, /querySelectorAll\("\[data-parallax\]"\)/);
+  assert.match(runtime, /--parallax-y/);
+  assert.match(runtime, /imageRevealSentinels/);
+  assert.match(runtime, /imageObserver\.observe\(sentinel\)/);
+  assert.equal(
+    (homepage.match(/\bdata-parallax(?:\s|>)/g) || []).length,
+    5,
+    "homepage needs one hero and four image parallax targets"
+  );
+  assert.match(homepage, /class="hero"[^>]+data-parallax-strength="34"/);
   assert.match(css, /@view-transition/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /\.motion-ready \[data-reveal\]:not\(\.is-visible\)/);
+  assert.match(css, /\.hero-sequence-ready \.hero\[data-parallax\] \.hero-media/);
+  assert.match(css, /@media \(min-width: 900px\)[\s\S]*\.page-home \.split/);
+  assert.doesNotMatch(runtime, /setProperty\("--reveal-x"/);
 
   for (const file of servicePages) {
     const html = htmlByFile.get(file);

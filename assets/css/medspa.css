@@ -2367,7 +2367,7 @@ wl-appointments-widget {
 .motion-ready [data-reveal]:not(.is-visible),
 .motion-ready [data-reveal-group] > *:not(.is-visible) {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 26px), 0);
 }
 
 .motion-ready [data-reveal],
@@ -2384,8 +2384,9 @@ wl-appointments-widget {
 }
 
 .motion-ready .image-reveal img {
-  transform: scale(1.03);
+  transform: translate3d(0, var(--parallax-y, 0), 0) scale(var(--parallax-scale, 1.03));
   transition: transform 900ms cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
 }
 
 .motion-ready .image-reveal.is-visible {
@@ -2393,7 +2394,42 @@ wl-appointments-widget {
 }
 
 .motion-ready .image-reveal.is-visible img {
-  transform: scale(1);
+  transform: translate3d(0, var(--parallax-y, 0), 0) scale(var(--parallax-scale, 1));
+}
+
+.motion-ready .hero[data-parallax] .hero-media {
+  opacity: 0.72;
+  clip-path: inset(0 0 0 10%);
+  transform: translate3d(0, var(--parallax-y, 0), 0) scale(calc(var(--parallax-scale, 1.075) + 0.025));
+  transition:
+    opacity 1100ms cubic-bezier(.22, 1, .36, 1),
+    clip-path 1300ms cubic-bezier(.22, 1, .36, 1),
+    transform 250ms linear;
+  will-change: transform;
+}
+
+.hero-sequence-ready .hero[data-parallax] .hero-media {
+  opacity: 1;
+  clip-path: inset(0);
+  transform: translate3d(0, var(--parallax-y, 0), 0) scale(var(--parallax-scale, 1.075));
+}
+
+@media (min-width: 900px) {
+  .page-home .split:not(.reverse) .editorial-image {
+    --reveal-x: -42px;
+  }
+
+  .page-home .split.reverse .editorial-image {
+    --reveal-x: 42px;
+  }
+
+  .page-home .split:not(.reverse) > :not(.editorial-image) :is(.eyebrow, .section-title, .lede, .button-row) {
+    --reveal-x: 34px;
+  }
+
+  .page-home .split.reverse > :not(.editorial-image) :is(.eyebrow, .section-title, .lede, .button-row) {
+    --reveal-x: -34px;
+  }
 }
 
 .split-word {

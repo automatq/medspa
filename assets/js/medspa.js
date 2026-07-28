@@ -61,7 +61,7 @@
   const markMotionTargets = () => {
     document
       .querySelectorAll(
-        ".section .eyebrow, .section .section-title, .section .lede, .section .editorial-image, .section .review-card, .page-hero .eyebrow, .page-hero .page-title, .page-hero .lede, .page-hero-meta, .cta-panel, .notice"
+        ".section .eyebrow, .section .section-title, .section .lede, .section .editorial-image, .section .review-card, .page-home .section .button-row, .page-home .profile-card, .page-hero .eyebrow, .page-hero .page-title, .page-hero .lede, .page-hero-meta, .cta-panel, .notice"
       )
       .forEach((element) => element.setAttribute("data-reveal", ""));
 
@@ -74,6 +74,17 @@
     document
       .querySelectorAll(".editorial-image, .service-hero-media, .provider-portrait")
       .forEach((element) => element.classList.add("image-reveal"));
+
+    document.querySelectorAll(".page-home .split").forEach((split) => {
+      const image = split.querySelector(".editorial-image");
+      const copy = [...split.children].find((child) => child !== image);
+
+      copy
+        ?.querySelectorAll(".eyebrow, .section-title, .lede, .button-row")
+        .forEach((element, index) => {
+          element.style.setProperty("--reveal-delay", `${Math.min(index * 75, 225)}ms`);
+        });
+    });
 
     const hero = document.querySelector(".hero-content, .service-hero-copy, .page-hero .shell");
     if (hero) {
@@ -128,11 +139,11 @@
     markMotionTargets();
     splitTitle(document.querySelector("[data-split-title], .hero .display-title, .page-hero .page-title"));
 
-    const revealElements = [
+    const revealElements = [...new Set([
       ...document.querySelectorAll("[data-reveal]"),
       ...[...document.querySelectorAll("[data-reveal-group]")].flatMap((group) => [...group.children]),
       ...document.querySelectorAll(".image-reveal"),
-    ];
+    ])];
 
     document.querySelectorAll("[data-reveal-group]").forEach((group) => {
       [...group.children].forEach((child, index) => {
@@ -167,29 +178,66 @@
       { threshold: 0.12, rootMargin: "0px 0px -7% 0px" }
     );
 
+    const imageRevealSentinels = new Map();
+    const imageObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          imageRevealSentinels.get(entry.target)?.forEach((image) => image.classList.add("is-visible"));
+          imageObserver.unobserve(entry.target);
+          imageRevealSentinels.delete(entry.target);
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -5% 0px" }
+    );
+
     revealElements
       .filter((element) => !element.classList.contains("is-visible"))
-      .forEach((element) => observer.observe(element));
+      .forEach((element) => {
+        if (!element.classList.contains("image-reveal") || !element.parentElement) {
+          observer.observe(element);
+          return;
+        }
+        const sentinel = element.parentElement;
+        const images = imageRevealSentinels.get(sentinel) || [];
+        images.push(element);
+        imageRevealSentinels.set(sentinel, images);
+        imageObserver.observe(sentinel);
+      });
   };
 
   const startParallax = () => {
-    if (
-      reduceMotion.matches ||
-      !window.matchMedia("(min-width: 900px) and (pointer: fine)").matches
-    ) {
-      return;
-    }
-    const images = [...document.querySelectorAll("[data-parallax] img")];
-    if (!images.length) return;
+    const desktopPointer = window.matchMedia("(min-width: 900px) and (pointer: fine)");
+    const targets = [...document.querySelectorAll("[data-parallax]")]
+      .map((container) => ({
+        container,
+        image: container.matches("img") ? container : container.querySelector("img"),
+        strength: Number.parseFloat(container.dataset.parallaxStrength || "24"),
+        scale: Number.parseFloat(container.dataset.parallaxScale || "1.06"),
+      }))
+      .filter(({ image, strength, scale }) => image && Number.isFinite(strength) && Number.isFinite(scale));
+    if (!targets.length) return;
+
     let frame = 0;
+    const reset = () => {
+      targets.forEach(({ image }) => {
+        image.style.removeProperty("--parallax-y");
+        image.style.removeProperty("--parallax-scale");
+      });
+    };
     const update = () => {
       frame = 0;
-      images.forEach((image) => {
-        const rect = image.parentElement.getBoundingClientRect();
+      if (reduceMotion.matches || !desktopPointer.matches) {
+        reset();
+        return;
+      }
+      targets.forEach(({ container, image, strength, scale }) => {
+        const rect = container.getBoundingClientRect();
         if (rect.bottom < 0 || rect.top > window.innerHeight) return;
         const center = rect.top + rect.height / 2;
         const progress = Math.max(-1, Math.min(1, (center - window.innerHeight / 2) / window.innerHeight));
-        image.style.transform = `translate3d(0, ${(-progress * 24).toFixed(2)}px, 0) scale(1.06)`;
+        image.style.setProperty("--parallax-y", `${(-progress * strength).toFixed(2)}px`);
+        image.style.setProperty("--parallax-scale", String(scale));
       });
     };
     const requestUpdate = () => {
@@ -197,6 +245,8 @@
     };
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
+    reduceMotion.addEventListener?.("change", requestUpdate);
+    desktopPointer.addEventListener?.("change", requestUpdate);
     requestUpdate();
   };
 
