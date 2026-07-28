@@ -46,10 +46,13 @@
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
+    const mobileWasOpen = menuButton?.getAttribute("aria-expanded") === "true";
+    const dropdownWasOpen = dropdownButton?.getAttribute("aria-expanded") === "true";
     setMobileMenu(false);
     if (dropdown) dropdown.dataset.open = "false";
     dropdownButton?.setAttribute("aria-expanded", "false");
-    menuButton?.focus();
+    if (mobileWasOpen) menuButton?.focus();
+    else if (dropdownWasOpen) dropdownButton?.focus();
   });
 
   const year = document.querySelector("[data-year]");

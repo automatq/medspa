@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import test from "node:test";
+import { gzipSync } from "node:zlib";
 import { categoryById, services, UNKNOWN } from "../data/services.mjs";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
@@ -208,3 +209,22 @@ test("Vercel redirects preserve every current WordPress slug", async () => {
   }
 });
 
+test("motion is progressive, dependency-free, reduced-motion safe, and below budget", async () => {
+  const css = await readFile(join(root, "assets/css/medspa.css"), "utf8");
+  const runtime = await readFile(join(root, "assets/js/medspa.js"), "utf8");
+
+  assert.ok(gzipSync(runtime).byteLength < 12_000, "motion runtime must stay below 12KB compressed");
+  assert.doesNotMatch(runtime, /\b(?:jQuery|gsap|THREE|Swiper)\b/, "motion runtime must not restore legacy dependencies");
+  assert.match(runtime, /IntersectionObserver/);
+  assert.match(runtime, /requestAnimationFrame/);
+  assert.match(runtime, /prefers-reduced-motion/);
+  assert.match(css, /@view-transition/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(css, /\.motion-ready \[data-reveal\]:not\(\.is-visible\)/);
+
+  for (const file of servicePages) {
+    const html = htmlByFile.get(file);
+    assert.doesNotMatch(html, /<html[^>]*class="[^"]*motion-ready/);
+    assert.match(html, /<main id="main-content">[\s\S]*<h1/);
+  }
+});
