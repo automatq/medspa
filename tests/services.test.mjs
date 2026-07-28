@@ -140,7 +140,8 @@ test("all local links and images resolve, including page fragments", async () =>
       ) {
         continue;
       }
-      const [rawPath, fragment] = attribute.split("#");
+      const [pathAndQuery, fragment] = attribute.split("#");
+      const [rawPath] = pathAndQuery.split("?");
       const decodedPath = decodeURIComponent(rawPath);
       let target;
       if (!decodedPath) {
@@ -264,6 +265,12 @@ test("motion is progressive, dependency-free, reduced-motion safe, and below bud
   assert.match(css, /\.hero-sequence-ready \.hero\[data-parallax\] \.hero-media/);
   assert.match(css, /@media \(min-width: 900px\)[\s\S]*\.page-home \.split/);
   assert.doesNotMatch(runtime, /setProperty\("--reveal-x"/);
+
+  for (const file of allPages) {
+    const html = htmlByFile.get(file);
+    assert.match(html, /\/assets\/css\/medspa\.css\?v=20260728-motion/);
+    assert.match(html, /\/assets\/js\/medspa\.js\?v=20260728-motion/);
+  }
 
   for (const file of servicePages) {
     const html = htmlByFile.get(file);

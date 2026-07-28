@@ -138,8 +138,8 @@ const renderService = (item, index) => {
   <meta property="og:image" content="https://anima-medspa.vercel.app/assets/img/services/${item.imageStem}-1280.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/assets/img/medspa/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/assets/css/medspa.css">
-  <script src="/assets/js/medspa.js" defer></script>
+  <link rel="stylesheet" href="/assets/css/medspa.css?v=20260728-motion">
+  <script src="/assets/js/medspa.js?v=20260728-motion" defer></script>
   <script type="application/ld+json">${cleanJson(structuredData(item, category))}</script>
 </head>
 <body class="${bodyClass(item.category)}" data-service="${escapeHtml(item.slug)}">
