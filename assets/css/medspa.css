@@ -432,20 +432,22 @@ summary {
   border-radius: var(--radius-md);
   background: var(--paper-pale);
   box-shadow: var(--shadow);
+  visibility: hidden;
   opacity: 0;
-  pointer-events: none;
   transform: translateY(-8px);
   transition:
-    opacity 160ms ease-out,
-    transform 160ms ease-out;
+    opacity 160ms ease-out 120ms,
+    transform 160ms ease-out 120ms,
+    visibility 0s linear 280ms;
 }
 
 .nav-dropdown:hover .mega-menu,
 .nav-dropdown:focus-within .mega-menu,
 .nav-dropdown[data-open="true"] .mega-menu {
+  visibility: visible;
   opacity: 1;
-  pointer-events: auto;
   transform: translateY(0);
+  transition-delay: 0s;
 }
 
 .mega-menu-grid {
