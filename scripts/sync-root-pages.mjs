@@ -14,11 +14,18 @@ const pages = new Map([
 
 const navigationPattern =
   /<header class="site-header">[\s\S]*?<\/header>\s*<nav class="mobile-menu"[^>]*data-mobile-menu[^>]*>[\s\S]*?<\/nav>/;
+const rootDocuments = [...pages.keys()];
 
 for (const [file, active] of pages) {
   let html = await readFile(file, "utf8");
   if (!navigationPattern.test(html)) throw new Error(`${file}: shared navigation region not found`);
   html = html.replace(navigationPattern, navigation(active));
+  html = html
+    .replace(/\b(href|src)="assets\//g, '$1="/assets/')
+    .replace(
+      /\bhref="([^"]+\.html(?:#[^"]*)?)"/g,
+      (match, target) => (rootDocuments.some((document) => target.startsWith(document)) ? `href="/${target}"` : match)
+    );
   await writeFile(file, html);
 }
 

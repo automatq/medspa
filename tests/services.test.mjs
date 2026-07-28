@@ -163,6 +163,23 @@ test("all local links and images resolve, including page fragments", async () =>
   }
 });
 
+test("root pages use deployment-safe absolute local URLs", () => {
+  for (const file of rootPages) {
+    const html = htmlByFile.get(file);
+    const attributes = [...html.matchAll(/\b(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
+    for (const attribute of attributes) {
+      if (
+        !attribute ||
+        /^(?:https?:|mailto:|tel:|data:|javascript:|#|\/)/.test(attribute) ||
+        attribute.startsWith("//")
+      ) {
+        continue;
+      }
+      assert.fail(`${file}: relative URL would break after Vercel clean-URL normalization: ${attribute}`);
+    }
+  }
+});
+
 test("all discovery surfaces link to individual service pages", () => {
   const treatmentIndex = htmlByFile.get("service-light.html");
   const homepage = htmlByFile.get("index.html");
