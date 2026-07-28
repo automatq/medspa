@@ -1,0 +1,14 @@
+{
+  "name": "anima-med-spa-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-services.mjs && node scripts/sync-root-pages.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "images": "node scripts/fetch-service-images.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
