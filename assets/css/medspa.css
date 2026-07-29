@@ -2435,12 +2435,14 @@ wl-appointments-widget {
 .split-word {
   display: inline-block;
   overflow: hidden;
+  padding: .14em .12em .18em;
+  margin: -.14em -.12em -.18em;
   vertical-align: bottom;
 }
 
 .split-word > span {
   display: inline-block;
-  transform: translateY(110%);
+  transform: translateY(calc(110% + .2em));
   transition: transform 720ms cubic-bezier(.22, 1, .36, 1);
   transition-delay: var(--word-delay, 0ms);
 }
@@ -2549,6 +2551,10 @@ wl-appointments-widget {
 @media (max-width: 560px) {
   .service-hero-grid {
     gap: 42px;
+  }
+
+  [data-service="hydradermabrasion"] .service-title {
+    font-size: clamp(2.2rem, 11.7vw, 3rem);
   }
 
   .service-hero-media {

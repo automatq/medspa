@@ -266,6 +266,30 @@ test("motion is progressive, dependency-free, reduced-motion safe, and below bud
   assert.match(css, /@media \(min-width: 900px\)[\s\S]*\.page-home \.split/);
   assert.doesNotMatch(runtime, /setProperty\("--reveal-x"/);
 
+  const splitWordRule = css.match(/\.split-word\s*\{([^}]+)\}/)?.[1] ?? "";
+  const splitWordInnerRule = css.match(/\.split-word\s*>\s*span\s*\{([^}]+)\}/)?.[1] ?? "";
+  assert.match(splitWordRule, /overflow:\s*hidden/, "split titles must keep their masked entrance");
+  assert.match(
+    splitWordRule,
+    /padding:\s*\.14em\s+\.12em\s+\.18em/,
+    "split-title masks need room for display-font ascenders, descenders, and swashes"
+  );
+  assert.match(
+    splitWordRule,
+    /margin:\s*-.14em\s+-.12em\s+-.18em/,
+    "the glyph safety gutter must not change title wrapping or line spacing"
+  );
+  assert.match(
+    splitWordInnerRule,
+    /translateY\(calc\(110%\s*\+\s*\.2em\)\)/,
+    "split words must begin below the expanded mask"
+  );
+  assert.match(
+    css,
+    /\[data-service="hydradermabrasion"\]\s+\.service-title\s*\{[^}]*font-size:\s*clamp\(2\.2rem,\s*11\.7vw,\s*3rem\)/,
+    "the longest unbroken treatment name must fit narrow mobile viewports"
+  );
+
   for (const file of allPages) {
     const html = htmlByFile.get(file);
     assert.match(html, /\/assets\/css\/medspa\.css\?v=20260728-motion/);
