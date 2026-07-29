@@ -1,5 +1,7 @@
 import { categories, services } from "../data/services.mjs";
 
+export const assetVersion = "20260729-titlefix";
+
 export const escapeHtml = (value = "") =>
   String(value)
     .replaceAll("&", "&amp;")

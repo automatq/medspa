@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { services } from "../data/services.mjs";
-import { navigation } from "./site-shell.mjs";
+import { assetVersion, navigation } from "./site-shell.mjs";
 
 const pages = new Map([
   ["index.html", "home"],
@@ -21,6 +21,7 @@ for (const [file, active] of pages) {
   if (!navigationPattern.test(html)) throw new Error(`${file}: shared navigation region not found`);
   html = html.replace(navigationPattern, navigation(active));
   html = html
+    .replace(/\/assets\/(css\/medspa\.css|js\/medspa\.js)\?v=[^"]+/g, `/assets/$1?v=${assetVersion}`)
     .replace(/\b(href|src)="assets\//g, '$1="/assets/')
     .replace(
       /\bhref="([^"]+\.html(?:#[^"]*)?)"/g,
