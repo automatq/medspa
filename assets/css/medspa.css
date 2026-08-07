@@ -1357,6 +1357,38 @@ wl-appointments-widget {
   text-align: center;
 }
 
+/* Book Now: the WellnessLiving scheduler owns the whole page rather than
+   sitting in a card. It brings its own white surface, search field, and
+   accordion, so the page adds width and height and stays out of its way. */
+.booking-main {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - var(--header-height));
+  padding-block: clamp(20px, 3vw, 40px);
+  background: #fff;
+}
+
+.booking-stage {
+  flex: 1;
+  min-width: 0;
+  width: min(calc(100% - 48px), var(--content));
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The embed sizes itself to its content; flex lets it claim the leftover
+   viewport height so a short category list never floats above dead space. */
+.booking-stage wl-appointments-widget {
+  flex: 1;
+  min-height: 0;
+}
+
+.booking-stage .booking-fallback {
+  margin-top: 28px;
+  text-align: left;
+}
+
 /* Calls to action and footer */
 .cta-panel {
   position: relative;
@@ -2039,7 +2071,8 @@ body.page-lp .mobile-actions {
 
   .shell,
   .narrow,
-  .hero-content {
+  .hero-content,
+  .booking-stage {
     width: min(calc(100% - 32px), var(--content));
   }
 

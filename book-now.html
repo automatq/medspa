@@ -7,8 +7,8 @@
   <meta name="description" content="Book a consultation or treatment at Anima Med Spa in Etobicoke through the live online schedule.">
   <title>Book Now | Anima Med Spa</title>
   <link rel="icon" href="/assets/img/medspa/anima-logo-icon-20260729.png" type="image/png">
-  <link rel="stylesheet" href="/assets/css/medspa.css?v=20260729-parity">
-  <script src="/assets/js/medspa.js?v=20260729-parity" defer></script>
+  <link rel="stylesheet" href="/assets/css/medspa.css?v=20260807-booking">
+  <script src="/assets/js/medspa.js?v=20260807-booking" defer></script>
   <script type="module" src="https://widgets.wellnessliving.com/appointments/widget.js"></script>
 </head>
 <body class="page-booking">
@@ -111,56 +111,16 @@
     </div>
   </nav>
 
-  <main id="main-content">
-    <section class="page-hero">
-      <div class="shell">
-        <p class="eyebrow">Live booking</p>
-        <h1 class="page-title">Book your <span class="serif">visit.</span></h1>
-        <p class="lede">Choose a complimentary consultation or select a treatment to see current availability, appointment duration, and pricing.</p>
-        <div class="page-hero-meta"><span class="meta-chip">Complimentary consultations</span><span class="meta-chip">Current live availability</span><span class="meta-chip">Secure booking</span></div>
-      </div>
-    </section>
-
-    <section class="section section-pale">
-      <div class="shell booking-layout">
-        <aside class="booking-aside">
-          <p class="eyebrow">Before you book</p>
-          <h2>Not sure what to choose?</h2>
-          <p>Select a complimentary consultation. It gives you time to discuss your goals, suitability, treatment options, expected downtime, and pricing before committing.</p>
-          <div class="booking-meta"><strong>Need help now?</strong><span><a href="tel:+14377709296">Call 437-770-9296</a></span></div>
-          <div class="booking-meta"><strong>Clinic hours</strong><span>Monday–Saturday<br>10:00 AM–6:00 PM</span></div>
-          <div class="booking-meta"><strong>Location</strong><span>2885 Lakeshore Blvd West<br>Etobicoke, ON M8V 1J1</span></div>
-        </aside>
-        <div class="booking-widget">
-          <wl-appointments-widget k_business="807856" k_skin="388448" k_location=""></wl-appointments-widget>
-          <p class="booking-fallback">If the schedule does not load, <a href="https://www.wellnessliving.com/catalog/anima_med_spa" target="_blank" rel="noopener">open Anima’s booking catalog in a new tab</a>.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-sm section-paper">
-      <div class="narrow">
-        <div class="notice"><strong>Appointment note:</strong> online prices and durations reflect the current scheduler. Final treatment scope may change after consultation when product amount, treatment area, eligibility, or a recommended series must be confirmed.</div>
-      </div>
-    </section>
+  <main id="main-content" class="booking-main">
+    <!-- The scheduler *is* this page. No hero, aside, or notice competes with
+         it — every one of those pushed the first bookable service below the
+         fold, which is the only thing someone arriving from "Book now" wants. -->
+    <h1 class="visually-hidden">Book an appointment at Anima Med Spa</h1>
+    <div class="booking-stage">
+      <wl-appointments-widget k_business="807856" k_skin="388448" k_location=""></wl-appointments-widget>
+      <p class="booking-fallback">If the schedule does not load, <a href="https://www.wellnessliving.com/catalog/anima_med_spa" target="_blank" rel="noopener">open Anima’s booking catalog in a new tab</a> or call <a href="tel:+14377709296">437-770-9296</a>. Online prices and durations reflect the current scheduler and may change after consultation.</p>
+    </div>
   </main>
-
-  <section class="newsletter-band">
-      <div class="shell newsletter-inner">
-        <div>
-          <h2>Anima newsletter</h2>
-          <p>Occasional treatment information, aftercare reminders, and clinic updates. No fixed schedule, and you can stop at any time.</p>
-        </div>
-        <form data-mailto-form data-mailto-to="animamedspa@gmail.com" data-mailto-subject="Newsletter signup">
-          <div class="field">
-            <label class="visually-hidden" for="nl-email">Email address</label>
-            <input id="nl-email" name="email" type="email" autocomplete="email" placeholder="Email address" required>
-            <p class="field-error" hidden></p>
-          </div>
-          <button class="button button-light" type="submit">Open email to subscribe</button>
-        </form>
-      </div>
-    </section>
 
   <footer class="site-footer">
     <div class="shell footer-top">

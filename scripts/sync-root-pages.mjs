@@ -14,8 +14,9 @@ import { formatPrice, membershipPrice, priceBySlug, priceDisclaimerTail, prices 
 import { team } from "../data/team.mjs";
 import { assetVersion, footer, mobileActions, navigation } from "./site-shell.mjs";
 
-// `mobileActions: false` is deliberate for book-now.html — it already *is* the
-// booking page, so the sticky Call/Book bar is redundant there.
+// `mobileActions: false` and `newsletter: false` are deliberate for
+// book-now.html — it already *is* the booking page, so the sticky Call/Book bar
+// is redundant and a newsletter signup only competes with the scheduler.
 const pages = new Map([
   ["index.html", { active: "home" }],
   ["service-light.html", { active: "treatments" }],
@@ -23,7 +24,7 @@ const pages = new Map([
   ["about-us-light.html", { active: "about" }],
   ["faq-light.html", { active: "faq" }],
   ["contact-us-light.html", { active: "contact" }],
-  ["book-now.html", { active: "", mobileActions: false }],
+  ["book-now.html", { active: "", mobileActions: false, newsletter: false }],
 ]);
 
 const navigationPattern =
@@ -79,7 +80,7 @@ for (const [file, options] of pages) {
   html = html.replace(navigationPattern, navigation(options.active));
 
   if (!footerPattern.test(html)) throw new Error(`${file}: shared footer region not found`);
-  html = html.replace(footerPattern, `${newsletterBand()}\n\n  ${footer()}`);
+  html = html.replace(footerPattern, options.newsletter === false ? footer() : `${newsletterBand()}\n\n  ${footer()}`);
 
   if (options.mobileActions !== false) {
     if (!mobileActionsPattern.test(html)) throw new Error(`${file}: mobile actions region not found`);
