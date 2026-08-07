@@ -12,7 +12,7 @@ export const localBusiness = {
   url: `${SITE.origin}/`,
   telephone: SITE.phoneSchema,
   email: SITE.email,
-  image: `${SITE.assetOrigin}/assets/img/medspa/hero.jpg`,
+  image: `${SITE.assetOrigin}/assets/img/medspa/hero-20260807.jpg`,
   address: {
     "@type": "PostalAddress",
     streetAddress: SITE.address.street,

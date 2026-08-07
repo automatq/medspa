@@ -679,19 +679,31 @@ summary {
   position: relative;
   min-height: min(760px, calc(100svh - var(--header-height)));
   display: flex;
-  align-items: center;
+  /* Copy sits low-left, as it did on Anima's own hero, so it clears the
+     "ANIMA Medspa" sign painted on the wall in the upper middle of the frame. */
+  align-items: flex-end;
   overflow: hidden;
   isolation: isolate;
   color: var(--white);
 }
 
+/* Bottom-weighted rather than left-weighted. The previous scrim ramped from 84%
+   black on the left, which would have buried the wall sign — the one thing that
+   makes this photograph specific to this clinic. Darkness is now concentrated
+   under the copy and clears well before the sign. */
 .hero::before {
   position: absolute;
   z-index: -1;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(20, 14, 26, 0.84) 0%, rgba(20, 14, 26, 0.56) 42%, rgba(20, 14, 26, 0.08) 76%),
-    linear-gradient(0deg, rgba(20, 14, 26, 0.38), transparent 45%);
+    linear-gradient(
+      0deg,
+      rgba(20, 14, 26, 0.88) 0%,
+      rgba(20, 14, 26, 0.62) 26%,
+      rgba(20, 14, 26, 0.18) 52%,
+      rgba(20, 14, 26, 0) 72%
+    ),
+    linear-gradient(90deg, rgba(20, 14, 26, 0.5) 0%, rgba(20, 14, 26, 0.14) 46%, rgba(20, 14, 26, 0) 68%);
   content: "";
 }
 
@@ -702,13 +714,40 @@ summary {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 58% center;
+  /* Centred: the wall sign and the group are both mid-frame, and this photo is
+     only 1280px wide, so off-centre cropping would waste what detail there is. */
+  object-position: center 42%;
 }
 
 .hero-content {
   width: min(calc(100% - 48px), var(--content));
   margin-inline: auto;
-  padding-block: 72px;
+  padding-block: 72px 64px;
+}
+
+/* The homepage photograph carries the clinic's sign painted across the upper
+   middle of the frame. The display scale used elsewhere would run the headline
+   straight through it, so the hero copy is deliberately smaller and tighter
+   here — the sign reads as part of the composition rather than something the
+   type has to fight. */
+.page-home .hero .display-title {
+  max-width: 15ch;
+  font-size: clamp(2.4rem, 3.6vw, 3.7rem);
+  line-height: 1.04;
+}
+
+.page-home .hero .hero-copy {
+  max-width: 44ch;
+  margin-top: 18px;
+  font-size: clamp(1rem, 1.2vw, 1.08rem);
+}
+
+.page-home .hero .button-row {
+  margin-top: 26px;
+}
+
+.page-home .hero .hero-proof {
+  margin-top: 24px;
 }
 
 .hero .eyebrow {
@@ -2341,6 +2380,7 @@ body.page-lp .mobile-actions {
     padding-bottom: 0;
   }
 
+
   .shell,
   .narrow,
   .hero-content,
@@ -2531,6 +2571,16 @@ body.page-lp .mobile-actions {
 }
 
 @media (max-width: 560px) {
+  /* At phone ratios `cover` scales the 16:9 hero to height, leaving roughly a
+     quarter of its width visible — and dead centre is exactly where the painted
+     wall sign sits, which ran the headline straight through the word "Medspa".
+     The sign spans about 27-62% across the frame, so the focal point moves past
+     it to the group of clients on the right. Tablet and desktop keep the sign;
+     there is room for both there. */
+  .page-home .hero-media {
+    object-position: 86% center;
+  }
+
   .section {
     padding-block: 72px;
   }
