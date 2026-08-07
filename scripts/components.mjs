@@ -216,13 +216,28 @@ export const reviewWall = (reviews, source) => `<div class="review-wall" data-re
         </div>
         <p class="review-disclaimer">${escapeHtml(source.disclaimer)}</p>`;
 
+/**
+ * Wraps a portrait in a link to its full-size file. Without JavaScript the link
+ * opens the photograph on its own — a real expand, not a dead control. The
+ * lightbox in medspa.js intercepts the click when it can do better.
+ */
+const expandablePortrait = (member, portrait, extraClass = "") =>
+  `<a class="portrait-zoom${extraClass ? ` ${extraClass}` : ""}" href="${member.imageBase}-1280.webp"
+              data-lightbox data-lightbox-caption="${escapeHtml(`${member.name}, ${member.role}`)}"
+              aria-label="${escapeHtml(`Expand the photograph of ${member.name}`)}">${portrait}<span class="portrait-zoom-badge" aria-hidden="true">
+              <svg viewBox="0 0 16 16"><path d="M6 2H2v4M10 14h4v-4M14 6V2h-4M2 10v4h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span></a>`;
+
 /** Team card for the about page. Members without a photo get an initials monogram. */
 export const teamCard = (member) => {
   const hasPhoto = Boolean(member.sourceImage) || member.imageBase.startsWith("/assets/img/services/");
   const portrait = hasPhoto
-    ? `<img class="team-portrait" src="${member.imageBase}-640.webp" alt="${escapeHtml(
-        member.alt
-      )}" width="74" height="74" loading="lazy">`
+    ? expandablePortrait(
+        member,
+        `<img class="team-portrait" src="${member.imageBase}-640.webp" alt="${escapeHtml(
+          member.alt
+        )}" width="74" height="74" loading="lazy">`
+      )
     : `<p class="profile-monogram" aria-hidden="true">${escapeHtml(member.initials)}</p>`;
 
   return `<article class="team-card" data-reveal>
@@ -339,10 +354,14 @@ export const teamSection = (team) => {
   const [founder, ...rest] = [...team].sort((a, b) => a.order - b.order);
   return `
         <div class="shell service-provider-grid">
-          <picture class="provider-portrait image-reveal">
-            <source media="(max-width: 700px)" srcset="${founder.imageBase}-640.webp">
-            <img src="${founder.imageBase}-1280.webp" alt="${escapeHtml(founder.alt)}" width="800" height="718" loading="lazy">
-          </picture>
+          ${expandablePortrait(
+            founder,
+            `<picture class="provider-portrait image-reveal">
+              <source media="(max-width: 700px)" srcset="${founder.imageBase}-640.webp">
+              <img src="${founder.imageBase}-1280.webp" alt="${escapeHtml(founder.alt)}" width="800" height="718" loading="lazy">
+            </picture>`,
+            "provider-portrait-zoom"
+          )}
           <div data-reveal>
             <p class="eyebrow">Founder</p>
             <h2 class="section-title" id="team-title">${escapeHtml(founder.name)}, <span class="serif">${escapeHtml(

@@ -41,8 +41,10 @@ export const team = [
       "He has served as an assistant professor and has published in peer-reviewed journals.",
       "His work at Anima is described as non-surgical aesthetic procedures, including Botox, dermal fillers, and mesotherapy.",
     ],
-    // No upstream photograph exists for this member. `sourceImage` stays null so
-    // the UI falls back to an initials monogram rather than a stock stand-in.
+    // Anima published this portrait in February 2026, after the first pass of
+    // this file recorded him as having no upstream photograph. The upstream
+    // original is only 620px wide, so the 1280 derivative is capped at that.
+    sourceImage: "https://animamedspa.com/wp-content/uploads/2026/02/Screenshot-2026-02-18-234118.png",
     scopeNote:
       "The credentials shown here were earned in Iran. Regulated-professional titles, current licensure, and scope of practice in Ontario are confirmed at consultation.",
     order: 2,

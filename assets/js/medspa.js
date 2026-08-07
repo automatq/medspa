@@ -382,9 +382,87 @@
     });
   };
 
+  /**
+   * Portrait lightbox for the team section.
+   *
+   * Every trigger is a plain link to the full-size image file, so expanding a
+   * portrait already works with this script blocked — it just navigates to the
+   * photograph. Here we upgrade that to an overlay that keeps the visitor on
+   * the page. The overlay is constructed on the first open, so the pages that
+   * carry no portraits never build one.
+   */
+  const startPortraitLightbox = () => {
+    const triggers = [...document.querySelectorAll("a[data-lightbox]")];
+    if (!triggers.length) return;
+
+    let overlay;
+    let closeButton;
+    let image;
+    let caption;
+    let lastFocused;
+
+    const close = () => {
+      if (!overlay?.classList.contains("is-open")) return;
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("lightbox-open");
+      lastFocused?.focus();
+    };
+
+    const build = () => {
+      overlay = document.createElement("div");
+      overlay.className = "lightbox";
+      overlay.setAttribute("role", "dialog");
+      overlay.setAttribute("aria-modal", "true");
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.innerHTML =
+        '<button class="lightbox-close" type="button" aria-label="Close photograph">' +
+        '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
+        "</button>" +
+        '<figure class="lightbox-figure"><img alt=""><figcaption></figcaption></figure>';
+      document.body.append(overlay);
+      closeButton = overlay.querySelector(".lightbox-close");
+      image = overlay.querySelector("img");
+      caption = overlay.querySelector("figcaption");
+
+      overlay.addEventListener("click", (event) => {
+        if (event.target === overlay || event.target.closest(".lightbox-close")) close();
+      });
+
+      // Nothing behind the overlay should be reachable, and the close button is
+      // its only focusable control, so Tab simply stays put.
+      overlay.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") close();
+        if (event.key !== "Tab") return;
+        event.preventDefault();
+        closeButton.focus();
+      });
+    };
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", (event) => {
+        // A modified click is a request for a new tab or a download. Honour it.
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        if (!overlay) build();
+
+        lastFocused = trigger;
+        image.src = trigger.href;
+        image.alt = trigger.querySelector("img")?.alt || "";
+        caption.textContent = trigger.dataset.lightboxCaption || "";
+        overlay.setAttribute("aria-label", caption.textContent || "Photograph");
+        overlay.removeAttribute("aria-hidden");
+        overlay.classList.add("is-open");
+        document.body.classList.add("lightbox-open");
+        closeButton.focus();
+      });
+    });
+  };
+
   startIntro();
   startMotion();
   startParallax();
   startMagneticButtons();
   startMailtoForms();
+  startPortraitLightbox();
 })();

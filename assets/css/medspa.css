@@ -114,8 +114,13 @@ a {
   text-underline-offset: 0.2em;
 }
 
-a:hover {
-  color: var(--plum-dark);
+/* One hover colour across the site. --plum reads as lilac and clears AA on the
+   light surfaces (4.54:1 on --paper-light); the deep --plum-dark it replaced
+   barely shifted from the base ink. Buttons are excluded because each variant
+   sets its own hover pair. Dark surfaces are handled further down — this mid
+   lilac would not carry enough contrast on them. */
+a:not(.button):hover {
+  color: var(--plum);
 }
 
 a:visited {
@@ -405,6 +410,9 @@ summary {
   font-size: 0.93rem;
   font-weight: 600;
   text-decoration: none;
+  /* "Glow Plan" is the only two-word item and was wrapping onto two lines,
+     which made the whole bar taller than the others. */
+  white-space: nowrap;
 }
 
 .nav-link::after,
@@ -450,6 +458,23 @@ summary {
   width: 14px;
   height: 14px;
   transition: transform 160ms ease-out;
+}
+
+/* The header controls pick up the same lilac as the links they sit beside, so
+   hovering anywhere along the bar behaves consistently. */
+.nav-dropdown-toggle,
+.menu-toggle {
+  transition: color 160ms ease-out, border-color 160ms ease-out;
+}
+
+.nav-dropdown-toggle:hover,
+.nav-dropdown:hover .nav-dropdown-toggle,
+.menu-toggle:hover {
+  color: var(--plum);
+}
+
+.menu-toggle:hover {
+  border-color: var(--plum);
 }
 
 .nav-dropdown[data-open="true"] .nav-dropdown-toggle svg {
@@ -511,7 +536,7 @@ summary {
 
 .mega-menu-group a:hover,
 .mobile-menu-group > a:active {
-  color: var(--plum-dark);
+  color: var(--plum);
   text-decoration: underline;
 }
 
@@ -1599,7 +1624,7 @@ wl-appointments-widget {
 }
 
 .footer-column a:hover {
-  color: var(--plum-dark);
+  color: var(--plum);
   transform: translateX(3px);
 }
 
@@ -1761,9 +1786,16 @@ wl-appointments-widget {
   text-decoration: none;
 }
 
+/* Dark surfaces take the pale lilac instead. --plum is a mid tone and would sit
+   at roughly 2.5:1 against --ink or --plum-dark; --plum-soft clears AA there. */
+.section-dark a:not(.button):hover,
+.cta-panel a:not(.button):hover,
+.newsletter-band a:not(.button):hover,
+.footer-bottom a:not(.button):hover,
 .footer-legal a:hover,
-.footer-social a:hover {
-  color: var(--white);
+.footer-social a:hover,
+.hero a:not(.button):hover {
+  color: var(--plum-soft);
 }
 
 .mobile-actions {
@@ -1864,6 +1896,174 @@ wl-appointments-widget {
   height: 74px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+/* Portraits open full size. The wrapper is a real link to the image file, so it
+   still works with JavaScript off; the badge is the affordance that says so. */
+.portrait-zoom {
+  position: relative;
+  display: block;
+  width: max-content;
+  border-radius: 50%;
+  color: inherit;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.portrait-zoom .team-portrait {
+  display: block;
+  transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+.portrait-zoom:hover .team-portrait,
+.portrait-zoom:focus-visible .team-portrait {
+  transform: scale(1.04);
+  box-shadow: 0 10px 26px rgba(12, 8, 16, 0.4);
+}
+
+.portrait-zoom-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-light);
+  background: var(--ink);
+  color: var(--white);
+  opacity: 0.85;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.portrait-zoom-badge svg {
+  width: 13px;
+  height: 13px;
+}
+
+.portrait-zoom:hover .portrait-zoom-badge,
+.portrait-zoom:focus-visible .portrait-zoom-badge {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* The founder portrait is a full-height shaped image, so its wrapper has to
+   behave like the <picture> it replaced in the grid. */
+.provider-portrait-zoom {
+  width: auto;
+  border-radius: 180px 18px 180px 18px;
+}
+
+.provider-portrait-zoom .portrait-zoom-badge {
+  right: 18px;
+  bottom: 18px;
+  width: 44px;
+  height: 44px;
+}
+
+.provider-portrait-zoom .portrait-zoom-badge svg {
+  width: 18px;
+  height: 18px;
+}
+
+.provider-portrait-zoom .provider-portrait {
+  transition: transform 420ms ease;
+}
+
+.provider-portrait-zoom:hover .provider-portrait img {
+  transform: scale(1.03);
+}
+
+.provider-portrait-zoom .provider-portrait img {
+  transition: transform 520ms ease;
+}
+
+/* Lightbox. Built once on first open and reused, so pages that never expand a
+   portrait pay nothing for it. */
+.lightbox {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 48px);
+  border: 0;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(14, 9, 18, 0.9);
+  backdrop-filter: blur(10px);
+  transition: opacity 240ms ease, visibility 0s linear 240ms;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 240ms ease, visibility 0s;
+}
+
+.lightbox-figure {
+  margin: 0;
+  max-width: min(100%, 860px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transform: scale(0.97);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lightbox.is-open .lightbox-figure {
+  transform: scale(1);
+}
+
+.lightbox-figure img {
+  max-width: 100%;
+  max-height: min(78svh, 900px);
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  object-fit: contain;
+}
+
+.lightbox-figure figcaption {
+  color: var(--white);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: clamp(12px, 3vw, 28px);
+  right: clamp(12px, 3vw, 28px);
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(253, 251, 253, 0.28);
+  border-radius: 50%;
+  background: rgba(253, 251, 253, 0.1);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(253, 251, 253, 0.22);
+  transform: rotate(90deg);
+}
+
+.lightbox-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+body.lightbox-open {
+  overflow: hidden;
 }
 
 .team-card h3 {
@@ -3133,8 +3333,12 @@ body.page-lp .mobile-actions {
   gap: clamp(50px, 9vw, 130px);
 }
 
+/* `display: block` is load-bearing: <picture> is inline by default, and inside
+   the expand link it is no longer a grid item getting blockified for free — an
+   inline box ignores min-height and collapses around the absolute image. */
 .provider-portrait {
   position: relative;
+  display: block;
   min-height: 540px;
   overflow: hidden;
   border-radius: 180px 18px 180px 18px;
