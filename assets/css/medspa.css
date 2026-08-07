@@ -485,20 +485,23 @@ summary {
   transition-delay: 0s;
 }
 
-.mega-menu-grid {
+.mega-menu-grid,
+.mobile-menu-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px 36px;
 }
 
-.mega-menu-group h2 {
+.mega-menu-group h2,
+.mobile-menu-group h2 {
   margin: 0 0 8px;
   font-family: var(--font-serif);
   font-size: 1.2rem;
   font-weight: 400;
 }
 
-.mega-menu-group a {
+.mega-menu-group a,
+.mobile-menu-group > a {
   display: block;
   padding-block: 5px;
   color: var(--ink-soft);
@@ -506,12 +509,14 @@ summary {
   text-decoration: none;
 }
 
-.mega-menu-group a:hover {
+.mega-menu-group a:hover,
+.mobile-menu-group > a:active {
   color: var(--plum-dark);
   text-decoration: underline;
 }
 
-.mega-menu-footer {
+.mega-menu-footer,
+.mobile-menu-footer {
   margin-top: 22px;
   padding-top: 18px;
   border-top: 1px solid var(--line);
@@ -521,7 +526,8 @@ summary {
   gap: 16px;
 }
 
-.mega-menu-footer p {
+.mega-menu-footer p,
+.mobile-menu-footer p {
   max-width: 430px;
   margin: 0;
   color: var(--ink-soft);
@@ -610,6 +616,9 @@ summary {
   z-index: 999;
   inset: var(--header-height) 0 0;
   overflow-y: auto;
+  /* Without this, overscrolling the menu chains to the body behind it — which
+     is scroll-locked, so the page appears stuck. */
+  overscroll-behavior: contain;
   padding: 28px 24px 120px;
   background: var(--paper-light);
   opacity: 0;
@@ -641,25 +650,18 @@ summary {
   text-decoration: none;
 }
 
+/* Desktop marks the current page with a plum underline; match it here rather
+   than relying on a colour shift alone. */
 .mobile-menu-links > a[aria-current="page"] {
   color: var(--plum-dark);
+  box-shadow: inset 0 -2px 0 var(--plum);
 }
 
-.mobile-menu-services {
-  margin-top: 28px;
-}
-
-.mobile-menu-services p {
-  margin: 0 0 12px;
-  color: var(--ink-soft);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.mobile-menu-services a {
-  min-height: 44px;
+/* Scoped to the group's own children, not every descendant: the directory card
+   now contains the intro link and the footer buttons too, and a bottom border
+   through a button looks broken. Sizing lives with the other mobile overrides
+   further down, beside the mega-menu rules it extends. */
+.mobile-menu-group > a {
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--line);
@@ -668,7 +670,6 @@ summary {
 }
 
 .mobile-menu-contact {
-  margin-top: 30px;
   display: grid;
   gap: 12px;
 }
@@ -1034,6 +1035,17 @@ summary {
   font-family: var(--font-serif);
   font-size: 2.3rem;
   font-style: italic;
+}
+
+/* Photographic stand-in for the monogram, same footprint. Framed from the top
+   so a portrait crops to the face rather than the centre of the frame. */
+.profile-photo {
+  display: block;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
 }
 
 .profile-card h3 {
@@ -2643,7 +2655,8 @@ body.page-lp .mobile-actions {
   overscroll-behavior: contain;
 }
 
-.mega-menu-intro {
+.mega-menu-intro,
+.mobile-menu-intro {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2653,19 +2666,24 @@ body.page-lp .mobile-actions {
   border-bottom: 1px solid var(--line);
 }
 
-.mega-menu-intro .eyebrow {
+.mega-menu-intro .eyebrow,
+.mobile-menu-intro .eyebrow {
   margin: 0;
   font-size: 0.68rem;
 }
 
-.mega-menu-intro > a {
+.mega-menu-intro > a,
+.mobile-menu-intro > a {
   font-size: 0.86rem;
   font-weight: 700;
   text-decoration: none;
 }
 
-.mega-menu-grid {
-  /* auto-fit rather than a fixed count — see .category-index. */
+.mega-menu-grid,
+.mobile-menu-grid {
+  /* auto-fit rather than a fixed count — see .category-index. This is also what
+     makes the mobile card responsive: one column on a phone, two to four on a
+     tablet still under the 1100px breakpoint. */
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 22px;
 }
@@ -2677,7 +2695,8 @@ body.page-lp .mobile-actions {
   line-height: 1.15;
 }
 
-.mega-menu-group a {
+.mega-menu-group a,
+.mobile-menu-group > a {
   position: relative;
   padding: 4px 0 4px 12px;
   font-size: 0.79rem;
@@ -2687,7 +2706,8 @@ body.page-lp .mobile-actions {
     transform 180ms ease-out;
 }
 
-.mega-menu-group a::before {
+.mega-menu-group a::before,
+.mobile-menu-group > a::before {
   position: absolute;
   top: 0.78em;
   left: 0;
@@ -2699,65 +2719,57 @@ body.page-lp .mobile-actions {
   opacity: 0.55;
 }
 
-.mega-menu-group a:hover {
+.mega-menu-group a:hover,
+.mobile-menu-group > a:active {
   transform: translateX(3px);
 }
 
-.mobile-category {
-  border-bottom: 1px solid var(--line);
+/* Mobile treatment directory.
+   Below 1100px the desktop mega-menu is hidden, so this card carries the same
+   job: same tokens, same serif column headers, same plum bullets. The rules it
+   shares with .mega-menu-* are extended in place above rather than duplicated
+   here, so a change to one menu reaches both. */
+.mobile-menu-services {
+  margin-top: 28px;
+  padding: 22px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-pale);
+  box-shadow: var(--shadow);
 }
 
-.mobile-category summary {
-  min-height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  list-style: none;
-  font-weight: 600;
+/* Bigger type and taller rows than desktop — these are thumb targets, and the
+   card has the full viewport width to spend. */
+.mobile-menu-group h2 {
+  min-height: auto;
+  margin-bottom: 6px;
+  font-size: 1.15rem;
 }
 
-.mobile-category summary::-webkit-details-marker {
-  display: none;
-}
-
-.mobile-category summary span {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-}
-
-.mobile-category summary span::before,
-.mobile-category summary span::after {
-  position: absolute;
-  top: 8px;
-  left: 2px;
-  width: 14px;
-  height: 2px;
-  background: currentColor;
-  content: "";
-  transition: transform 220ms cubic-bezier(.22, 1, .36, 1);
-}
-
-.mobile-category summary span::after {
-  transform: rotate(90deg);
-}
-
-.mobile-category[open] summary span::after {
-  transform: rotate(0);
-}
-
-.mobile-category-links {
-  display: grid;
-  padding: 0 0 14px 16px;
-}
-
-.mobile-category-links a {
+.mobile-menu-group > a {
   min-height: 42px;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.92rem;
+  padding: 4px 0 4px 14px;
+  font-size: 0.95rem;
+}
+
+/* The desktop bullet is pinned to the first line's cap height; these rows are
+   centred flex items, so centre the bullet with them. */
+.mobile-menu-group > a::before {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Last link in a column keeps the card's own edge, not a stray rule. */
+.mobile-menu-group > a:last-child {
+  border-bottom: 0;
+}
+
+.mobile-menu-footer {
+  flex-wrap: wrap;
+}
+
+.mobile-menu-contact {
+  width: 100%;
 }
 
 /* Premium individual service pages */
@@ -3609,8 +3621,8 @@ body.page-lp .mobile-actions {
   transform: translateY(0);
   opacity: 1;
   transition:
-    transform 0.95s cubic-bezier(0.76, 0, 0.24, 1),
-    opacity 0.8s ease 0.1s;
+    transform 0.55s cubic-bezier(0.76, 0, 0.24, 1),
+    opacity 0.45s ease 0.05s;
   will-change: transform, opacity;
 }
 .intro-skip .intro { display: none; }
@@ -3632,7 +3644,7 @@ body.intro-lock { overflow: hidden; }
   opacity: 0;
   transform: scale(0.82);
   filter: blur(10px);
-  animation: introBrandIn 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
+  animation: introBrandIn 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.03s forwards;
 }
 
 .intro-logo::before,
@@ -3649,7 +3661,7 @@ body.intro-lock { overflow: hidden; }
   background: radial-gradient(circle, rgba(211, 188, 220, 0.24), transparent 68%);
   opacity: 0;
   transform: scale(0.8);
-  animation: introBrandHalo 1.5s ease 0.45s forwards;
+  animation: introBrandHalo 0.8s ease 0.2s forwards;
 }
 
 .intro-logo::after {
@@ -3658,7 +3670,7 @@ body.intro-lock { overflow: hidden; }
   border: 1px solid rgba(253, 251, 253, 0.35);
   opacity: 0;
   transform: scale(0.92);
-  animation: introBrandRing 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
+  animation: introBrandRing 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.32s forwards;
 }
 
 .intro-brandmark {
@@ -3670,7 +3682,7 @@ body.intro-lock { overflow: hidden; }
   object-position: center;
   clip-path: circle(0% at 50% 50%);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
-  animation: introBrandReveal 1.25s cubic-bezier(0.22, 1, 0.36, 1) 0.22s forwards;
+  animation: introBrandReveal 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.08s forwards;
 }
 
 @keyframes introBrandIn {

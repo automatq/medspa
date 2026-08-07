@@ -15,7 +15,11 @@ export const SITE = {
   phoneSchema: "+1-437-770-9296",
   email: "animamedspa@gmail.com",
   bookHref: "/book-now.html",
-  logo: "/assets/img/medspa/anima-logo-20260729.jpg",
+  // Header/footer render the mark at 74-92px, so ship a right-sized crop
+  // (~8KB) instead of the 1024px master (~71KB) on every page. The full-size
+  // file is still used by the homepage intro overlay, where it fills ~390px.
+  logo: "/assets/img/medspa/anima-logo-200.jpg",
+  logoFull: "/assets/img/medspa/anima-logo-20260729.jpg",
   icon: "/assets/img/medspa/anima-logo-icon-20260729.png",
   mapsUrl: "https://maps.google.com/?q=2885+Lakeshore+Blvd+West+Etobicoke+ON+M8V+1J1",
   freshaUrl: "https://www.fresha.com/store/anima-medspa-store-sqkfn0xx?share=true&pId=2700299",
@@ -55,16 +59,19 @@ export const navigation = (active = "") => {
     })
     .join("");
 
+  // Deliberately the same shape as megaGroups above: below 1100px the directory
+  // renders as a card that mirrors the desktop mega-menu, so both share styling
+  // rather than maintaining two visual languages for the same content.
   const mobileGroups = categories
-    .map((category, index) => {
+    .map((category) => {
       const links = services
         .filter((item) => item.category === category.id)
-        .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)} <span aria-hidden="true">↗</span></a>`)
+        .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)}</a>`)
         .join("");
-      return `<details class="mobile-category"${index === 0 ? " open" : ""}>
-              <summary>${escapeHtml(category.shortLabel)} <span aria-hidden="true"></span></summary>
-              <div class="mobile-category-links">${links}</div>
-            </details>`;
+      return `<div class="mobile-menu-group">
+                <h2>${escapeHtml(category.shortLabel)}</h2>
+                ${links}
+              </div>`;
     })
     .join("");
 
@@ -97,7 +104,7 @@ export const navigation = (active = "") => {
       </nav>
 
       <a class="site-logo" href="/index.html" aria-label="Anima Med Spa home">
-        <img src="/assets/img/medspa/anima-logo-20260729.jpg" alt="Anima Med Spa">
+        <img src="${SITE.logo}" width="200" height="200" alt="Anima Med Spa" fetchpriority="high">
       </a>
 
       <div class="header-actions">
@@ -121,12 +128,18 @@ export const navigation = (active = "") => {
       <a href="/contact-us-light.html"${current(active, "contact")}>Contact <span aria-hidden="true">↗</span></a>
     </div>
     <div class="mobile-menu-services">
-      <p>All treatments</p>
-      ${mobileGroups}
-    </div>
-    <div class="mobile-menu-contact">
-      <a class="button button-primary" href="/book-now.html">Book a visit</a>
-      <a class="button button-outline" href="tel:+14377709296">Call 437-770-9296</a>
+      <div class="mobile-menu-intro">
+        <p class="eyebrow">Complete treatment directory</p>
+        <a href="/service-light.html">View all ${services.length} treatments <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="mobile-menu-grid">${mobileGroups}</div>
+      <div class="mobile-menu-footer">
+        <p>Not sure where to begin? A complimentary consultation can help you compare fit, downtime, and current pricing.</p>
+        <div class="mobile-menu-contact">
+          <a class="button button-plum" href="${SITE.bookHref}">Book now <span class="button-arrow" aria-hidden="true">↗</span></a>
+          <a class="button button-outline" href="${SITE.phoneHref}">Call ${SITE.phoneDisplay}</a>
+        </div>
+      </div>
     </div>
   </nav>`;
 };

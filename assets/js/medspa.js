@@ -79,9 +79,12 @@
       document.body.classList.remove("intro-lock");
       const remove = () => intro.remove();
       intro.addEventListener("transitionend", remove, { once: true });
-      window.setTimeout(remove, 1100);
+      window.setTimeout(remove, 700);
     };
-    const holdTimer = window.setTimeout(finish, 2400);
+    // The brandmark choreography finishes around 1s; hold just long enough to
+    // let it land, then lift. Kept short so the site is reachable fast on slow
+    // connections rather than sitting behind the overlay.
+    const holdTimer = window.setTimeout(finish, 1150);
     intro.addEventListener("click", finish);
     window.addEventListener(
       "keydown",

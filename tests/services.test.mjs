@@ -107,11 +107,16 @@ test("responsive service imagery exists for every record", async () => {
 
 test("the supplied Anima logo is used consistently across every page", async () => {
   await access(join(root, "assets/img/medspa/anima-logo-20260729.jpg"));
+  await access(join(root, "assets/img/medspa/anima-logo-200.jpg"));
   await access(join(root, "assets/img/medspa/anima-logo-icon-20260729.png"));
 
   for (const [file, html] of htmlByFile) {
+    // Header and footer render the mark at 74-92px and so use the right-sized
+    // crop; the 1024px master is reserved for the homepage intro overlay. Both
+    // are the supplied logo — what this guards is that no page falls back to
+    // the old placeholder SVG.
     assert.ok(
-      (html.match(/\/assets\/img\/medspa\/anima-logo-20260729\.jpg/g) || []).length >= 2,
+      (html.match(/\/assets\/img\/medspa\/anima-logo-(?:20260729|200)\.jpg/g) || []).length >= 2,
       `${file}: header and footer must use the supplied logo`
     );
     assert.match(
