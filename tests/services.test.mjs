@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import test from "node:test";
 import { gzipSync } from "node:zlib";
-import { categoryById, services, UNKNOWN } from "../data/services.mjs";
+import { categories, categoryById, services, UNKNOWN } from "../data/services.mjs";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
 const rootPages = [
@@ -16,31 +16,37 @@ const rootPages = [
   "book-now.html",
 ];
 const servicePages = services.map((item) => `services/${item.slug}/index.html`);
-const allPages = [...rootPages, ...servicePages];
+// Generated pages that carry full site chrome but aren't service detail pages.
+const standalonePages = ["glow-plan/index.html"];
+const allPages = [...rootPages, ...servicePages, ...standalonePages];
 const htmlByFile = new Map(
   await Promise.all(allPages.map(async (file) => [file, await readFile(join(root, file), "utf8")]))
 );
 
+// Derived from `categories`, not a hardcoded list — otherwise a newly added
+// category silently escapes the split assertion below.
 const categoryCounts = Object.fromEntries(
-  ["injectables", "skin", "laser", "wellness", "beauty"].map((category) => [
-    category,
-    services.filter((item) => item.category === category).length,
-  ])
+  categories.map((category) => [category.id, services.filter((item) => item.category === category.id).length])
 );
 
-test("catalog contains exactly 25 unique services in the approved category split", () => {
-  assert.equal(services.length, 25);
+test("catalog contains exactly 29 unique services in the approved category split", () => {
+  assert.equal(services.length, 29);
   assert.deepEqual(categoryCounts, {
     injectables: 8,
     skin: 7,
     laser: 4,
     wellness: 3,
-    beauty: 3,
+    beauty: 2,
+    "permanent-makeup": 5,
   });
-  assert.equal(new Set(services.map((item) => item.slug)).size, 25);
-  assert.equal(new Set(services.map((item) => item.legacyUrl)).size, 25);
-  assert.equal(new Set(services.map((item) => item.seoTitle)).size, 25);
-  assert.equal(new Set(services.map((item) => item.metaDescription)).size, 25);
+  assert.equal(
+    Object.values(categoryCounts).reduce((total, count) => total + count, 0),
+    services.length,
+    "every service must belong to a declared category"
+  );
+  for (const key of ["slug", "legacyUrl", "seoTitle", "metaDescription"]) {
+    assert.equal(new Set(services.map((item) => item[key])).size, services.length, `${key} must be unique`);
+  }
 });
 
 test("every service has complete cautious content and valid relationships", () => {
@@ -99,6 +105,27 @@ test("responsive service imagery exists for every record", async () => {
   }
 });
 
+test("the supplied Anima logo is used consistently across every page", async () => {
+  await access(join(root, "assets/img/medspa/anima-logo-20260729.jpg"));
+  await access(join(root, "assets/img/medspa/anima-logo-icon-20260729.png"));
+
+  for (const [file, html] of htmlByFile) {
+    assert.ok(
+      (html.match(/\/assets\/img\/medspa\/anima-logo-20260729\.jpg/g) || []).length >= 2,
+      `${file}: header and footer must use the supplied logo`
+    );
+    assert.match(
+      html,
+      /<link rel="icon" href="\/assets\/img\/medspa\/anima-logo-icon-20260729\.png" type="image\/png">/
+    );
+    assert.doesNotMatch(html, /\/assets\/img\/medspa\/logo(?:-white)?\.svg/);
+  }
+
+  const homepage = htmlByFile.get("index.html");
+  assert.match(homepage, /class="intro-brandmark" src="\/assets\/img\/medspa\/anima-logo-20260729\.jpg"/);
+  assert.doesNotMatch(homepage, /class="intro-emblem"/);
+});
+
 test("every generated page has unique metadata, one H1, exact canonical, and valid JSON-LD", () => {
   const titles = [];
   const descriptions = [];
@@ -125,8 +152,8 @@ test("every generated page has unique metadata, one H1, exact canonical, and val
     }
   }
 
-  assert.equal(new Set(titles).size, 25);
-  assert.equal(new Set(descriptions).size, 25);
+  assert.equal(new Set(titles).size, services.length);
+  assert.equal(new Set(descriptions).size, services.length);
 });
 
 test("all local links and images resolve, including page fragments", async () => {
@@ -220,7 +247,10 @@ test("Vercel redirects preserve every current WordPress slug", async () => {
   const changedLegacyPaths = services.filter(
     (item) => new URL(item.legacyUrl).pathname !== `/services/${item.slug}/`
   );
-  assert.equal(config.redirects.length, changedLegacyPaths.length);
+  const serviceRedirects = config.redirects.filter((redirect) => redirect.destination.startsWith("/services/"));
+  assert.equal(serviceRedirects.length, changedLegacyPaths.length);
+  // Non-service legacy URLs (blog posts, profile pages, campaign wrappers) live
+  // in data/redirects.mjs and are asserted in tests/routes.test.mjs.
   for (const item of services) {
     const source = new URL(item.legacyUrl).pathname;
     const destination = `/services/${item.slug}/`;
@@ -290,10 +320,21 @@ test("motion is progressive, dependency-free, reduced-motion safe, and below bud
     "the longest unbroken treatment name must fit narrow mobile viewports"
   );
 
+  const stylesheetVersion = homepage.match(/\/assets\/css\/medspa\.css\?v=([^"]+)/)?.[1];
+  const scriptVersion = homepage.match(/\/assets\/js\/medspa\.js\?v=([^"]+)/)?.[1];
+  assert.ok(stylesheetVersion, "homepage stylesheet needs a cache-busting version");
+  assert.equal(scriptVersion, stylesheetVersion, "CSS and JavaScript cache versions must match");
+
   for (const file of allPages) {
     const html = htmlByFile.get(file);
-    assert.match(html, /\/assets\/css\/medspa\.css\?v=20260728-motion/);
-    assert.match(html, /\/assets\/js\/medspa\.js\?v=20260728-motion/);
+    assert.ok(
+      html.includes(`/assets/css/medspa.css?v=${stylesheetVersion}`),
+      `${file}: stylesheet cache version must match the homepage`
+    );
+    assert.ok(
+      html.includes(`/assets/js/medspa.js?v=${stylesheetVersion}`),
+      `${file}: script cache version must match the homepage`
+    );
   }
 
   for (const file of servicePages) {

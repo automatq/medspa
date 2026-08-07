@@ -1,6 +1,33 @@
 import { categories, services } from "../data/services.mjs";
 
-export const assetVersion = "20260729-titlefix";
+// Bump whenever assets/css or assets/js changes — /assets/* is served
+// immutable for a year, so a stale version ships unstyled sections.
+export const assetVersion = "20260729-parity";
+
+// Canonical URLs still point at the WordPress origin while the rebuild is staged;
+// absolute asset URLs (og:image, JSON-LD) resolve from the Vercel deployment.
+export const SITE = {
+  origin: "https://animamedspa.com",
+  assetOrigin: "https://anima-medspa.vercel.app",
+  name: "Anima Med Spa",
+  phoneDisplay: "437-770-9296",
+  phoneHref: "tel:+14377709296",
+  phoneSchema: "+1-437-770-9296",
+  email: "animamedspa@gmail.com",
+  bookHref: "/book-now.html",
+  logo: "/assets/img/medspa/anima-logo-20260729.jpg",
+  icon: "/assets/img/medspa/anima-logo-icon-20260729.png",
+  mapsUrl: "https://maps.google.com/?q=2885+Lakeshore+Blvd+West+Etobicoke+ON+M8V+1J1",
+  freshaUrl: "https://www.fresha.com/store/anima-medspa-store-sqkfn0xx?share=true&pId=2700299",
+  address: {
+    street: "2885 Lakeshore Blvd West",
+    locality: "Etobicoke",
+    region: "ON",
+    postalCode: "M8V 1J1",
+    country: "CA",
+  },
+  hours: "Mon–Sat, 10 AM–6 PM",
+};
 
 export const escapeHtml = (value = "") =>
   String(value)
@@ -53,7 +80,7 @@ export const navigation = (active = "") => {
           <div class="mega-menu" id="treatments-menu">
             <div class="mega-menu-intro">
               <p class="eyebrow">Complete treatment directory</p>
-              <a href="/service-light.html">View all 25 treatments <span aria-hidden="true">↗</span></a>
+              <a href="/service-light.html">View all ${services.length} treatments <span aria-hidden="true">↗</span></a>
             </div>
             <div class="mega-menu-grid">${megaGroups}</div>
             <div class="mega-menu-footer">
@@ -62,13 +89,15 @@ export const navigation = (active = "") => {
             </div>
           </div>
         </div>
+        <a class="nav-link" href="/glow-plan/"${current(active, "glow-plan")}>Glow Plan</a>
         <a class="nav-link" href="/about-us-light.html"${current(active, "about")}>About</a>
+        <a class="nav-link" href="/blog/"${current(active, "blog")}>Journal</a>
         <a class="nav-link" href="/faq-light.html"${current(active, "faq")}>FAQ</a>
         <a class="nav-link" href="/contact-us-light.html"${current(active, "contact")}>Contact</a>
       </nav>
 
       <a class="site-logo" href="/index.html" aria-label="Anima Med Spa home">
-        <img src="/assets/img/medspa/logo.svg" alt="Anima Med Spa">
+        <img src="/assets/img/medspa/anima-logo-20260729.jpg" alt="Anima Med Spa">
       </a>
 
       <div class="header-actions">
@@ -85,7 +114,9 @@ export const navigation = (active = "") => {
     <div class="mobile-menu-links">
       <a href="/index.html"${current(active, "home")}>Home <span aria-hidden="true">↗</span></a>
       <a href="/service-light.html"${current(active, "treatments")}>Treatments <span aria-hidden="true">↗</span></a>
+      <a href="/glow-plan/"${current(active, "glow-plan")}>Glow Plan <span aria-hidden="true">↗</span></a>
       <a href="/about-us-light.html"${current(active, "about")}>About <span aria-hidden="true">↗</span></a>
+      <a href="/blog/"${current(active, "blog")}>Journal <span aria-hidden="true">↗</span></a>
       <a href="/faq-light.html"${current(active, "faq")}>FAQ <span aria-hidden="true">↗</span></a>
       <a href="/contact-us-light.html"${current(active, "contact")}>Contact <span aria-hidden="true">↗</span></a>
     </div>
@@ -103,16 +134,19 @@ export const navigation = (active = "") => {
 export const footer = () => `<footer class="site-footer">
     <div class="shell footer-top">
       <div class="footer-brand">
-        <a href="/index.html" aria-label="Anima Med Spa home"><img src="/assets/img/medspa/logo-white.svg" alt="Anima Med Spa"></a>
+        <a href="/index.html" aria-label="Anima Med Spa home"><img src="/assets/img/medspa/anima-logo-20260729.jpg" alt="Anima Med Spa"></a>
         <p>Personalized medical aesthetics, skin, laser, wellness, and beauty treatments in Etobicoke’s Lakeshore Village.</p>
       </div>
       <div class="footer-column">
         <h2>Explore</h2>
         <a href="/service-light.html">All treatments</a>
+        <a href="/glow-plan/">Glow Plan</a>
         <a href="/service-details-light.html">Treatment guide</a>
         <a href="/about-us-light.html">About Anima</a>
+        <a href="/blog/">Journal</a>
         <a href="/faq-light.html">FAQ</a>
-        <a href="/book-now.html">Book now</a>
+        <a href="/contact-us-light.html">Contact</a>
+        <a href="/privacy/">Privacy</a>
       </div>
       <div class="footer-column">
         <h2>Visit</h2>
@@ -136,4 +170,3 @@ export const mobileActions = () => `<nav class="mobile-actions" aria-label="Quic
     <a href="tel:+14377709296">Call</a>
     <a href="/book-now.html">Book now</a>
   </nav>`;
-

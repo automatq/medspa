@@ -58,6 +58,42 @@
   const year = document.querySelector("[data-year]");
   if (year) year.textContent = new Date().getFullYear();
 
+  // Cinematic logo intro (homepage). The overlay + its CSS reveal are already
+  // on screen; here we lock scroll for its duration, let the viewer skip it,
+  // then lift it away. The once-per-session / reduced-motion gate lives in the
+  // inline <head> script (adds `intro-skip`); we just honour it.
+  const startIntro = () => {
+    const intro = document.querySelector("[data-intro]");
+    if (!intro) return;
+    if (document.documentElement.classList.contains("intro-skip")) {
+      intro.remove();
+      return;
+    }
+    document.body.classList.add("intro-lock");
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      window.clearTimeout(holdTimer);
+      intro.classList.add("is-leaving");
+      document.body.classList.remove("intro-lock");
+      const remove = () => intro.remove();
+      intro.addEventListener("transitionend", remove, { once: true });
+      window.setTimeout(remove, 1100);
+    };
+    const holdTimer = window.setTimeout(finish, 2400);
+    intro.addEventListener("click", finish);
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape" || event.key === "Enter" || event.key === " ") finish();
+      },
+      { once: true }
+    );
+    window.addEventListener("wheel", finish, { once: true, passive: true });
+    window.addEventListener("touchstart", finish, { once: true, passive: true });
+  };
+
   const markMotionTargets = () => {
     document
       .querySelectorAll(
@@ -279,7 +315,73 @@
     });
   });
 
+  /**
+   * Forms have no backend yet, so they compose a mailto: rather than pretend to
+   * send. The button already reads "Open email with my message", which stays
+   * true with JS, without JS, and after a real backend lands.
+   *
+   * The status line is deliberately conditional — there is no success we can
+   * honestly assert, so it reports what we did, not what happened. Fields are
+   * never cleared: if the mail client did not open, the text must still be there.
+   */
+  const startMailtoForms = () => {
+    document.querySelectorAll("form[data-mailto-form]").forEach((form) => {
+      const status = form.querySelector(".form-status");
+      const to = form.dataset.mailtoTo || "animamedspa@gmail.com";
+      const subject = form.dataset.mailtoSubject || "Website enquiry";
+
+      const mark = (field, message) => {
+        const input = field.querySelector("input, textarea");
+        const error = field.querySelector(".field-error");
+        if (!input) return;
+        input.setAttribute("aria-invalid", message ? "true" : "false");
+        if (error) {
+          if (message) error.textContent = message;
+          error.hidden = !message;
+        }
+      };
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        let firstInvalid = null;
+        form.querySelectorAll(".field").forEach((field) => {
+          const input = field.querySelector("input, textarea");
+          if (!input) return;
+          const valid = input.checkValidity();
+          mark(field, valid ? "" : input.validationMessage);
+          if (!valid && !firstInvalid) firstInvalid = input;
+        });
+
+        if (firstInvalid) {
+          firstInvalid.focus();
+          if (status) status.textContent = "Please correct the highlighted fields, then try again.";
+          return;
+        }
+
+        const lines = [];
+        form.querySelectorAll("input, textarea").forEach((input) => {
+          if (!input.name || !input.value.trim()) return;
+          const label = form.querySelector(`label[for="${input.id}"]`);
+          const name = (label ? label.textContent : input.name).replace(/\s*\*\s*$/, "").trim();
+          lines.push(`${name}: ${input.value.trim()}`);
+        });
+
+        if (status) {
+          status.textContent =
+            "Your email app should now open with this message ready to send. If nothing happened, email animamedspa@gmail.com or call 437-770-9296.";
+        }
+
+        window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+          lines.join("\r\n")
+        )}`;
+      });
+    });
+  };
+
+  startIntro();
   startMotion();
   startParallax();
   startMagneticButtons();
+  startMailtoForms();
 })();

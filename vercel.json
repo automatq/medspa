@@ -122,6 +122,126 @@
       "source": "/services/brow-lamination-in-etobicoke/",
       "destination": "/services/brow-lamination/",
       "permanent": true
+    },
+    {
+      "source": "/services/lip/",
+      "destination": "/services/lip-shading/",
+      "permanent": true
+    },
+    {
+      "source": "/reverse-the-summer-damage-your-skins-back-to-school-reset/",
+      "destination": "/blog/reverse-the-summer-damage/",
+      "permanent": true
+    },
+    {
+      "source": "/ask-your-esthetician-whats-actually-worth-booking-this-july/",
+      "destination": "/blog/worth-booking-this-july/",
+      "permanent": true
+    },
+    {
+      "source": "/why-your-skin-works-harder-in-summer-and-what-men-can-do-about-it/",
+      "destination": "/blog/summer-skin-for-men/",
+      "permanent": true
+    },
+    {
+      "source": "/april-it-is-always-facial-weather/",
+      "destination": "/blog/always-facial-weather/",
+      "permanent": true
+    },
+    {
+      "source": "/what-is-a-hollywood-carbon-laser-peel-why-is-everyone-talking-about-it/",
+      "destination": "/blog/hollywood-carbon-laser-peel/",
+      "permanent": true
+    },
+    {
+      "source": "/body-image-and-confidence-caring-for-your-skin-and-body/",
+      "destination": "/blog/body-image-and-confidence/",
+      "permanent": true
+    },
+    {
+      "source": "/blog-old/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/category/tips-tricks/",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/cmsms_profile/",
+      "destination": "/about-us-light/#team",
+      "permanent": true
+    },
+    {
+      "source": "/cmsms_profile/sally-tabibi/",
+      "destination": "/about-us-light/#team",
+      "permanent": true
+    },
+    {
+      "source": "/cmsms_profile/peggy-chen/",
+      "destination": "/about-us-light/#team",
+      "permanent": true
+    },
+    {
+      "source": "/book-body-contouring/",
+      "destination": "/body-contouring/#book",
+      "permanent": true
+    },
+    {
+      "source": "/book-intimate-brightening/",
+      "destination": "/intimate-brightening/#book",
+      "permanent": true
+    },
+    {
+      "source": "/about-us/",
+      "destination": "/about-us-light/",
+      "permanent": true
+    },
+    {
+      "source": "/contact/",
+      "destination": "/contact-us-light/",
+      "permanent": true
+    },
+    {
+      "source": "/contacts/",
+      "destination": "/contact-us-light/",
+      "permanent": true
+    },
+    {
+      "source": "/services/",
+      "destination": "/service-light/",
+      "permanent": true
+    },
+    {
+      "source": "/appointment/",
+      "destination": "/book-now/",
+      "permanent": true
+    },
+    {
+      "source": "/shop/",
+      "destination": "/service-light/",
+      "permanent": true
+    },
+    {
+      "source": "/author-page/",
+      "destination": "/about-us-light/",
+      "permanent": true
+    },
+    {
+      "source": "/my-account/",
+      "destination": "/contact-us-light/",
+      "permanent": true
+    },
+    {
+      "source": "/cart/",
+      "destination": "/service-light/",
+      "permanent": true
+    },
+    {
+      "source": "/checkout/",
+      "destination": "/book-now/",
+      "permanent": true
     }
   ],
   "headers": [

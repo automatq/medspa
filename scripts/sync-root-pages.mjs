@@ -1,25 +1,91 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { services } from "../data/services.mjs";
-import { assetVersion, navigation } from "./site-shell.mjs";
+import {
+  contactForm,
+  featuredPricing,
+  featuredTreatments,
+  newsletterBand,
+  renderCategoryIndex,
+  renderTreatmentCategories,
+  reviewWall,
+  teamSection,
+} from "./components.mjs";
+import { reviewSource, reviews } from "../data/reviews.mjs";
+import { formatPrice, membershipPrice, priceBySlug, priceDisclaimerTail, prices } from "../data/pricing.mjs";
+import { team } from "../data/team.mjs";
+import { assetVersion, footer, mobileActions, navigation } from "./site-shell.mjs";
 
+// `mobileActions: false` is deliberate for book-now.html — it already *is* the
+// booking page, so the sticky Call/Book bar is redundant there.
 const pages = new Map([
-  ["index.html", "home"],
-  ["service-light.html", "treatments"],
-  ["service-details-light.html", "treatments"],
-  ["about-us-light.html", "about"],
-  ["faq-light.html", "faq"],
-  ["contact-us-light.html", "contact"],
-  ["book-now.html", ""],
+  ["index.html", { active: "home" }],
+  ["service-light.html", { active: "treatments" }],
+  ["service-details-light.html", { active: "treatments" }],
+  ["about-us-light.html", { active: "about" }],
+  ["faq-light.html", { active: "faq" }],
+  ["contact-us-light.html", { active: "contact" }],
+  ["book-now.html", { active: "", mobileActions: false }],
 ]);
 
 const navigationPattern =
   /<header class="site-header">[\s\S]*?<\/header>\s*<nav class="mobile-menu"[^>]*data-mobile-menu[^>]*>[\s\S]*?<\/nav>/;
+// Matches the footer with or without an already-synced newsletter band in front
+// of it, so re-running the sync replaces the pair instead of stacking bands.
+const footerPattern =
+  /(?:<section class="newsletter-band">[\s\S]*?<\/section>\s*)?<footer class="site-footer">[\s\S]*?<\/footer>/;
+const mobileActionsPattern = /<nav class="mobile-actions"[^>]*>[\s\S]*?<\/nav>/;
 const rootDocuments = [...pages.keys()];
 
-for (const [file, active] of pages) {
+/**
+ * Replaces everything between <!-- build:name --> and <!-- /build:name -->.
+ * Throws when a region is missing so a renamed marker fails the build loudly
+ * instead of silently leaving stale hand-written markup on the page.
+ */
+/**
+ * Data-driven regions of the hand-written root pages. A page opts in by placing
+ * the matching marker pair; nothing is injected into pages that don't ask.
+ */
+const regions = new Map([
+  ["category-index", renderCategoryIndex],
+  ["treatment-categories", renderTreatmentCategories],
+  ["featured-treatments", () => featuredTreatments(FEATURED_SLUGS)],
+  ["reviews", () => reviewWall(reviews, reviewSource)],
+  ["team", () => teamSection(team)],
+  ["contact-form", contactForm],
+  [
+    "featured-pricing",
+    () => featuredPricing({ prices, membershipPrice, priceBySlug, formatPrice, tail: priceDisclaimerTail }),
+  ],
+]);
+
+// The six treatments Anima features on its own homepage.
+const FEATURED_SLUGS = [
+  "weight-management",
+  "laser-hair-removal",
+  "korean-glass-skin-facial",
+  "hydradermabrasion",
+  "dermal-fillers",
+  "botox-dysport",
+];
+
+const replaceRegion = (html, file, name, replacement) => {
+  const pattern = new RegExp(`(<!-- build:${name} -->)[\\s\\S]*?(<!-- /build:${name} -->)`);
+  if (!pattern.test(html)) throw new Error(`${file}: build region "${name}" not found`);
+  return html.replace(pattern, (_match, open, close) => `${open}${replacement}${close}`);
+};
+
+for (const [file, options] of pages) {
   let html = await readFile(file, "utf8");
   if (!navigationPattern.test(html)) throw new Error(`${file}: shared navigation region not found`);
-  html = html.replace(navigationPattern, navigation(active));
+  html = html.replace(navigationPattern, navigation(options.active));
+
+  if (!footerPattern.test(html)) throw new Error(`${file}: shared footer region not found`);
+  html = html.replace(footerPattern, `${newsletterBand()}\n\n  ${footer()}`);
+
+  if (options.mobileActions !== false) {
+    if (!mobileActionsPattern.test(html)) throw new Error(`${file}: mobile actions region not found`);
+    html = html.replace(mobileActionsPattern, mobileActions());
+  }
+
   html = html
     .replace(/\/assets\/(css\/medspa\.css|js\/medspa\.js)\?v=[^"]+/g, `/assets/$1?v=${assetVersion}`)
     .replace(/\b(href|src)="assets\//g, '$1="/assets/')
@@ -27,52 +93,12 @@ for (const [file, active] of pages) {
       /\bhref="([^"]+\.html(?:#[^"]*)?)"/g,
       (match, target) => (rootDocuments.some((document) => target.startsWith(document)) ? `href="/${target}"` : match)
     );
+
+  for (const [name, render] of regions) {
+    if (html.includes(`<!-- build:${name} -->`)) html = replaceRegion(html, file, name, render());
+  }
+
   await writeFile(file, html);
 }
 
-let treatmentIndex = await readFile("service-light.html", "utf8");
-for (const item of services) {
-  if (item.slug === "swedish-massage") continue;
-  const label = item.navName || item.name;
-  const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace("&", "(?:&|&amp;)");
-  const chipPattern = new RegExp(
-    `<a class="service-chip" href="[^"]+">${escapedLabel.replace("®", "(?:®|&reg;)")}</a>`
-  );
-  if (!chipPattern.test(treatmentIndex)) {
-    throw new Error(`service-light.html: chip not found for ${label}`);
-  }
-  treatmentIndex = treatmentIndex.replace(
-    chipPattern,
-    `<a class="service-chip" href="/services/${item.slug}/">${label.replace("&", "&amp;")}</a>`
-  );
-}
-
-if (!treatmentIndex.includes('class="service-chip" href="/services/swedish-massage/"')) {
-  treatmentIndex = treatmentIndex.replace(
-    '<a class="service-chip" href="/services/ems-body-contouring/">EMS Body Contouring</a>',
-    '<a class="service-chip" href="/services/ems-body-contouring/">EMS Body Contouring</a>\n              <a class="service-chip" href="/services/swedish-massage/">Swedish Massage</a>'
-  );
-}
-await writeFile("service-light.html", treatmentIndex);
-
-let home = await readFile("index.html", "utf8");
-const homeLinks = new Map([
-  ["Microneedling + PDRN", "microneedling-pdrn"],
-  ["Korean Glass Skin Facial", "korean-glass-skin-facial"],
-  ["Chemical Peels", "chemical-peels"],
-  ["Botox / Dysport", "botox-dysport"],
-  ["Dermal Fillers", "dermal-fillers"],
-  ["PRP Treatments", "prp-skin-rejuvenation"],
-  ["Laser Hair Removal", "laser-hair-removal"],
-  ["Pigment Removal", "pigment-removal"],
-  ["Carbon Laser Peel", "carbon-laser-peel"],
-]);
-for (const [label, slug] of homeLinks) {
-  if (home.includes(`href="/services/${slug}/">${label}<`)) continue;
-  const pattern = new RegExp(`href="service-light\\.html#[^"]+">${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}<`);
-  if (!pattern.test(home)) throw new Error(`index.html: featured link not found for ${label}`);
-  home = home.replace(pattern, `href="/services/${slug}/">${label}<`);
-}
-await writeFile("index.html", home);
-
-console.log(`Synchronized shared navigation across ${pages.size} pages and linked all service discovery paths.`);
+console.log(`Synchronized shared navigation across ${pages.size} pages and regenerated the treatment index.`);

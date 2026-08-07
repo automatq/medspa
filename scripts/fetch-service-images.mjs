@@ -6,13 +6,20 @@ import { services } from "../data/services.mjs";
 const userAgent =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/138 Safari/537.36";
 
-const imageJobs = services.flatMap((item) => {
-  const jobs = [{ stem: item.imageStem, url: item.sourceImage }];
-  if (item.providerImage && item.provider) {
-    jobs.push({ stem: item.provider.imageStem, url: item.providerImage });
-  }
-  return jobs;
-});
+// `--only=slug-a,slug-b` limits the run. Without it, sourcing one new image
+// re-fetches and re-optimizes all of them, which churns every binary in the diff.
+const onlyArg = process.argv.find((arg) => arg.startsWith("--only="));
+const only = onlyArg ? new Set(onlyArg.slice("--only=".length).split(",").filter(Boolean)) : null;
+
+const imageJobs = services
+  .filter((item) => !only || only.has(item.slug))
+  .map((item) => ({ stem: item.imageStem, url: item.sourceImage }));
+
+if (only) {
+  const missing = [...only].filter((slug) => !services.some((item) => item.slug === slug));
+  if (missing.length) throw new Error(`--only names unknown slugs: ${missing.join(", ")}`);
+}
+if (!imageJobs.length) throw new Error("no image jobs selected");
 
 await mkdir(".context/service-originals", { recursive: true });
 await mkdir("assets/img/services", { recursive: true });
