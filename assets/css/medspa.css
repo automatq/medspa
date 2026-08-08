@@ -89,6 +89,11 @@ html {
 
 body {
   margin: 0;
+  /* The parallax scale on the hero image pushes its box a few pixels past the
+     viewport, which produced a horizontal scrollbar on phones. `clip` rather
+     than `hidden`: hidden would make the body a scroll container and break the
+     sticky header. */
+  overflow-x: clip;
   background: var(--paper-light);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -1862,6 +1867,28 @@ wl-appointments-widget {
   margin-top: auto;
   color: var(--ink-soft);
   font-size: 0.82rem;
+}
+
+/* TikTok ships a bare <blockquote> and swaps it for an iframe once its script
+   loads, which is why the overflow was intermittent — it fit before the swap and
+   not after. Grid children default to min-width:auto and refuse to shrink below
+   their content, so the embed's own minimum width pushed the page sideways.
+   Both the column and whatever the script injects are capped here. */
+.tiktok-feed {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tiktok-feed .tiktok-embed,
+.tiktok-feed iframe {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.review-more {
+  margin-top: 26px;
+  text-align: center;
+  font-weight: 600;
 }
 
 .review-disclaimer {
@@ -3713,6 +3740,20 @@ body.page-lp .mobile-actions {
   .care-grid,
   .related-services {
     grid-template-columns: 1fr;
+  }
+
+  /* The homepage featured six is a menu, not six articles: stacked full-width
+     with a paragraph each it ran to 4.4 screens on a phone. Two-up with the
+     intro dropped makes it scannable — the intro still reads on the treatment
+     page the card links to. Scoped to the homepage so the three-card related
+     grids on service and journal pages keep their descriptions. */
+  .page-home .related-services {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .page-home .related-service-card > span:last-child {
+    display: none;
   }
 
   .provider-portrait {

@@ -199,8 +199,18 @@ ${servicesIn(category.id)
  * and never under a treatment-specific heading — an untargeted clinic review
  * presented beside one treatment reads as a review *of* that treatment.
  */
-export const reviewWall = (reviews, source) => `<div class="review-wall" data-reveal-group>
-          ${reviews
+/**
+ * `limit` shows only the first N reviews and links out for the rest. Nine
+ * verbatim reviews stacked in one column took up 27% of the homepage on a phone;
+ * the trust signal is a real name against a verifiable source, not volume. The
+ * full set stays in data/reviews.mjs and on the linked profile — nothing is
+ * hidden, and what does render is still byte-for-byte as published.
+ */
+export const reviewWall = (shown, source, { total = shown.length } = {}) => {
+  const withheld = total - shown.length;
+
+  return `<div class="review-wall" data-reveal-group>
+          ${shown
             .map(
               (review) => `<figure class="review-quote">
             <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
@@ -214,7 +224,17 @@ export const reviewWall = (reviews, source) => `<div class="review-wall" data-re
             )
             .join("\n          ")}
         </div>
+        ${
+          withheld > 0
+            ? `<p class="review-more"><a href="${escapeHtml(
+                source.profileUrl
+              )}" target="_blank" rel="noopener">Read all ${total} reviews on ${escapeHtml(
+                source.platform
+              )} <span aria-hidden="true">↗</span></a></p>`
+            : ""
+        }
         <p class="review-disclaimer">${escapeHtml(source.disclaimer)}</p>`;
+};
 
 /**
  * Wraps a portrait in a link to its full-size file. Without JavaScript the link

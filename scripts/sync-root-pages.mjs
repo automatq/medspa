@@ -9,7 +9,7 @@ import {
   reviewWall,
   teamSection,
 } from "./components.mjs";
-import { reviewSource, reviews } from "../data/reviews.mjs";
+import { featuredReviews, reviewSource, reviews } from "../data/reviews.mjs";
 import { formatPrice, membershipPrice, priceBySlug, priceDisclaimerTail, prices } from "../data/pricing.mjs";
 import { team } from "../data/team.mjs";
 import { assetVersion, footer, mobileActions, navigation } from "./site-shell.mjs";
@@ -49,7 +49,9 @@ const regions = new Map([
   ["category-index", renderCategoryIndex],
   ["treatment-categories", renderTreatmentCategories],
   ["featured-treatments", () => featuredTreatments(FEATURED_SLUGS)],
-  ["reviews", () => reviewWall(reviews, reviewSource)],
+  // A curated three on the homepage; the rest are one click away on the source
+  // profile. `total` keeps the "read all N" link honest.
+  ["reviews", () => reviewWall(featuredReviews, reviewSource, { total: reviews.length })],
   ["team", () => teamSection(team)],
   ["contact-form", contactForm],
   [

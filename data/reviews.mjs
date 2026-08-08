@@ -102,3 +102,24 @@ export const reviews = [
     lang: "zh",
   },
 ];
+
+/**
+ * The three shown on the homepage, chosen rather than sliced.
+ *
+ * Taking the first three gives "Kourosh M" then "Kourosh" — two different
+ * reviewers with near-identical names, side by side, which reads as a duplicate
+ * entry. These three also cover different ground: overall service, a named
+ * treatment from a local client, and the unhurried consultation. Ipek B is
+ * deliberately not among them; that review carries the unverified "over 30
+ * years" claim, which should never sit in a featured position.
+ *
+ * The full nine still render wherever the wall is used without a limit, and the
+ * homepage links out to all of them.
+ */
+export const featuredAuthors = ["mahsa falsafi", "Mette Weidinger", "Lavin P"];
+
+export const featuredReviews = featuredAuthors.map((author) => {
+  const review = reviews.find((entry) => entry.author === author);
+  if (!review) throw new Error(`featured review not found: ${author}`);
+  return review;
+});
