@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import test from "node:test";
+import { BANNED_CONTENT as banned } from "../data/banned-content.mjs";
 import { team } from "../data/team.mjs";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
@@ -22,36 +23,6 @@ const collectHtml = async (directory = root, depth = 0) => {
 const files = await collectHtml();
 const pages = new Map(await Promise.all(files.map(async (file) => [file.slice(root.length + 1), await readFile(file, "utf8")])));
 
-/**
- * Content that must never reach production, each for a specific reason.
- * This is the enforcement behind decisions that would otherwise rot into a
- * comment nobody reads.
- */
-const banned = [
-  // Fabricated testimonials on the original campaign landing pages. They cite
-  // treatments Anima does not offer and were reused verbatim across two
-  // different treatments.
-  ["Sarah M.", "fabricated LP testimonial"],
-  ["Jessica T.", "fabricated LP testimonial"],
-  ["Amanda R.", "fabricated LP testimonial"],
-  ["Elena V.", "fabricated LP testimonial"],
-  ["Rachel B.", "fabricated LP testimonial"],
-  ["Michelle K.", "fabricated LP testimonial"],
-  ["Lauren D.", "fabricated LP testimonial"],
-  // Unverifiable social proof that also contradicts the sourced 5.0 / 18 Fresha figure.
-  ["4.9/5", "unverifiable rating that conflicts with the sourced Fresha rating"],
-  ["500+ Happy", "unverifiable client count"],
-  // A quotation nobody actually said, previously rendered as a <blockquote>.
-  ["Warm care, a professional experience", "synthesized review quote"],
-  ["Summary of verified client feedback", "attribution for a synthesized quote"],
-  // Restricted-title risk in Ontario for a cosmetic injector whose credentials
-  // were earned abroad and whose local licensure is unconfirmed.
-  ["Dr. Komeili", "restricted title"],
-  ["Dr Komeili", "restricted title"],
-  // Unsupported superlatives from the original marketing copy.
-  ["Premier Med Spa", "unsupported superlative"],
-  ["Flawless, Radiant Skin", "outcome guarantee"],
-];
 
 test("banned content appears nowhere in the built site", () => {
   const hits = [];

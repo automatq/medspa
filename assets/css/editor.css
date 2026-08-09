@@ -1,0 +1,157 @@
+/**
+ * Inline editor chrome. Loaded by editor.js only, so this file is never
+ * requested by an ordinary visitor and adds nothing to the public page weight.
+ *
+ * Everything is scoped under `body.anima-editing`, so pausing the editor removes
+ * every affordance at once without unbinding anything.
+ */
+
+.anima-editor-bar {
+  position: fixed;
+  z-index: 2000;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(20, 14, 26, 0.94);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 40px rgba(20, 14, 26, 0.34);
+  color: #fdfbfd;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.84rem;
+}
+
+.anima-editor-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7ddc9a;
+}
+
+body:not(.anima-editing) .anima-editor-dot {
+  background: #d6a95e;
+}
+
+.anima-editor-bar button {
+  padding: 6px 12px;
+  border: 1px solid rgba(253, 251, 253, 0.28);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.anima-editor-bar button:hover {
+  border-color: var(--plum-soft, #d3bcdc);
+  color: var(--plum-soft, #d3bcdc);
+}
+
+.anima-editor-toast {
+  max-width: 46ch;
+  padding-left: 12px;
+  border-left: 1px solid rgba(253, 251, 253, 0.28);
+  color: rgba(253, 251, 253, 0.86);
+}
+
+/* A rejected save is the one message that must not be missed. */
+.anima-editor-toast[data-kind="err"] {
+  color: #ffb4a8;
+}
+
+/* Editable fields. Outlined only while editing is active, and only on
+   hover/focus, so the page still reads normally while being worked on. */
+body.anima-editing [data-copy-key]:not(img) {
+  outline: 1px dashed rgba(133, 95, 140, 0.5);
+  outline-offset: 3px;
+  border-radius: 2px;
+  cursor: text;
+}
+
+body.anima-editing [data-copy-key]:not(img):hover {
+  outline-style: solid;
+  outline-color: var(--plum, #855f8c);
+  background: rgba(133, 95, 140, 0.06);
+}
+
+body.anima-editing [data-copy-key]:focus {
+  outline: 2px solid var(--plum, #855f8c);
+  outline-offset: 3px;
+  background: rgba(133, 95, 140, 0.08);
+}
+
+/* Images. The wrapper is inline-block so it does not disturb the surrounding
+   layout, and inherits the radius so the overlay follows rounded corners. */
+.anima-image-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  border-radius: inherit;
+}
+
+.anima-image-wrap > img {
+  display: block;
+  max-width: 100%;
+  border-radius: inherit;
+}
+
+.anima-image-tools {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: inherit;
+  background: rgba(20, 14, 26, 0.58);
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+body.anima-editing .anima-image-wrap:hover .anima-image-tools,
+body.anima-editing .anima-image-wrap.is-uploading .anima-image-tools {
+  opacity: 1;
+}
+
+body:not(.anima-editing) .anima-image-tools {
+  display: none;
+}
+
+.anima-image-tools button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #fdfbfd;
+  color: #241d29;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.anima-image-tools button:hover {
+  background: var(--plum-soft, #d3bcdc);
+}
+
+.anima-image-wrap.is-uploading .anima-image-tools::after {
+  content: "Uploading…";
+  color: #fdfbfd;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.84rem;
+}
+
+.anima-image-wrap.is-uploading button {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anima-image-tools {
+    transition: none;
+  }
+}

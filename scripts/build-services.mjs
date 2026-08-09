@@ -3,6 +3,8 @@ import { categoryById, serviceBySlug, services } from "../data/services.mjs";
 import { providerFor } from "../data/team.mjs";
 import {
   ctaPanel,
+  ed,
+  editableList,
   faqItems,
   list,
   pagination,
@@ -59,7 +61,7 @@ const renderService = (item, index) => {
           <div class="service-hero-copy">
             <p class="eyebrow">${escapeHtml(category.label)} · ${escapeHtml(item.eyebrow)}</p>
             <h1 class="service-title" data-split-title>${escapeHtml(item.name)} <span class="serif">${escapeHtml(item.titleAccent)}</span></h1>
-            <p class="service-intro">${escapeHtml(item.intro)}</p>
+            <p class="service-intro"${ed(`services.${item.slug}.intro`)}>${escapeHtml(item.intro)}</p>
             <div class="button-row">
               <a class="button button-primary" href="${SITE.bookHref}">${escapeHtml(item.bookingCta)} <span class="button-arrow" aria-hidden="true">↗</span></a>
               <a class="button button-outline" href="#treatment-details">Explore the treatment</a>
@@ -74,10 +76,10 @@ const renderService = (item, index) => {
           </div>
         </div>
         <dl class="service-facts" data-reveal-group>
-          <div><dt>Typical session</dt><dd>${escapeHtml(item.quickFacts.duration)}</dd></div>
-          <div><dt>Downtime</dt><dd>${escapeHtml(item.quickFacts.downtime)}</dd></div>
-          <div><dt>Treatment plan</dt><dd>${escapeHtml(item.quickFacts.series)}</dd></div>
-          <div><dt>Consultation</dt><dd>${escapeHtml(item.quickFacts.consultation)}</dd></div>
+          <div><dt>Typical session</dt><dd${ed(`services.${item.slug}.quickFacts.duration`)}>${escapeHtml(item.quickFacts.duration)}</dd></div>
+          <div><dt>Downtime</dt><dd${ed(`services.${item.slug}.quickFacts.downtime`)}>${escapeHtml(item.quickFacts.downtime)}</dd></div>
+          <div><dt>Treatment plan</dt><dd${ed(`services.${item.slug}.quickFacts.series`)}>${escapeHtml(item.quickFacts.series)}</dd></div>
+          <div><dt>Consultation</dt><dd${ed(`services.${item.slug}.quickFacts.consultation`)}>${escapeHtml(item.quickFacts.consultation)}</dd></div>
         </dl>
       </div>
     </section>
@@ -89,8 +91,8 @@ const renderService = (item, index) => {
           <h2 class="section-title">Goals worth <span class="serif">discussing clearly.</span></h2>
         </div>
         <div>
-          <ul class="concern-list" data-reveal-group>${list(item.concerns)}</ul>
-          <div class="service-prose" data-reveal>${item.overview.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</div>
+          <ul class="concern-list" data-reveal-group>${editableList(item.concerns, (i) => `services.${item.slug}.concerns.${i}`)}</ul>
+          <div class="service-prose" data-reveal>${item.overview.map((paragraph, i) => `<p${ed(`services.${item.slug}.overview.${i}`)}>${escapeHtml(paragraph)}</p>`).join("")}</div>
         </div>
       </div>
     </section>
@@ -102,7 +104,7 @@ const renderService = (item, index) => {
           <h2 class="section-title">A considered process, <span class="serif">step by step.</span></h2>
         </div>
         <ol class="service-process" data-reveal-group>
-          ${processItems(item.process)}
+          ${processItems(item.process, (i) => `services.${item.slug}.process.${i}`)}
         </ol>
       </div>
     </section>
@@ -114,7 +116,7 @@ const renderService = (item, index) => {
           <h2 class="section-title">What this treatment <span class="serif">may support.</span></h2>
           <p class="lede">Benefits describe treatment goals, not guaranteed outcomes. Your provider will explain what is realistic for you.</p>
         </div>
-        <ul class="benefit-list" data-reveal-group>${list(item.benefits)}</ul>
+        <ul class="benefit-list" data-reveal-group>${editableList(item.benefits, (i) => `services.${item.slug}.benefits.${i}`)}</ul>
       </div>
     </section>
 
@@ -125,10 +127,10 @@ const renderService = (item, index) => {
           <h2 class="section-title">Candidacy, preparation, and <span class="serif">care after.</span></h2>
         </div>
         <div class="care-grid" data-reveal-group>
-          <article><span>01</span><h3>Who it may suit</h3><p>${escapeHtml(item.candidacy)}</p></article>
-          <article><span>02</span><h3>How to prepare</h3><p>${escapeHtml(item.preparation)}</p></article>
-          <article><span>03</span><h3>Downtime & response</h3><p>${escapeHtml(item.downtime)}</p></article>
-          <article><span>04</span><h3>Aftercare</h3><p>${escapeHtml(item.aftercare)}</p></article>
+          <article><span>01</span><h3>Who it may suit</h3><p${ed(`services.${item.slug}.candidacy`)}>${escapeHtml(item.candidacy)}</p></article>
+          <article><span>02</span><h3>How to prepare</h3><p${ed(`services.${item.slug}.preparation`)}>${escapeHtml(item.preparation)}</p></article>
+          <article><span>03</span><h3>Downtime & response</h3><p${ed(`services.${item.slug}.downtime`)}>${escapeHtml(item.downtime)}</p></article>
+          <article><span>04</span><h3>Aftercare</h3><p${ed(`services.${item.slug}.aftercare`)}>${escapeHtml(item.aftercare)}</p></article>
         </div>
         <div class="notice service-consultation-note" data-reveal><strong>Consultation matters:</strong> ${escapeHtml(item.consultationNote)}</div>
       </div>
@@ -141,7 +143,7 @@ const renderService = (item, index) => {
         <p class="eyebrow" data-reveal>Your questions, answered</p>
         <h2 class="section-title" id="faq-title" data-reveal>${escapeHtml(item.navName || item.name)} <span class="serif">FAQ.</span></h2>
         <div class="faq-list" data-reveal-group>
-          ${faqItems(item.faqs)}
+          ${faqItems(item.faqs, (i) => `services.${item.slug}.faqs.${i}`)}
         </div>
       </div>
     </section>

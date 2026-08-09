@@ -1,3 +1,5 @@
+import { postCategoryById } from "../data/blog.mjs";
+import { isEditable } from "../data/editable.mjs";
 import { categories, categoryById, serviceBySlug, services } from "../data/services.mjs";
 import { SITE, escapeHtml, serviceHref } from "./site-shell.mjs";
 
@@ -43,7 +45,25 @@ export const renderBlocks = (blocks) =>
     })
     .join("\n          ");
 
+/**
+ * Marks an element as editable by the inline editor.
+ *
+ * The key is a dotted path into the data modules — see data/editable.mjs, which
+ * resolves it back to the value baked into this build. Emitting the attribute
+ * from the generators means all 29 service pages become editable at once;
+ * preet/cambridge instead annotates 237 call sites by hand against a
+ * 1021-line registry.
+ *
+ * Returns "" for a locked or unresolvable key, so a typo silently produces a
+ * non-editable element rather than one the API will reject on save.
+ */
+export const ed = (key) => (isEditable(key) ? ` data-copy-key="${escapeHtml(key)}"` : "");
+
 export const list = (items) => items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+
+/** As `list`, but each item carries its own key so it can be edited in place. */
+export const editableList = (items, keyFor) =>
+  items.map((item, index) => `<li${ed(keyFor(index))}>${escapeHtml(item)}</li>`).join("");
 
 export const picture = (item, className = "") => `<picture${className ? ` class="${className}"` : ""}>
   <source media="(max-width: 700px)" srcset="/assets/img/services/${item.imageStem}-640.webp">
@@ -94,23 +114,29 @@ export const providerBand = (provider) => {
     </section>`;
 };
 
-export const faqItems = (faqs) =>
+/**
+ * `keyFor(index)` returns the dotted path to that FAQ pair, e.g.
+ * `services.sculptra.faqs.2`. Question is `[0]`, answer is `[1]`.
+ */
+export const faqItems = (faqs, keyFor) =>
   faqs
     .map(
       ([question, answer], faqIndex) => `<details class="faq-item">
-            <summary><span class="faq-index">${String(faqIndex + 1).padStart(2, "0")}</span><span>${escapeHtml(question)}</span><span class="faq-icon" aria-hidden="true"></span></summary>
-            <div class="faq-answer"><p>${escapeHtml(answer)}</p></div>
+            <summary><span class="faq-index">${String(faqIndex + 1).padStart(2, "0")}</span><span${
+        keyFor ? ed(`${keyFor(faqIndex)}.0`) : ""
+      }>${escapeHtml(question)}</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-answer"><p${keyFor ? ed(`${keyFor(faqIndex)}.1`) : ""}>${escapeHtml(answer)}</p></div>
           </details>`
     )
     .join("");
 
-export const processItems = (steps) =>
+export const processItems = (steps, keyFor) =>
   steps
     .map(
       ([title, description], processIndex) => `<li>
             <span>${String(processIndex + 1).padStart(2, "0")}</span>
-            <h3>${escapeHtml(title)}</h3>
-            <p>${escapeHtml(description)}</p>
+            <h3${keyFor ? ed(`${keyFor(processIndex)}.0`) : ""}>${escapeHtml(title)}</h3>
+            <p${keyFor ? ed(`${keyFor(processIndex)}.1`) : ""}>${escapeHtml(description)}</p>
           </li>`
     )
     .join("");
@@ -368,6 +394,63 @@ export const featuredTreatments = (slugs) => `
             .map(relatedCard)
             .join("")}</div>
         `;
+
+/* ---------------------------------------------------------------- journal */
+
+export const postHref = (post) => `/blog/${post.slug}/`;
+
+// Fixed locale and UTC: a machine-local formatter would make build output vary
+// between machines and produce phantom diffs in CI.
+const dateFormatter = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+});
+export const displayDate = (iso) => dateFormatter.format(new Date(`${iso}T00:00:00Z`));
+
+/**
+ * A post written in the repo has a build-time image set under /assets/img/blog/;
+ * one written in the composer has a single uploaded URL. Deciding that here is
+ * what lets every caller treat the two kinds of post identically.
+ */
+export const postImage = (post, size) =>
+  post.image ? post.image : `/assets/img/blog/${post.imageStem}-${size}.webp`;
+
+export const postCard = (post) => {
+  const category = postCategoryById.get(post.category);
+  return `<a class="post-card" href="${postHref(post)}" data-reveal>
+            <span class="post-card-image"><img src="${escapeHtml(
+              postImage(post, 640)
+            )}" alt="${escapeHtml(post.heroAlt)}" width="640" height="427" loading="lazy"></span>
+            <span class="post-meta"><span>${escapeHtml(category?.label ?? "Journal")}</span><span>${escapeHtml(
+    displayDate(post.published)
+  )}</span><span>${post.readMinutes} min read</span></span>
+            <h3>${escapeHtml(post.title)}</h3>
+            <span>${escapeHtml(post.deck)}</span>
+          </a>`;
+};
+
+/**
+ * Homepage journal band. Renders the newest few posts at build time; posts
+ * written in the composer are merged into this same grid client-side, which is
+ * why the grid carries `data-journal-grid`.
+ */
+export const journalSection = (posts) => `
+        <div class="related-heading" data-reveal>
+          <div>
+            <p class="eyebrow"${ed("site.home.journal.eyebrow")}>From the journal</p>
+            <h2 class="section-title" id="home-journal-title">Reading for <span class="serif">better skin.</span></h2>
+          </div>
+          <a class="text-link" href="/blog/">Read the journal <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="lede"${ed(
+          "site.home.journal.lede"
+        )}>Treatment education, aftercare, and seasonal guidance written by the team at Anima.</p>
+        <div class="post-grid" data-journal-grid>
+          ${posts.map(postCard).join("\n          ")}
+        </div>
+      `;
 
 /** Team section for the about page: founder feature plus the remaining members. */
 export const teamSection = (team) => {

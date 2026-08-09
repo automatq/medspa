@@ -9,7 +9,7 @@ import {
   reviewWall,
   teamSection,
 } from "./components.mjs";
-import { featuredReviews, reviewSource, reviews } from "../data/reviews.mjs";
+import { featuredReviews, reviewSource } from "../data/reviews.mjs";
 import { formatPrice, membershipPrice, priceBySlug, priceDisclaimerTail, prices } from "../data/pricing.mjs";
 import { team } from "../data/team.mjs";
 import { assetVersion, footer, mobileActions, navigation } from "./site-shell.mjs";
@@ -50,8 +50,10 @@ const regions = new Map([
   ["treatment-categories", renderTreatmentCategories],
   ["featured-treatments", () => featuredTreatments(FEATURED_SLUGS)],
   // A curated three on the homepage; the rest are one click away on the source
-  // profile. `total` keeps the "read all N" link honest.
-  ["reviews", () => reviewWall(featuredReviews, reviewSource, { total: reviews.length })],
+  // profile. `total` is the real Google review count (reviewSource.total), not
+  // the number transcribed into the repo — that keeps the "read all N" link
+  // honest about how many reviews actually exist on the profile.
+  ["reviews", () => reviewWall(featuredReviews, reviewSource, { total: reviewSource.total })],
   ["team", () => teamSection(team)],
   ["contact-form", contactForm],
   [

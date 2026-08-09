@@ -19,6 +19,8 @@
  * *italic*. Everything else is escaped, so raw HTML in copy will not render.
  */
 
+import { normalizePost } from "./post-schema.mjs";
+
 export const postCategories = [
   {
     id: "tips-tricks",
@@ -28,15 +30,9 @@ export const postCategories = [
   },
 ];
 
-const post = (record) => ({
-  category: "tips-tricks",
-  relatedServiceSlugs: [],
-  ...record,
-  updated: record.updated || record.published,
-  imageStem: record.imageStem || record.slug,
-  seoTitle: record.seoTitle || `${record.title} | Anima Med Spa`,
-  metaDescription: record.metaDescription || record.deck,
-});
+// Shared with the browser composer, so a hand-authored post and one written at
+// /admin/posts/ end up the same shape and render through the same code.
+const post = normalizePost;
 
 export const posts = [
   post({

@@ -459,10 +459,65 @@
     });
   };
 
+  /**
+   * Applies clinic edits, and loads the editor only for whoever makes them.
+   *
+   * Two deliberate differences from preet/cambridge:
+   *
+   * The cached map is applied synchronously before the network call, so only the
+   * first page of a session can flash build-time copy; every page after it is
+   * right on first paint. preet refetches on each mount and flashes every time.
+   *
+   * The editor bundle is fetched only when the admin hint cookie is present, so
+   * an ordinary visitor never downloads it. preet ships its editor plus a
+   * 1021-line registry to every anonymous visitor and merely hides the UI.
+   */
+  const COPY_CACHE_KEY = "anima-copy-cache";
+
+  const applyOverrides = (map) => {
+    if (!map) return;
+    for (const [key, value] of Object.entries(map)) {
+      document.querySelectorAll(`[data-copy-key="${CSS.escape(key)}"]`).forEach((node) => {
+        // An image key holds a URL; every other key holds text.
+        if (node.tagName === "IMG") node.src = value;
+        else if (node.textContent !== value) node.textContent = value;
+      });
+    }
+  };
+
+  const startCopyOverrides = () => {
+    if (!document.querySelector("[data-copy-key]")) return;
+
+    try {
+      const cached = sessionStorage.getItem(COPY_CACHE_KEY);
+      if (cached) applyOverrides(JSON.parse(cached));
+    } catch {}
+
+    fetch("/api/copy")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((map) => {
+        if (!map) return;
+        applyOverrides(map);
+        try {
+          sessionStorage.setItem(COPY_CACHE_KEY, JSON.stringify(map));
+        } catch {}
+      })
+      .catch(() => {});
+  };
+
+  const startEditor = () => {
+    if (!document.cookie.includes("anima_admin_hint=1")) return;
+    import("/assets/js/editor.js")
+      .then((module) => module.init({ applyOverrides, cacheKey: COPY_CACHE_KEY }))
+      .catch(() => {});
+  };
+
   startIntro();
   startMotion();
   startParallax();
   startMagneticButtons();
   startMailtoForms();
   startPortraitLightbox();
+  startCopyOverrides();
+  startEditor();
 })();

@@ -17,6 +17,11 @@ export const reviewSource = {
   profileUrl: "https://www.google.com/maps/search/?api=1&query=Anima+Med+Spa+Etobicoke",
   disclaimer:
     "Reviews are individual experiences published by clients on Google. They are not statements by the clinic and do not describe typical results.",
+  // Real number of reviews on the live Google profile — distinct from the nine
+  // transcribed into `reviews` below. `asOf` dates it so it can't silently go
+  // stale; re-read the profile before quoting the figure.
+  total: 57,
+  asOf: "2026-08-09",
 };
 
 /**
