@@ -53,6 +53,7 @@ const buildToolbar = () => {
     <span class="anima-editor-dot" aria-hidden="true"></span>
     <span class="anima-editor-status">Editing</span>
     <button type="button" data-editor-toggle>Pause</button>
+    <a href="/admin/posts/">Write a post</a>
     <button type="button" data-editor-logout>Sign out</button>
     <span class="anima-editor-toast" role="status" aria-live="polite" hidden></span>`;
   document.body.append(bar);

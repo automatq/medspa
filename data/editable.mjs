@@ -31,6 +31,9 @@ export const SITE_COPY = {
   "site.home.hero.copy":
     "Advanced, non-surgical treatments in Lakeshore Village—planned around your goals, comfort, and natural features.",
   "site.home.menu.eyebrow": "Treatment menu",
+  "site.home.journal.eyebrow": "From the journal",
+  "site.home.journal.lede":
+    "Treatment education, aftercare, and seasonal guidance written by the team at Anima.",
   "site.home.products.lede":
     "Anima works with professional-use skincare and medical-grade devices selected for how well they hold up in clinic, not for how well they market.",
   "site.home.social.lede":

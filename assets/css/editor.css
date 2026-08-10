@@ -37,17 +37,20 @@ body:not(.anima-editing) .anima-editor-dot {
   background: #d6a95e;
 }
 
-.anima-editor-bar button {
+.anima-editor-bar button,
+.anima-editor-bar a {
   padding: 6px 12px;
   border: 1px solid rgba(253, 251, 253, 0.28);
   border-radius: 999px;
   background: transparent;
   color: inherit;
   font: inherit;
+  text-decoration: none;
   cursor: pointer;
 }
 
-.anima-editor-bar button:hover {
+.anima-editor-bar button:hover,
+.anima-editor-bar a:hover {
   border-color: var(--plum-soft, #d3bcdc);
   color: var(--plum-soft, #d3bcdc);
 }

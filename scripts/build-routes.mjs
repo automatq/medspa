@@ -49,6 +49,11 @@ await writeFile(
       cleanUrls: true,
       trailingSlash: true,
       redirects,
+      // Vercel checks the filesystem before applying a rewrite, so posts built
+      // into /blog/<slug>/index.html are still served as static files. Only a
+      // slug with no static page reaches the function, which is where posts
+      // written in the browser composer are rendered.
+      rewrites: [{ source: "/blog/:slug/", destination: "/api/blog/:slug" }],
       headers: [
         {
           source: "/assets/(.*)",

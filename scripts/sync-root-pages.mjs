@@ -3,12 +3,15 @@ import {
   contactForm,
   featuredPricing,
   featuredTreatments,
+  journalSection,
   newsletterBand,
   renderCategoryIndex,
   renderTreatmentCategories,
   reviewWall,
   teamSection,
 } from "./components.mjs";
+import { postsNewestFirst } from "../data/blog.mjs";
+import { sortPosts } from "../data/post-schema.mjs";
 import { featuredReviews, reviewSource } from "../data/reviews.mjs";
 import { formatPrice, membershipPrice, priceBySlug, priceDisclaimerTail, prices } from "../data/pricing.mjs";
 import { team } from "../data/team.mjs";
@@ -54,6 +57,9 @@ const regions = new Map([
   // the number transcribed into the repo — that keeps the "read all N" link
   // honest about how many reviews actually exist on the profile.
   ["reviews", () => reviewWall(featuredReviews, reviewSource, { total: reviewSource.total })],
+  // Newest three at build time. Posts written in the composer are merged into
+  // this same grid client-side — see startJournal in assets/js/medspa.js.
+  ["journal", () => journalSection(sortPosts(postsNewestFirst).slice(0, 3))],
   ["team", () => teamSection(team)],
   ["contact-form", contactForm],
   [

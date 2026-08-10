@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2ecf2">
+  <meta name="description" content="Write and publish journal posts for the Anima Med Spa website.">
+  <title>Journal posts | Anima Med Spa</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/img/medspa/anima-logo-icon-20260729.png" type="image/png">
+  <link rel="stylesheet" href="/assets/css/medspa.css">
+  <style>
+    .composer { max-width: 1040px; margin: 0 auto; padding: 40px 24px 96px; }
+    .composer-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: baseline; justify-content: space-between; margin-bottom: 32px; }
+    .composer-head h1 { margin: 0; font-size: 1.9rem; }
+    .composer-grid { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 900px) { .composer-grid { grid-template-columns: 300px minmax(0, 1fr); align-items: start; } }
+    .post-list { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--white); padding: 8px; }
+    .post-list h2 { margin: 12px 12px 8px; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; }
+    .post-list button.entry { display: block; width: 100%; text-align: left; padding: 12px; border: 0; border-radius: var(--radius-sm); background: none; cursor: pointer; font: inherit; }
+    .post-list button.entry:hover, .post-list button.entry[aria-current="true"] { background: var(--pale); }
+    .post-list .entry strong { display: block; font-size: 0.95rem; }
+    .post-list .entry span { font-size: 0.8rem; opacity: 0.65; }
+    .composer-form { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--white); padding: 32px; }
+    .composer-form .field { margin-bottom: 20px; }
+    .field-row { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 640px) { .field-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    textarea#body { min-height: 340px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9rem; line-height: 1.6; }
+    .legend { margin: 8px 0 0; font-size: 0.82rem; opacity: 0.7; line-height: 1.8; }
+    .legend code { background: var(--pale); padding: 1px 6px; border-radius: 4px; }
+    .hero-preview { display: block; max-width: 260px; border-radius: var(--radius-sm); margin-bottom: 10px; }
+    .toggles { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 24px; }
+    .toggles label { display: flex; gap: 8px; align-items: center; font-size: 0.92rem; }
+    .toggles input { width: auto; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .actions .spacer { flex: 1; }
+    .danger { color: #a12a2a; background: none; border: 0; cursor: pointer; font: inherit; text-decoration: underline; }
+    .composer-status { margin: 16px 0 0; min-height: 1.4em; font-size: 0.92rem; }
+    .composer-status[data-kind="err"] { color: #a12a2a; }
+  </style>
+</head>
+<body class="page-admin">
+  <main class="composer">
+    <div class="composer-head">
+      <div>
+        <p class="eyebrow">Journal</p>
+        <h1>Write a post</h1>
+      </div>
+      <div class="actions">
+        <button class="button button-outline" type="button" id="new-post">New post</button>
+        <a class="button button-outline" href="/blog/">View the journal ↗</a>
+      </div>
+    </div>
+
+    <div class="composer-grid">
+      <aside class="post-list" id="post-list" aria-label="Your posts"></aside>
+
+      <form class="composer-form" id="composer" novalidate>
+        <div class="field">
+          <label for="title">Title</label>
+          <input id="title" name="title" type="text" maxlength="160" required>
+        </div>
+
+        <div class="field">
+          <label for="slug">Web address</label>
+          <input id="slug" name="slug" type="text" maxlength="80" spellcheck="false">
+          <p class="legend">The post will live at <code id="slug-preview">/blog/…/</code>. Filled in from the title; it cannot be changed after the post is created.</p>
+        </div>
+
+        <div class="field">
+          <label for="deck">Summary</label>
+          <textarea id="deck" name="deck" rows="3" maxlength="400" required></textarea>
+          <p class="legend">Shown on the cards and used as the search-engine description.</p>
+        </div>
+
+        <div class="field">
+          <label for="hero">Header image</label>
+          <img class="hero-preview" id="hero-preview" alt="" hidden>
+          <input id="hero" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+        </div>
+
+        <div class="field">
+          <label for="heroAlt">Image description</label>
+          <input id="heroAlt" name="heroAlt" type="text" maxlength="300" required>
+          <p class="legend">Describe the photograph for readers using a screen reader.</p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="published">Publish date</label>
+            <input id="published" name="published" type="date" required>
+          </div>
+          <div class="field">
+            <label for="readMinutes">Read time (minutes)</label>
+            <input id="readMinutes" name="readMinutes" type="number" min="1" max="60" value="4" required>
+          </div>
+          <div class="field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              <option value="published">Published</option>
+              <option value="draft">Draft — only you can see it</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="body">The post</label>
+          <textarea id="body" name="body" required></textarea>
+          <p class="legend">
+            Leave a blank line between paragraphs.
+            <code>## Heading</code> and <code>### Smaller heading</code> ·
+            <code>- item</code> for a bullet list · <code>1. item</code> for a numbered list ·
+            <code>&gt; quote</code> · <code>!&gt; note box</code> ·
+            <code>**bold**</code> · <code>*italic*</code> ·
+            <code>[link text](/services/botox-dysport/)</code>
+          </p>
+        </div>
+
+        <div class="toggles">
+          <label><input type="checkbox" id="pinned"> Pin to the top of the journal and the homepage</label>
+        </div>
+
+        <div class="actions">
+          <button class="button button-primary" type="submit" id="save">Publish post</button>
+          <a class="button button-outline" id="preview" href="/blog/" target="_blank" rel="noopener" hidden>Preview ↗</a>
+          <span class="spacer"></span>
+          <button class="danger" type="button" id="delete" hidden>Delete this post</button>
+        </div>
+
+        <p class="composer-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+
+  <script type="module">
+    /**
+     * The composer. Every rule that decides whether a post may be published lives
+     * on the server in data/post-schema.mjs — this page only collects fields and
+     * shows whatever the API says went wrong. Duplicating the validation here
+     * would give two sets of rules to keep in step, and only one of them is the
+     * one that actually runs.
+     */
+    const form = document.getElementById("composer");
+    const list = document.getElementById("post-list");
+    const status = form.querySelector(".composer-status");
+    const fields = {
+      title: document.getElementById("title"),
+      slug: document.getElementById("slug"),
+      deck: document.getElementById("deck"),
+      heroAlt: document.getElementById("heroAlt"),
+      published: document.getElementById("published"),
+      readMinutes: document.getElementById("readMinutes"),
+      status: document.getElementById("status"),
+      body: document.getElementById("body"),
+      pinned: document.getElementById("pinned"),
+    };
+    const slugPreview = document.getElementById("slug-preview");
+    const heroInput = document.getElementById("hero");
+    const heroPreview = document.getElementById("hero-preview");
+    const saveButton = document.getElementById("save");
+    const deleteButton = document.getElementById("delete");
+    const previewLink = document.getElementById("preview");
+
+    let posts = [];
+    let editing = null; // slug being edited, or null for a new post
+    let image = "";
+
+    const say = (message, kind = "ok") => {
+      status.textContent = message;
+      status.dataset.kind = kind;
+    };
+
+    const api = async (path, options = {}) => {
+      const response = await fetch(path, {
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        ...options,
+      });
+      if (response.status === 401) {
+        location.href = "/admin/";
+        throw new Error("Signed out");
+      }
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
+      return body;
+    };
+
+    /* Mirrors slugify() in data/post-schema.mjs — the server slugifies again on
+       save, so this is only here to show the address as the title is typed. */
+    const slugify = (value) =>
+      value
+        .normalize("NFKD")
+        .replace(/\p{Diacritic}/gu, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 80)
+        .replace(/-+$/g, "");
+
+    /* Inverse of parseBody() in data/post-schema.mjs, so a saved post reopens as
+       the same plain text it was written in. */
+    const serializeBody = (blocks = []) =>
+      blocks
+        .map((block) => {
+          if (block.type === "h2") return `## ${block.text}`;
+          if (block.type === "h3") return `### ${block.text}`;
+          if (block.type === "note") return `!> ${block.text}`;
+          if (block.type === "quote") return `> ${block.text}`;
+          if (block.type === "ul") return block.items.map((item) => `- ${item}`).join("\n");
+          if (block.type === "ol") return block.items.map((item, i) => `${i + 1}. ${item}`).join("\n");
+          return block.text;
+        })
+        .join("\n\n");
+
+    const today = () => new Date().toISOString().slice(0, 10);
+
+    const renderList = () => {
+      list.replaceChildren();
+
+      const heading = document.createElement("h2");
+      heading.textContent = posts.length ? "Your posts" : "No posts yet";
+      list.append(heading);
+
+      for (const post of posts) {
+        const entry = document.createElement("button");
+        entry.type = "button";
+        entry.className = "entry";
+        entry.setAttribute("aria-current", String(post.slug === editing));
+
+        const title = document.createElement("strong");
+        title.textContent = post.title;
+
+        const meta = document.createElement("span");
+        const marks = [post.published];
+        if (post.status === "draft") marks.push("Draft");
+        if (post.pinned) marks.push("Pinned");
+        meta.textContent = marks.join(" · ");
+
+        entry.append(title, meta);
+        entry.addEventListener("click", () => load(post));
+        list.append(entry);
+      }
+    };
+
+    const setHero = (url) => {
+      image = url || "";
+      heroPreview.src = image;
+      heroPreview.hidden = !image;
+    };
+
+    const load = (post) => {
+      editing = post?.slug ?? null;
+      fields.title.value = post?.title ?? "";
+      fields.slug.value = post?.slug ?? "";
+      fields.deck.value = post?.deck ?? "";
+      fields.heroAlt.value = post?.heroAlt ?? "";
+      fields.published.value = post?.published ?? today();
+      fields.readMinutes.value = post?.readMinutes ?? 4;
+      fields.status.value = post?.status ?? "published";
+      fields.pinned.checked = Boolean(post?.pinned);
+      fields.body.value = post ? serializeBody(post.body) : "";
+      setHero(post?.image ?? "");
+
+      fields.slug.readOnly = Boolean(post);
+      slugPreview.textContent = `/blog/${fields.slug.value || "…"}/`;
+      saveButton.textContent = post ? "Save changes" : "Publish post";
+      deleteButton.hidden = !post;
+      previewLink.hidden = !post;
+      if (post) previewLink.href = `/blog/${post.slug}/`;
+
+      say("");
+      renderList();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const refresh = async () => {
+      const body = await api("/api/admin/posts");
+      posts = body.posts;
+      renderList();
+    };
+
+    fields.title.addEventListener("input", () => {
+      if (editing) return; // the address of a published post is fixed
+      fields.slug.value = slugify(fields.title.value);
+      slugPreview.textContent = `/blog/${fields.slug.value || "…"}/`;
+    });
+
+    fields.slug.addEventListener("input", () => {
+      fields.slug.value = slugify(fields.slug.value);
+      slugPreview.textContent = `/blog/${fields.slug.value || "…"}/`;
+    });
+
+    heroInput.addEventListener("change", async () => {
+      const file = heroInput.files?.[0];
+      if (!file) return;
+      heroInput.value = "";
+      say("Uploading the image…");
+      try {
+        const response = await fetch("/api/admin/upload", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": file.type || "application/octet-stream" },
+          body: file,
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.error || `Upload failed (${response.status})`);
+        setHero(body.url);
+        say("Image ready — it saves with the post.");
+      } catch (error) {
+        say(error.message, "err");
+      }
+    });
+
+    document.getElementById("new-post").addEventListener("click", () => load(null));
+
+    deleteButton.addEventListener("click", async () => {
+      if (!editing) return;
+      if (!confirm("Delete this post? Anyone with the link will get a not-found page.")) return;
+      try {
+        await api(`/api/admin/posts?slug=${encodeURIComponent(editing)}`, { method: "DELETE" });
+        await refresh();
+        load(null);
+        say("Post deleted.");
+      } catch (error) {
+        say(error.message, "err");
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      saveButton.disabled = true;
+      say("Saving…");
+
+      const payload = {
+        title: fields.title.value,
+        slug: fields.slug.value,
+        deck: fields.deck.value,
+        heroAlt: fields.heroAlt.value,
+        published: fields.published.value,
+        readMinutes: Number(fields.readMinutes.value),
+        status: fields.status.value,
+        pinned: fields.pinned.checked,
+        bodyText: fields.body.value,
+        image,
+      };
+
+      try {
+        const body = await api(
+          editing ? `/api/admin/posts?slug=${encodeURIComponent(editing)}` : "/api/admin/posts",
+          { method: editing ? "PUT" : "POST", body: JSON.stringify(payload) }
+        );
+        await refresh();
+        load(body.post);
+        say(
+          body.post.status === "draft"
+            ? "Saved as a draft — only you can see it."
+            : "Published. It is live on the journal and the homepage."
+        );
+      } catch (error) {
+        say(error.message, "err");
+      } finally {
+        saveButton.disabled = false;
+      }
+    });
+
+    // Warn before losing an unsaved draft, matching the inline editor's guard.
+    let clean = true;
+    form.addEventListener("input", () => (clean = false));
+    form.addEventListener("submit", () => (clean = true));
+    window.addEventListener("beforeunload", (event) => {
+      if (clean) return;
+      event.preventDefault();
+      event.returnValue = "";
+    });
+
+    load(null);
+    refresh().catch((error) => say(error.message, "err"));
+  </script>
+</body>
+</html>
