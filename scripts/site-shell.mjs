@@ -99,8 +99,6 @@ export const navigation = (active = "") => {
         <a class="nav-link" href="/glow-plan/"${current(active, "glow-plan")}>Glow Plan</a>
         <a class="nav-link" href="/about-us-light.html"${current(active, "about")}>About</a>
         <a class="nav-link" href="/blog/"${current(active, "blog")}>Journal</a>
-        <a class="nav-link" href="/faq-light.html"${current(active, "faq")}>FAQ</a>
-        <a class="nav-link" href="/contact-us-light.html"${current(active, "contact")}>Contact</a>
       </nav>
 
       <a class="site-logo" href="/index.html" aria-label="Anima Med Spa home">
@@ -124,8 +122,6 @@ export const navigation = (active = "") => {
       <a href="/glow-plan/"${current(active, "glow-plan")}>Glow Plan <span aria-hidden="true">↗</span></a>
       <a href="/about-us-light.html"${current(active, "about")}>About <span aria-hidden="true">↗</span></a>
       <a href="/blog/"${current(active, "blog")}>Journal <span aria-hidden="true">↗</span></a>
-      <a href="/faq-light.html"${current(active, "faq")}>FAQ <span aria-hidden="true">↗</span></a>
-      <a href="/contact-us-light.html"${current(active, "contact")}>Contact <span aria-hidden="true">↗</span></a>
     </div>
     <div class="mobile-menu-services">
       <div class="mobile-menu-intro">
