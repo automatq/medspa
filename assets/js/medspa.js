@@ -6,6 +6,14 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let menuCloseTimer;
 
+  /**
+   * /assets/* is served immutable for a year, so a lazily imported module has to
+   * carry the same ?v= this script was loaded with or an edit to it never
+   * reaches a browser that has already been here once.
+   */
+  const assetVersion = new URL(document.currentScript?.src || location.href).searchParams.get("v");
+  const assetUrl = (path) => (assetVersion ? `${path}?v=${assetVersion}` : path);
+
   const setMobileMenu = (open) => {
     if (!menuButton || !mobileMenu) return;
     window.clearTimeout(menuCloseTimer);
@@ -505,10 +513,110 @@
       .catch(() => {});
   };
 
+  /**
+   * Merges posts written in the composer into the journal grids.
+   *
+   * The homepage and /blog/ ship their cards baked in, so an empty response —
+   * including the empty response a store failure produces — correctly means
+   * "leave the DOM alone". Only when something is actually stored does the grid
+   * get replaced.
+   *
+   * Cards are built with DOM calls rather than innerHTML: this is the one place
+   * on the site where markup would be assembled from stored values, and
+   * `textContent` cannot be talked into executing anything.
+   *
+   * Cards arrive after startMotion() has already collected its reveal targets,
+   * so they are marked visible on creation. An element with [data-reveal] that
+   * no observer is watching stays at opacity 0 forever.
+   */
+  const JOURNAL_CACHE_KEY = "anima-journal-cache";
+
+  const journalCard = (post) => {
+    const card = document.createElement("a");
+    card.className = "post-card is-visible";
+    card.href = post.href;
+    card.setAttribute("data-reveal", "");
+
+    const frame = document.createElement("span");
+    frame.className = "post-card-image";
+    const image = document.createElement("img");
+    image.src = post.image;
+    image.alt = post.heroAlt || "";
+    image.width = 640;
+    image.height = 427;
+    image.loading = "lazy";
+    frame.append(image);
+
+    const meta = document.createElement("span");
+    meta.className = "post-meta";
+    for (const value of [post.category, post.date, `${post.readMinutes} min read`]) {
+      const cell = document.createElement("span");
+      cell.textContent = value;
+      meta.append(cell);
+    }
+
+    const title = document.createElement("h3");
+    title.textContent = post.title;
+
+    const deck = document.createElement("span");
+    deck.textContent = post.deck;
+
+    card.append(frame, meta, title, deck);
+    return card;
+  };
+
+  const renderJournal = (posts) => {
+    if (!Array.isArray(posts) || posts.length === 0) return;
+    document.querySelectorAll("[data-journal-grid]").forEach((grid) => {
+      // The homepage shows three; /blog/ carries data-journal-all and shows them all.
+      const limit = grid.hasAttribute("data-journal-all") ? posts.length : 3;
+      grid.replaceChildren(...posts.slice(0, limit).map(journalCard));
+    });
+  };
+
+  const startJournal = () => {
+    if (!document.querySelector("[data-journal-grid]")) return;
+
+    try {
+      const cached = sessionStorage.getItem(JOURNAL_CACHE_KEY);
+      if (cached) renderJournal(JSON.parse(cached));
+    } catch {}
+
+    fetch("/api/posts")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((body) => {
+        if (!body) return;
+        renderJournal(body.posts);
+        try {
+          // Clearing on empty matters: without it, deleting the last stored post
+          // would leave it on screen for the rest of the session.
+          if (body.posts.length) sessionStorage.setItem(JOURNAL_CACHE_KEY, JSON.stringify(body.posts));
+          else sessionStorage.removeItem(JOURNAL_CACHE_KEY);
+        } catch {}
+      })
+      .catch(() => {});
+  };
+
   const startEditor = () => {
     if (!document.cookie.includes("anima_admin_hint=1")) return;
-    import("/assets/js/editor.js")
+    import(assetUrl("/assets/js/editor.js"))
       .then((module) => module.init({ applyOverrides, cacheKey: COPY_CACHE_KEY }))
+      .catch(() => {});
+  };
+
+  /**
+   * The header's Book now pill gets a WebGL rim highlight that leans toward the
+   * cursor. It is decoration on a link and nothing depends on it, so the module
+   * is fetched only where it can be seen and wanted: a real pointer that can
+   * hover, and a visitor who has not asked for less motion. Everyone else keeps
+   * the plain pill and never downloads it.
+   */
+  const startSpecularButtons = () => {
+    if (!document.querySelector("[data-specular]")) return;
+    if (reduceMotion.matches) return;
+    if (!window.matchMedia("(pointer: fine) and (hover: hover)").matches) return;
+    import(assetUrl("/assets/js/specular-button.js"))
+      .then((module) => module.init())
       .catch(() => {});
   };
 
@@ -516,8 +624,10 @@
   startMotion();
   startParallax();
   startMagneticButtons();
+  startSpecularButtons();
   startMailtoForms();
   startPortraitLightbox();
   startCopyOverrides();
+  startJournal();
   startEditor();
 })();

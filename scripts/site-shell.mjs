@@ -2,7 +2,7 @@ import { categories, services } from "../data/services.mjs";
 
 // Bump whenever assets/css or assets/js changes — /assets/* is served
 // immutable for a year, so a stale version ships unstyled sections.
-export const assetVersion = "20260808-editor";
+export const assetVersion = "20260810-specular";
 
 // Canonical URLs still point at the WordPress origin while the rebuild is staged;
 // absolute asset URLs (og:image, JSON-LD) resolve from the Vercel deployment.
@@ -109,7 +109,7 @@ export const navigation = (active = "") => {
 
       <div class="header-actions">
         <a class="header-phone" href="tel:+14377709296">437-770-9296</a>
-        <a class="button button-primary header-book" href="/book-now.html">Book now</a>
+        <a class="button button-primary header-book" href="/book-now.html" data-specular>Book now</a>
         <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
           <span class="menu-toggle-lines" aria-hidden="true"></span>
         </button>
