@@ -2,7 +2,7 @@ import { categories, services } from "../data/services.mjs";
 
 // Bump whenever assets/css or assets/js changes — /assets/* is served
 // immutable for a year, so a stale version ships unstyled sections.
-export const assetVersion = "20260811-specular-touch";
+export const assetVersion = "20260811-mobile-bar";
 
 // Canonical URLs still point at the WordPress origin while the rebuild is staged;
 // absolute asset URLs (og:image, JSON-LD) resolve from the Vercel deployment.

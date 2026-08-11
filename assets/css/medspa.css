@@ -2887,51 +2887,78 @@ body.page-lp .mobile-actions {
     padding-block: 22px;
   }
 
+  /* Three solid pills of equal weight read as an app toolbar and sat 65px deep
+     on a 6in phone. The bar is quieter now: GPS and Call are hairline ghosts
+     that recede into the cream, Book now is the one filled pill, and the labels
+     take the letter-spaced caps the section eyebrows already use. */
   .mobile-actions {
     position: fixed;
     z-index: 900;
     right: 0;
     bottom: 0;
     left: 0;
-    min-height: 64px;
     display: grid;
-    grid-template-columns: auto 1fr 1.25fr;
-    gap: 8px;
-    padding: 8px max(12px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    grid-template-columns: auto auto minmax(0, 1fr);
+    gap: 10px;
+    padding: 7px max(14px, env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
     border-top: 1px solid var(--line);
-    background: rgba(246, 240, 230, 0.96);
-    backdrop-filter: blur(16px);
+    /* Near-opaque on purpose: the two ghost pills are transparent, so a see-through
+       bar puts whatever is scrolling past inside their outlines. */
+    background: rgba(246, 240, 230, 0.94);
+    backdrop-filter: blur(20px) saturate(1.3);
   }
 
   .mobile-actions > a,
   .gps-toggle {
-    min-height: 48px;
+    /* 44px is the floor for a tap target, so the weight comes out of the fill
+       and the type rather than the height. */
+    min-height: 44px;
+    padding: 0 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    border: 1px solid var(--line);
     border-radius: 999px;
-    background: var(--ink);
-    color: var(--white);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
     font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     text-decoration: none;
+    transition: background-color 180ms ease, border-color 180ms ease;
   }
 
   .mobile-actions > a:last-child {
+    border-color: transparent;
     background: var(--plum);
-  }
-
-  .mobile-actions > a:visited {
     color: var(--white);
   }
 
   /* These are bare links, so the global `a:not(.button):hover` recolour reaches
      them — and --plum is exactly the Book now pill's own fill, which made the
-     label vanish under a finger. Same reason :visited is re-asserted above. */
+     label vanish under a finger. Each pill re-asserts its own colour instead. */
+  .mobile-actions > a:visited,
   .mobile-actions > a:hover,
   .mobile-actions > a:active,
   .mobile-actions > a:focus {
+    color: var(--ink);
+  }
+
+  .mobile-actions > a:last-child:visited,
+  .mobile-actions > a:last-child:hover,
+  .mobile-actions > a:last-child:active,
+  .mobile-actions > a:last-child:focus {
     color: var(--white);
+  }
+
+  .mobile-actions > a:not(:last-child):active,
+  .gps-toggle[aria-expanded="true"],
+  .gps-toggle:active {
+    border-color: rgba(34, 48, 78, 0.38);
+    background: rgba(34, 48, 78, 0.06);
   }
 
   /* GPS directions chooser — lives in the first cell of the sticky bar. */
@@ -2939,19 +2966,20 @@ body.page-lp .mobile-actions {
     position: relative;
   }
 
+  /* Deliberately no `font: inherit` or `border: 0` here — both would undo the
+     shared pill rule above, which is what makes this match the two links. */
   .gps-toggle {
     width: 100%;
     padding: 0 16px;
-    border: 0;
-    font: inherit;
-    font-weight: 600;
     cursor: pointer;
   }
 
   .gps-icon {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     flex: none;
+    /* The label dropped to 0.72rem caps; an 18px pin beside it read as a badge. */
+    opacity: 0.85;
   }
 
   .gps-sheet {
@@ -2964,8 +2992,9 @@ body.page-lp .mobile-actions {
     padding: 6px;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(246, 240, 230, 0.98);
-    backdrop-filter: blur(16px);
+    /* Fully opaque: this floats over the hero, and even a couple of percent of
+       transparency put headline text behind the map choices. */
+    background: var(--paper-pale);
     box-shadow: 0 12px 32px rgba(20, 30, 48, 0.18);
     z-index: 901;
   }
@@ -2981,7 +3010,10 @@ body.page-lp .mobile-actions {
     padding: 0 14px;
     border-radius: 11px;
     color: var(--ink);
-    font-weight: 600;
+    /* A shade lighter than the pills that opened it — this is a menu to read,
+       not a control competing with the bar underneath. */
+    font-size: 0.92rem;
+    font-weight: 500;
     text-decoration: none;
   }
 
