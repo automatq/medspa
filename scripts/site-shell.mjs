@@ -2,7 +2,7 @@ import { categories, services } from "../data/services.mjs";
 
 // Bump whenever assets/css or assets/js changes — /assets/* is served
 // immutable for a year, so a stale version ships unstyled sections.
-export const assetVersion = "20260810-specular";
+export const assetVersion = "20260811-editable-fonts";
 
 // Canonical URLs still point at the WordPress origin while the rebuild is staged;
 // absolute asset URLs (og:image, JSON-LD) resolve from the Vercel deployment.
@@ -22,6 +22,11 @@ export const SITE = {
   logoFull: "/assets/img/medspa/anima-logo-20260729.jpg",
   icon: "/assets/img/medspa/anima-logo-icon-20260729.png",
   mapsUrl: "https://maps.google.com/?q=2885+Lakeshore+Blvd+West+Etobicoke+ON+M8V+1J1",
+  // Turn-by-turn deep links for the mobile "GPS" chooser. `dir/?api=1` and Waze's
+  // `navigate=yes` both start navigation to the store; on phones they open the app.
+  mapsDirectionsUrl: "https://www.google.com/maps/dir/?api=1&destination=2885+Lakeshore+Blvd+West+Etobicoke+ON+M8V+1J1",
+  wazeUrl: "https://waze.com/ul?q=2885%20Lakeshore%20Blvd%20West%20Etobicoke%20ON%20M8V%201J1&navigate=yes",
+  appleMapsUrl: "https://maps.apple.com/?daddr=2885+Lakeshore+Blvd+West,+Etobicoke,+ON+M8V+1J1&dirflg=d",
   freshaUrl: "https://www.fresha.com/store/anima-medspa-store-sqkfn0xx?share=true&pId=2700299",
   address: {
     street: "2885 Lakeshore Blvd West",
@@ -216,6 +221,17 @@ export const footer = () => `<footer class="site-footer">
   </footer>`;
 
 export const mobileActions = () => `<nav class="mobile-actions" aria-label="Quick actions">
-    <a href="tel:+14377709296">Call</a>
-    <a href="/book-now.html">Book now</a>
+    <div class="gps-directions" data-gps>
+      <button class="gps-toggle" type="button" data-gps-toggle aria-expanded="false" aria-controls="gps-sheet" aria-label="Get directions">
+        <svg class="gps-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span>GPS</span>
+      </button>
+      <div class="gps-sheet" id="gps-sheet" data-gps-sheet hidden>
+        <a href="${escapeHtml(SITE.mapsDirectionsUrl)}" target="_blank" rel="noopener">Google Maps</a>
+        <a href="${escapeHtml(SITE.wazeUrl)}" target="_blank" rel="noopener">Waze</a>
+        <a class="gps-apple" data-gps-apple href="${escapeHtml(SITE.appleMapsUrl)}" target="_blank" rel="noopener" hidden>Apple Maps</a>
+      </div>
+    </div>
+    <a href="${SITE.phoneHref}">Call</a>
+    <a href="${SITE.bookHref}">Book now</a>
   </nav>`;

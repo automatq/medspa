@@ -76,6 +76,26 @@
   --font-display: "Cormorant", Georgia, serif;
 }
 
+/* Font pairings the clinic can switch between from the editor toolbar. Each one
+   is built from the two self-hosted families and the fonts already on the
+   device, so choosing one costs no extra download — only these three variables
+   change, and every rule downstream reads them. `classic` is the :root default
+   above and needs no block. Values are validated in data/editable.mjs. */
+[data-font-theme="modern"] {
+  --font-serif: "Sequel Sans", "Helvetica Neue", sans-serif;
+  --font-display: "Sequel Sans", "Helvetica Neue", sans-serif;
+}
+
+[data-font-theme="editorial"] {
+  --font-sans: "Cormorant", Georgia, "Times New Roman", serif;
+}
+
+[data-font-theme="system"] {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-display: Georgia, "Times New Roman", serif;
+}
+
 *,
 *::before,
 *::after {
@@ -2801,7 +2821,7 @@ body.page-lp .mobile-actions {
     left: 0;
     min-height: 64px;
     display: grid;
-    grid-template-columns: 1fr 1.25fr;
+    grid-template-columns: auto 1fr 1.25fr;
     gap: 8px;
     padding: 8px max(12px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     border-top: 1px solid var(--line);
@@ -2809,7 +2829,8 @@ body.page-lp .mobile-actions {
     backdrop-filter: blur(16px);
   }
 
-  .mobile-actions a {
+  .mobile-actions > a,
+  .gps-toggle {
     min-height: 48px;
     display: flex;
     align-items: center;
@@ -2822,16 +2843,87 @@ body.page-lp .mobile-actions {
     text-decoration: none;
   }
 
-  .mobile-actions a:last-child {
+  .mobile-actions > a:last-child {
     background: var(--plum);
   }
 
-  .mobile-actions a:visited {
+  .mobile-actions > a:visited {
     color: var(--white);
+  }
+
+  /* GPS directions chooser — lives in the first cell of the sticky bar. */
+  .gps-directions {
+    position: relative;
+  }
+
+  .gps-toggle {
+    width: 100%;
+    padding: 0 16px;
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .gps-icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+
+  .gps-sheet {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    min-width: 168px;
+    display: grid;
+    gap: 4px;
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(242, 236, 242, 0.98);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 32px rgba(30, 20, 30, 0.18);
+    z-index: 901;
+  }
+
+  .gps-sheet[hidden] {
+    display: none;
+  }
+
+  .gps-sheet a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    border-radius: 11px;
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .gps-sheet a:visited {
+    color: var(--ink);
+  }
+
+  .gps-sheet a:active,
+  .gps-sheet a:hover {
+    background: rgba(30, 20, 30, 0.06);
   }
 
   .page-booking .mobile-actions {
     display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Reclaim width on the smallest phones — GPS collapses to the pin icon. */
+  .gps-toggle span {
+    display: none;
+  }
+
+  .gps-toggle {
+    padding: 0 12px;
   }
 }
 

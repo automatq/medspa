@@ -1,5 +1,5 @@
 import { bannedReason } from "../../data/banned-content.mjs";
-import { getDefault, isLocked, isWellFormedKey } from "../../data/editable.mjs";
+import { THEME_KEYS, getDefault, isAllowedValue, isLocked, isWellFormedKey } from "../../data/editable.mjs";
 import { requireAdmin } from "../_lib/auth.mjs";
 import { deleteKey, writeKey } from "../_lib/store.mjs";
 
@@ -54,6 +54,14 @@ export default async function handler(req, res) {
   if (typeof value !== "string") return res.status(400).json({ error: "value must be a string" });
   if (value.length > MAX_LENGTH) {
     return res.status(413).json({ error: `Too long — ${MAX_LENGTH} characters maximum` });
+  }
+
+  // A settings key lands in a DOM attribute rather than a text node, so it is
+  // held to its enumerated values instead of the prose rules below.
+  if (!isAllowedValue(key, value)) {
+    return res.status(422).json({
+      error: `"${value}" is not one of: ${Object.keys(THEME_KEYS[key]).join(", ")}`,
+    });
   }
 
   const banned = bannedReason(value);

@@ -33,10 +33,10 @@ const SETTINGS = {
   lineColor: "#ffe3ad", // champagne, a lifted --gold for the moving highlight
   baseColor: "#d6a95e", // --gold, the static hairline beneath it
   radius: 999, // clamped to a pill against the shorter side
-  intensity: 1.4,
+  intensity: 1.6,
   shineSize: 10, // degrees of arc each streak lights
   shineFade: 40, // degrees over which a streak fades out at its ends
-  thickness: 1.7, // highlight width, CSS px
+  thickness: 3.2, // highlight width, CSS px
   proximity: 240, // distance at which the shine starts to rise, CSS px
 };
 
@@ -84,7 +84,7 @@ void main() {
   vec2 L = vec2(cos(uAngle), sin(uAngle));
 
   // Dark base stroke hugging the edge for a sense of thickness
-  float base = (1.0 - smoothstep(0.0, uBaseWidth, abs(d))) * 0.45;
+  float base = (1.0 - smoothstep(0.0, uBaseWidth, abs(d))) * 0.55;
 
   // Symmetric specular: the edges facing toward/away from the light both
   // catch a streak. The angular window (size + fade) is measured with an
@@ -93,7 +93,7 @@ void main() {
   float phi = acos(clamp(abs(dot(nEll, L)), 0.0, 1.0));
   float rim = 1.0 - smoothstep(uShineSize - uShineFade, uShineSize + uShineFade + 1e-4, phi);
   float line = gaussianLine(d, uThickness);
-  float edgeClamp = 1.0 - smoothstep(0.5 * uPx, 3.0 * uPx, abs(d));
+  float edgeClamp = 1.0 - smoothstep(0.5 * uPx, 6.0 * uPx, abs(d));
   float hi = line * rim * edgeClamp * uIntensity;
 
   vec3 col = uBaseColor * base + uLineColor * hi;
@@ -185,7 +185,7 @@ const attach = (host, overrides) => {
   // 3x screens buy nothing on a hairline and cost 2.25x the fill.
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   gl.uniform1f(uniform.uPx, dpr);
-  gl.uniform1f(uniform.uBaseWidth, dpr);
+  gl.uniform1f(uniform.uBaseWidth, 1.8 * dpr);
   gl.uniform3fv(uniform.uLineColor, rgb(settings.lineColor));
   gl.uniform3fv(uniform.uBaseColor, rgb(settings.baseColor));
   gl.uniform1f(uniform.uShineSize, (settings.shineSize * Math.PI) / 180);

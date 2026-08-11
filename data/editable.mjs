@@ -2,6 +2,7 @@ import { postBySlug } from "./blog.mjs";
 import { campaignBySlug, thankYou } from "./campaigns.mjs";
 import { glowPlan, privacy } from "./pages.mjs";
 import { serviceBySlug } from "./services.mjs";
+import { GENERATED_COPY } from "./site-copy.generated.mjs";
 import { teamBySlug } from "./team.mjs";
 
 /**
@@ -19,6 +20,13 @@ import { teamBySlug } from "./team.mjs";
  *   team.peggy-chen.summary
  *   pages.glow-plan.lede
  *   site.<page>.<slot>                (hand-written page copy, see SITE_COPY)
+ *   text.<hash>                       (everything else, see below)
+ *
+ * `text.<hash>` keys are minted by scripts/annotate-editable.mjs for prose no
+ * data module backs — the hand-written root pages, the shell, the copy the
+ * generators write inline. The hash is of the text itself, so an override can
+ * never land on the wrong element, and their defaults live in the generated
+ * module rather than being duplicated here by hand.
  */
 
 /**
@@ -27,6 +35,9 @@ import { teamBySlug } from "./team.mjs";
  * belongs in a data module should live there instead.
  */
 export const SITE_COPY = {
+  // Not copy but a setting, and it rides the same path for the same reason: one
+  // store, one public map, one fetch the pages already make. See FONT_THEMES.
+  "site.theme.fonts": "classic",
   "site.home.hero.eyebrow": "Medical aesthetics in Etobicoke",
   "site.home.hero.copy":
     "Advanced, non-surgical treatments in Lakeshore Village—planned around your goals, comfort, and natural features.",
@@ -39,6 +50,27 @@ export const SITE_COPY = {
   "site.home.social.lede":
     "Recent treatments, clinic moments, and aftercare explained by the team — shared straight from Anima rather than a stock library.",
 };
+
+/**
+ * The font pairings offered in the editor toolbar, matching the
+ * `[data-font-theme]` blocks in assets/css/medspa.css.
+ *
+ * Enumerated rather than free text because this value is written into a DOM
+ * attribute on every page: an open-ended string here is a stored injection
+ * vector, and a typo would silently fall back to the default with no clue why.
+ */
+export const FONT_THEMES = {
+  classic: "Cormorant headings, Sequel Sans body (current)",
+  modern: "Sequel Sans throughout",
+  editorial: "Cormorant throughout",
+  system: "Your device's own fonts",
+};
+
+export const THEME_KEYS = { "site.theme.fonts": FONT_THEMES };
+
+/** Settings keys accept only their listed values; ordinary copy accepts prose. */
+export const isAllowedValue = (key, value) =>
+  !(key in THEME_KEYS) || Object.hasOwn(THEME_KEYS[key], value);
 
 /**
  * Never editable, enforced in the API rather than only in the UI.
@@ -92,6 +124,7 @@ export const isWellFormedKey = (key) =>
 export const getDefault = (key) => {
   if (!isWellFormedKey(key)) return undefined;
   if (key in SITE_COPY) return SITE_COPY[key];
+  if (key in GENERATED_COPY) return GENERATED_COPY[key];
 
   const [root, id, ...path] = key.split(".");
   const lookup = ROOTS[root];

@@ -14,6 +14,32 @@
   const assetVersion = new URL(document.currentScript?.src || location.href).searchParams.get("v");
   const assetUrl = (path) => (assetVersion ? `${path}?v=${assetVersion}` : path);
 
+  /**
+   * The clinic's font pairing. A setting rather than copy, so it travels the
+   * same override map but lands on an attribute — see data/editable.mjs.
+   *
+   * Applied here, at the top of the script, from the last known value rather
+   * than from the network: /api/copy resolves long after first paint, so
+   * waiting for it would show the wrong pairing and then swap it. The list is
+   * duplicated from FONT_THEMES because an unrecognised value must not reach
+   * the attribute.
+   */
+  const FONT_THEME_KEY = "site.theme.fonts";
+  const FONT_THEME_CACHE = "anima-font-theme";
+  const FONT_THEMES = ["classic", "modern", "editorial", "system"];
+
+  const applyFontTheme = (value) => {
+    if (!FONT_THEMES.includes(value)) return;
+    document.documentElement.dataset.fontTheme = value;
+    try {
+      localStorage.setItem(FONT_THEME_CACHE, value);
+    } catch {}
+  };
+
+  try {
+    applyFontTheme(localStorage.getItem(FONT_THEME_CACHE));
+  } catch {}
+
   const setMobileMenu = (open) => {
     if (!menuButton || !mobileMenu) return;
     window.clearTimeout(menuCloseTimer);
@@ -485,6 +511,10 @@
   const applyOverrides = (map) => {
     if (!map) return;
     for (const [key, value] of Object.entries(map)) {
+      if (key === FONT_THEME_KEY) {
+        applyFontTheme(value);
+        continue;
+      }
       document.querySelectorAll(`[data-copy-key="${CSS.escape(key)}"]`).forEach((node) => {
         // An image key holds a URL; every other key holds text.
         if (node.tagName === "IMG") node.src = value;
@@ -494,8 +524,6 @@
   };
 
   const startCopyOverrides = () => {
-    if (!document.querySelector("[data-copy-key]")) return;
-
     try {
       const cached = sessionStorage.getItem(COPY_CACHE_KEY);
       if (cached) applyOverrides(JSON.parse(cached));
@@ -620,11 +648,47 @@
       .catch(() => {});
   };
 
+  /**
+   * The sticky mobile bar's "GPS" button opens a small chooser so the visitor can
+   * launch directions in Google Maps, Waze, or — only where it exists — Apple Maps.
+   * The Apple link ships hidden and is revealed on Apple platforms (iPadOS 13+
+   * reports "Macintosh"). Closes on outside click or Escape, like the nav dropdown.
+   */
+  const startGpsDirections = () => {
+    const wrap = document.querySelector("[data-gps]");
+    const toggle = wrap?.querySelector("[data-gps-toggle]");
+    const sheet = wrap?.querySelector("[data-gps-sheet]");
+    if (!wrap || !toggle || !sheet) return;
+
+    if (/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent)) {
+      wrap.querySelector("[data-gps-apple]")?.removeAttribute("hidden");
+    }
+
+    const setOpen = (open) => {
+      sheet.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+    };
+
+    toggle.addEventListener("click", () => setOpen(sheet.hidden));
+
+    document.addEventListener("click", (event) => {
+      if (wrap.contains(event.target)) return;
+      setOpen(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || sheet.hidden) return;
+      setOpen(false);
+      toggle.focus();
+    });
+  };
+
   startIntro();
   startMotion();
   startParallax();
   startMagneticButtons();
   startSpecularButtons();
+  startGpsDirections();
   startMailtoForms();
   startPortraitLightbox();
   startCopyOverrides();
