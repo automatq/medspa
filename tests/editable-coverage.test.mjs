@@ -88,6 +88,20 @@ test("the font setting accepts its own themes and nothing else", () => {
   assert.ok(isAllowedValue("site.home.hero.eyebrow", "Anything the clinic likes"));
 });
 
+test("the editor starts idle and has to be switched on", async () => {
+  // Signing in must not arm the page. With every heading now editable, an
+  // editor that starts live turns any stray click into a text field.
+  const editor = await readFile(join(root, "assets/js/editor.js"), "utf8");
+
+  assert.match(editor, /editing:\s*false/, "state must start with editing off");
+  assert.doesNotMatch(
+    editor,
+    /classList\.add\("anima-editing"\)/,
+    "nothing may switch editing on directly — go through setEditing"
+  );
+  assert.match(editor, /setEditing\(false\)/, "init must leave the editor idle");
+});
+
 test("every font theme the picker offers is actually styled", async () => {
   const css = await readFile(join(root, "assets/css/medspa.css"), "utf8");
   const editor = await readFile(join(root, "assets/js/editor.js"), "utf8");

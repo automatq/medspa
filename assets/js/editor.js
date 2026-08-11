@@ -15,7 +15,10 @@
 
 const state = {
   values: new Map(), // key -> last known saved value, for Escape and dirty checks
-  editing: true,
+  // Off until asked for. Signing in should not mean every heading on the page is
+  // one stray click from being rewritten — and with the whole site editable, a
+  // click that used to do nothing now lands in a text field.
+  editing: false,
   dirty: new Set(),
   applyOverrides: null,
   cacheKey: null,
@@ -60,13 +63,29 @@ const FONT_THEMES = [
 
 const FONT_THEME_KEY = "site.theme.fonts";
 
+let statusNode;
+let toggleNode;
+
+/**
+ * The one place editing turns on or off. Every affordance is scoped under
+ * `body.anima-editing` in the CSS, so the class does the visual half and
+ * `contentEditable` the functional half — they must not drift apart.
+ */
+const setEditing = (on) => {
+  state.editing = on;
+  document.body.classList.toggle("anima-editing", on);
+  setFieldsEditable(on);
+  if (statusNode) statusNode.textContent = on ? "Editing" : "Ready";
+  if (toggleNode) toggleNode.textContent = on ? "Done" : "Edit";
+};
+
 const buildToolbar = () => {
   const bar = document.createElement("div");
   bar.className = "anima-editor-bar";
   bar.innerHTML = `
     <span class="anima-editor-dot" aria-hidden="true"></span>
-    <span class="anima-editor-status">Editing</span>
-    <button type="button" data-editor-toggle>Pause</button>
+    <span class="anima-editor-status">Ready</span>
+    <button type="button" data-editor-toggle>Edit</button>
     <label class="anima-editor-fonts">Fonts
       <select data-editor-fonts>
         ${FONT_THEMES.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}
@@ -103,16 +122,10 @@ const buildToolbar = () => {
   });
 
   toast = bar.querySelector(".anima-editor-toast");
-  const status = bar.querySelector(".anima-editor-status");
-  const toggle = bar.querySelector("[data-editor-toggle]");
+  statusNode = bar.querySelector(".anima-editor-status");
+  toggleNode = bar.querySelector("[data-editor-toggle]");
 
-  toggle.addEventListener("click", () => {
-    state.editing = !state.editing;
-    document.body.classList.toggle("anima-editing", state.editing);
-    status.textContent = state.editing ? "Editing" : "Paused";
-    toggle.textContent = state.editing ? "Pause" : "Resume";
-    setFieldsEditable(state.editing);
-  });
+  toggleNode.addEventListener("click", () => setEditing(!state.editing));
 
   bar.querySelector("[data-editor-logout]").addEventListener("click", async () => {
     await fetch("/api/admin/login", { method: "DELETE", credentials: "same-origin" });
@@ -282,19 +295,24 @@ export const init = ({ applyOverrides, cacheKey }) => {
   state.applyOverrides = applyOverrides;
   state.cacheKey = cacheKey;
 
+  // /assets/* is immutable for a year, so this has to carry the same ?v= this
+  // module was imported with — otherwise an admin who has been here before keeps
+  // last release's toolbar CSS against this release's toolbar markup.
+  const version = new URL(import.meta.url).searchParams.get("v");
   const link = document.createElement("link");
   link.rel = "stylesheet";
-  link.href = "/assets/css/editor.css";
+  link.href = version ? `/assets/css/editor.css?v=${version}` : "/assets/css/editor.css";
   document.head.append(link);
 
-  document.body.classList.add("anima-editing");
   buildToolbar();
 
+  // Wiring is not the same as arming: the listeners go on now, but nothing is
+  // contentEditable and no affordance is drawn until the toolbar says so.
   document.querySelectorAll("[data-copy-key]").forEach((node) => {
     if (node.tagName === "IMG") wireImage(node);
     else wireText(node);
   });
-  setFieldsEditable(true);
+  setEditing(false);
 
   // Blur is the only commit, so leaving with focus still in a field would drop
   // the edit without a word. preet has no equivalent guard.
@@ -304,5 +322,5 @@ export const init = ({ applyOverrides, cacheKey }) => {
     event.returnValue = "";
   });
 
-  showToast("Editing on — click any text to change it");
+  showToast("Signed in — click Edit to change text");
 };
