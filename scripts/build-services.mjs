@@ -14,7 +14,7 @@ import {
   reviewSignal,
 } from "./components.mjs";
 import { cleanJson, serviceGraph } from "./schema.mjs";
-import { SITE, assetVersion, escapeHtml, footer, mobileActions, navigation, serviceHref } from "./site-shell.mjs";
+import { SITE, assetVersion, escapeHtml, fontPreloads, footer, mobileActions, navigation, scriptTail, serviceHref } from "./site-shell.mjs";
 
 const bodyClass = (category) => `page-service-detail service-category-${category}`;
 
@@ -30,7 +30,7 @@ const renderService = (item, index) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2ecf2">
+  <meta name="theme-color" content="#f6f0e6">
   <meta name="description" content="${escapeHtml(item.metaDescription)}">
   <title>${escapeHtml(item.seoTitle)}</title>
   <link rel="canonical" href="${escapeHtml(item.legacyUrl)}">
@@ -41,6 +41,7 @@ const renderService = (item, index) => {
   <meta property="og:image" content="${SITE.assetOrigin}/assets/img/services/${item.imageStem}-1280.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="${SITE.icon}" type="image/png">
+  ${fontPreloads}
   <link rel="stylesheet" href="/assets/css/medspa.css?v=${assetVersion}">
   <script src="/assets/js/medspa.js?v=${assetVersion}" defer></script>
   <script type="application/ld+json">${cleanJson(serviceGraph(item, category, provider))}</script>
@@ -60,7 +61,7 @@ const renderService = (item, index) => {
         <div class="service-hero-grid">
           <div class="service-hero-copy">
             <p class="eyebrow">${escapeHtml(category.label)} · ${escapeHtml(item.eyebrow)}</p>
-            <h1 class="service-title" data-split-title>${escapeHtml(item.name)} <span class="serif">${escapeHtml(item.titleAccent)}</span></h1>
+            <h1 class="service-title" data-split-title>${escapeHtml(item.name)} ${scriptTail(item.titleAccent)}</h1>
             <p class="service-intro"${ed(`services.${item.slug}.intro`)}>${escapeHtml(item.intro)}</p>
             <div class="button-row">
               <a class="button button-primary" href="${SITE.bookHref}">${escapeHtml(item.bookingCta)} <span class="button-arrow" aria-hidden="true">↗</span></a>
@@ -88,7 +89,7 @@ const renderService = (item, index) => {
       <div class="shell service-editorial-grid">
         <div class="service-section-heading" data-reveal>
           <p class="eyebrow">What it supports</p>
-          <h2 class="section-title">Goals worth <span class="serif">discussing clearly.</span></h2>
+          <h2 class="section-title">Goals worth discussing <span class="script">clearly.</span></h2>
         </div>
         <div>
           <ul class="concern-list" data-reveal-group>${editableList(item.concerns, (i) => `services.${item.slug}.concerns.${i}`)}</ul>
@@ -101,7 +102,7 @@ const renderService = (item, index) => {
       <div class="shell">
         <div class="service-section-heading" data-reveal>
           <p class="eyebrow">Your appointment</p>
-          <h2 class="section-title">A considered process, <span class="serif">step by step.</span></h2>
+          <h2 class="section-title">A <span class="script">considered</span> process, step by step.</h2>
         </div>
         <ol class="service-process" data-reveal-group>
           ${processItems(item.process, (i) => `services.${item.slug}.process.${i}`)}
@@ -113,7 +114,7 @@ const renderService = (item, index) => {
       <div class="shell service-benefits-grid">
         <div data-reveal>
           <p class="eyebrow">Potential benefits</p>
-          <h2 class="section-title">What this treatment <span class="serif">may support.</span></h2>
+          <h2 class="section-title">What this treatment may <span class="script">support.</span></h2>
           <p class="lede">Benefits describe treatment goals, not guaranteed outcomes. Your provider will explain what is realistic for you.</p>
         </div>
         <ul class="benefit-list" data-reveal-group>${editableList(item.benefits, (i) => `services.${item.slug}.benefits.${i}`)}</ul>
@@ -124,7 +125,7 @@ const renderService = (item, index) => {
       <div class="shell">
         <div class="service-section-heading" data-reveal>
           <p class="eyebrow">Before you book</p>
-          <h2 class="section-title">Candidacy, preparation, and <span class="serif">care after.</span></h2>
+          <h2 class="section-title">Candidacy, preparation, and <span class="script">care</span> after.</h2>
         </div>
         <div class="care-grid" data-reveal-group>
           <article><span>01</span><h3>Who it may suit</h3><p${ed(`services.${item.slug}.candidacy`)}>${escapeHtml(item.candidacy)}</p></article>
@@ -141,7 +142,7 @@ const renderService = (item, index) => {
     <section class="section section-pale" aria-labelledby="faq-title">
       <div class="narrow">
         <p class="eyebrow" data-reveal>Your questions, answered</p>
-        <h2 class="section-title" id="faq-title" data-reveal>${escapeHtml(item.navName || item.name)} <span class="serif">FAQ.</span></h2>
+        <h2 class="section-title" id="faq-title" data-reveal>${escapeHtml(item.navName || item.name)} FAQ.</h2>
         <div class="faq-list" data-reveal-group>
           ${faqItems(item.faqs, (i) => `services.${item.slug}.faqs.${i}`)}
         </div>
@@ -153,7 +154,7 @@ const renderService = (item, index) => {
         <div class="related-heading" data-reveal>
           <div>
             <p class="eyebrow">Continue exploring</p>
-            <h2 class="section-title">Related <span class="serif">treatments.</span></h2>
+            <h2 class="section-title">Related <span class="script">treatments.</span></h2>
           </div>
           <a class="text-link" href="/service-light.html#${escapeHtml(item.category)}">View ${escapeHtml(category.shortLabel.toLowerCase())} <span aria-hidden="true">↗</span></a>
         </div>

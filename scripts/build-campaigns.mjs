@@ -3,7 +3,7 @@ import { CAMPAIGN_PHONE, campaigns, thankYou } from "../data/campaigns.mjs";
 import { serviceBySlug } from "../data/services.mjs";
 import { faqItems, list } from "./components.mjs";
 import { cleanJson, graph } from "./schema.mjs";
-import { SITE, assetVersion, escapeHtml } from "./site-shell.mjs";
+import { SITE, assetVersion, escapeHtml, fontPreloads, scriptTail } from "./site-shell.mjs";
 
 /**
  * Paid-campaign landing pages. Unlike every other page on the site these render
@@ -57,7 +57,7 @@ const renderSection = (section, index) => {
   const shade = index % 2 === 0 ? "section-paper" : "section-pale";
   const heading = `<div class="service-section-heading" data-reveal>
           <h2 class="section-title">${escapeHtml(section.heading)}${
-    section.accent ? ` <span class="serif">${escapeHtml(section.accent)}</span>` : ""
+    section.accent ? ` ${scriptTail(section.accent)}` : ""
   }</h2>
           ${section.lede ? `<p class="lede">${escapeHtml(section.lede)}</p>` : ""}
         </div>`;
@@ -176,12 +176,13 @@ const renderCampaign = (campaign) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2ecf2">
+  <meta name="theme-color" content="#f6f0e6">
   <meta name="description" content="${escapeHtml(campaign.metaDescription)}">
   <title>${escapeHtml(campaign.seoTitle)}</title>
   <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="${escapeHtml(canonical)}">
   <link rel="icon" href="${SITE.icon}" type="image/png">
+  ${fontPreloads}
   <link rel="stylesheet" href="/assets/css/medspa.css?v=${assetVersion}">
   <script src="/assets/js/medspa.js?v=${assetVersion}" defer></script>
   <script type="application/ld+json">${cleanJson(jsonLd)}</script>
@@ -194,9 +195,7 @@ const renderCampaign = (campaign) => {
     <section class="service-hero">
       <div class="shell">
         <p class="eyebrow">${escapeHtml(campaign.eyebrow)}</p>
-        <h1 class="service-title" data-split-title>${escapeHtml(campaign.title)} <span class="serif">${escapeHtml(
-    campaign.titleAccent
-  )}</span></h1>
+        <h1 class="service-title" data-split-title>${escapeHtml(campaign.title)} ${scriptTail(campaign.titleAccent)}</h1>
         <p class="service-intro">${escapeHtml(campaign.lede)}</p>
         <div class="button-row">
           <a class="button button-primary" href="#book">${escapeHtml(
@@ -219,7 +218,7 @@ const renderCampaign = (campaign) => {
     <section class="section section-dark" aria-labelledby="lp-faq-title">
       <div class="narrow">
         <p class="eyebrow" data-reveal>Common questions</p>
-        <h2 class="section-title" id="lp-faq-title" data-reveal>Before you <span class="serif">book.</span></h2>
+        <h2 class="section-title" id="lp-faq-title" data-reveal>Before you <span class="script">book.</span></h2>
         <div class="faq-list" data-reveal-group>
           ${faqItems(campaign.faqs)}
         </div>
@@ -231,7 +230,7 @@ const renderCampaign = (campaign) => {
     <section class="section section-paper">
       <div class="narrow">
         <div class="cta-panel" data-reveal>
-          <h2>${escapeHtml(campaign.cta.heading)} <span class="serif">${escapeHtml(campaign.cta.accent)}</span></h2>
+          <h2>${escapeHtml(campaign.cta.heading)} ${scriptTail(campaign.cta.accent)}</h2>
           <p>${escapeHtml(campaign.cta.body)}</p>
           <div class="button-row">
             <a class="button button-light" href="#book">${escapeHtml(
@@ -254,11 +253,12 @@ const renderThankYou = (page) => `<!doctype html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2ecf2">
+  <meta name="theme-color" content="#f6f0e6">
   <meta name="description" content="${escapeHtml(page.metaDescription)}">
   <title>${escapeHtml(page.seoTitle)}</title>
   <meta name="robots" content="noindex, follow">
   <link rel="icon" href="${SITE.icon}" type="image/png">
+  ${fontPreloads}
   <link rel="stylesheet" href="/assets/css/medspa.css?v=${assetVersion}">
   <script src="/assets/js/medspa.js?v=${assetVersion}" defer></script>
 </head>
@@ -270,7 +270,7 @@ const renderThankYou = (page) => `<!doctype html>
     <section class="page-hero">
       <div class="narrow">
         <p class="eyebrow">Request received</p>
-        <h1 class="page-title">${escapeHtml(page.title)} <span class="serif">${escapeHtml(page.titleAccent)}</span></h1>
+        <h1 class="page-title">${escapeHtml(page.title)} ${scriptTail(page.titleAccent)}</h1>
         <p class="lede">${escapeHtml(page.lede)}</p>
       </div>
     </section>

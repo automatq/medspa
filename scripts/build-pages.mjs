@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { glowPlan, privacy, standalonePages } from "../data/pages.mjs";
 import { ctaPanel, faqItems, list } from "./components.mjs";
 import { breadcrumbList, cleanJson, faqPage, graph } from "./schema.mjs";
-import { SITE, assetVersion, escapeHtml, footer, mobileActions, navigation } from "./site-shell.mjs";
+import { SITE, assetVersion, escapeHtml, fontPreloads, footer, mobileActions, navigation, scriptTail } from "./site-shell.mjs";
 
 const termRow = (page, [label, value]) =>
   `<div class="booking-meta"><strong>${escapeHtml(label)}</strong><span${value ? "" : ' class="term-deferred"'}>${escapeHtml(
@@ -49,7 +49,7 @@ const renderGlowPlan = (page) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2ecf2">
+  <meta name="theme-color" content="#f6f0e6">
   <meta name="description" content="${escapeHtml(page.metaDescription)}">
   <title>${escapeHtml(page.seoTitle)}</title>
   <link rel="canonical" href="${escapeHtml(canonical)}">
@@ -59,6 +59,7 @@ const renderGlowPlan = (page) => {
   <meta property="og:url" content="${escapeHtml(canonical)}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="${SITE.icon}" type="image/png">
+  ${fontPreloads}
   <link rel="stylesheet" href="/assets/css/medspa.css?v=${assetVersion}">
   <script src="/assets/js/medspa.js?v=${assetVersion}" defer></script>
   <script type="application/ld+json">${cleanJson(jsonLd)}</script>
@@ -75,7 +76,7 @@ const renderGlowPlan = (page) => {
           <span aria-current="page">${escapeHtml(page.navName)}</span>
         </nav>
         <p class="eyebrow">${escapeHtml(page.eyebrow)}</p>
-        <h1 class="page-title" data-split-title>${escapeHtml(page.title)} <span class="serif">${escapeHtml(page.titleAccent)}</span></h1>
+        <h1 class="page-title" data-split-title>${scriptTail(page.title)} ${escapeHtml(page.titleAccent)}</h1>
         <p class="lede">${escapeHtml(page.lede)}</p>
         <div class="page-hero-meta">
           ${page.chips.map((chip) => `<span class="meta-chip">${escapeHtml(chip)}</span>`).join("\n          ")}
@@ -97,7 +98,7 @@ const renderGlowPlan = (page) => {
         </aside>
         <div class="booking-widget" data-reveal>
           <p class="eyebrow">Is it worth it?</p>
-          <h2 class="section-title">Worth checking against <span class="serif">how often you actually book.</span></h2>
+          <h2 class="section-title">Worth checking against how often you actually <span class="script">book.</span></h2>
           <p class="lede">At $159 per month over a 12-month term, the plan commits $1,908 before treatment costs. It rewards a regular cadence; it is poor value for occasional visits.</p>
           <p>Ask the clinic to compare member pricing against what you booked in the last twelve months. If the numbers do not favour the plan, they will tell you.</p>
           <div class="button-row">
@@ -111,7 +112,7 @@ const renderGlowPlan = (page) => {
       <div class="shell service-benefits-grid">
         <div data-reveal>
           <p class="eyebrow">What membership includes</p>
-          <h2 class="section-title">Five inclusions, <span class="serif">stated plainly.</span></h2>
+          <h2 class="section-title">Five inclusions, stated <span class="script">plainly.</span></h2>
           <p class="lede">These are the benefits Anima publishes for the Glow Plan. Treatment results are not part of what a membership can promise.</p>
         </div>
         <ul class="benefit-list" data-reveal-group>${list(page.benefits)}</ul>
@@ -122,7 +123,7 @@ const renderGlowPlan = (page) => {
       <div class="shell">
         <div class="service-section-heading" data-reveal>
           <p class="eyebrow">Your glow journey</p>
-          <h2 class="section-title">How a membership year <span class="serif">actually runs.</span></h2>
+          <h2 class="section-title">How a membership year actually <span class="script">runs.</span></h2>
         </div>
         <div class="steps" data-reveal-group>
           ${page.journey.map(journeyStep).join("\n          ")}
@@ -133,7 +134,7 @@ const renderGlowPlan = (page) => {
     <section class="section section-pale" aria-labelledby="faq-title">
       <div class="narrow">
         <p class="eyebrow" data-reveal>Your questions, answered</p>
-        <h2 class="section-title" id="faq-title" data-reveal>Glow Plan <span class="serif">FAQ.</span></h2>
+        <h2 class="section-title" id="faq-title" data-reveal>Glow Plan FAQ.</h2>
         <div class="faq-list" data-reveal-group>
           ${faqItems(page.faqs)}
         </div>
@@ -169,7 +170,7 @@ const renderPrivacy = (page) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2ecf2">
+  <meta name="theme-color" content="#f6f0e6">
   <meta name="description" content="${escapeHtml(page.metaDescription)}">
   <title>${escapeHtml(page.seoTitle)}</title>
   <link rel="canonical" href="${escapeHtml(canonical)}">
@@ -179,6 +180,7 @@ const renderPrivacy = (page) => {
   <meta property="og:url" content="${escapeHtml(canonical)}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="${SITE.icon}" type="image/png">
+  ${fontPreloads}
   <link rel="stylesheet" href="/assets/css/medspa.css?v=${assetVersion}">
   <script src="/assets/js/medspa.js?v=${assetVersion}" defer></script>
   <script type="application/ld+json">${cleanJson(jsonLd)}</script>
@@ -195,7 +197,7 @@ const renderPrivacy = (page) => {
           <span aria-current="page">Privacy</span>
         </nav>
         <p class="eyebrow">${escapeHtml(page.eyebrow)}</p>
-        <h1 class="page-title" data-split-title>${escapeHtml(page.title)} <span class="serif">${escapeHtml(page.titleAccent)}</span></h1>
+        <h1 class="page-title" data-split-title>${escapeHtml(page.title)} ${scriptTail(page.titleAccent)}</h1>
         <p class="lede">${escapeHtml(page.lede)}</p>
       </div>
     </section>

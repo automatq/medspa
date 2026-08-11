@@ -60,9 +60,9 @@ export const SITE_COPY = {
  * vector, and a typo would silently fall back to the default with no clue why.
  */
 export const FONT_THEMES = {
-  classic: "Cormorant headings, Sequel Sans body (current)",
+  classic: "Playfair Display headings, Sequel Sans body (current)",
   modern: "Sequel Sans throughout",
-  editorial: "Cormorant throughout",
+  editorial: "Playfair Display throughout",
   system: "Your device's own fonts",
 };
 

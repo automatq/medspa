@@ -51,8 +51,8 @@ body:not(.anima-editing) .anima-editor-dot {
 
 .anima-editor-bar button:hover,
 .anima-editor-bar a:hover {
-  border-color: var(--plum-soft, #d3bcdc);
-  color: var(--plum-soft, #d3bcdc);
+  border-color: var(--plum-soft, #cfc0e6);
+  color: var(--plum-soft, #cfc0e6);
 }
 
 /* Font pairing picker. Reads as one control with the pill buttons beside it,
@@ -107,12 +107,12 @@ body.anima-editing [data-copy-key]:not(img) {
 
 body.anima-editing [data-copy-key]:not(img):hover {
   outline-style: solid;
-  outline-color: var(--plum, #855f8c);
+  outline-color: var(--plum, #7b6397);
   background: rgba(133, 95, 140, 0.06);
 }
 
 body.anima-editing [data-copy-key]:focus {
-  outline: 2px solid var(--plum, #855f8c);
+  outline: 2px solid var(--plum, #7b6397);
   outline-offset: 3px;
   background: rgba(133, 95, 140, 0.08);
 }
@@ -160,7 +160,7 @@ body:not(.anima-editing) .anima-image-tools {
   border: 0;
   border-radius: 999px;
   background: #fdfbfd;
-  color: #241d29;
+  color: #22304e;
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 0.82rem;
   font-weight: 600;
@@ -168,7 +168,7 @@ body:not(.anima-editing) .anima-image-tools {
 }
 
 .anima-image-tools button:hover {
-  background: var(--plum-soft, #d3bcdc);
+  background: var(--plum-soft, #cfc0e6);
 }
 
 .anima-image-wrap.is-uploading .anima-image-tools::after {

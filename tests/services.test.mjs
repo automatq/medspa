@@ -288,13 +288,13 @@ test("motion is progressive, dependency-free, reduced-motion safe, and below bud
   assert.match(runtime, /--parallax-y/);
   assert.match(runtime, /imageRevealSentinels/);
   assert.match(runtime, /imageObserver\.observe\(sentinel\)/);
-  // Hero plus one image per treatment-category split. Dropped from five when the
-  // Instagram section was folded into the TikTok one — the homepage had three
-  // consecutive visual sections and ran to 32 screens on a phone.
+  // Just the hero now. Dropped from four when the homepage was shortened: the
+  // treatment-category splits (each carrying a parallax image) were replaced by
+  // the compact featured-treatments grid and the founder section.
   assert.equal(
     (homepage.match(/\bdata-parallax(?:\s|>)/g) || []).length,
-    4,
-    "homepage needs one hero and three image parallax targets"
+    1,
+    "homepage needs exactly the hero as a parallax target"
   );
   assert.match(homepage, /class="hero"[^>]+data-parallax-strength="34"/);
   assert.match(css, /@view-transition/);

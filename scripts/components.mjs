@@ -1,7 +1,7 @@
 import { postCategoryById } from "../data/blog.mjs";
 import { isEditable } from "../data/editable.mjs";
 import { categories, categoryById, serviceBySlug, services } from "../data/services.mjs";
-import { SITE, escapeHtml, serviceHref } from "./site-shell.mjs";
+import { SITE, escapeHtml, scriptLead, scriptTail, serviceHref } from "./site-shell.mjs";
 
 const twoDigit = (index) => String(index + 1).padStart(2, "0");
 const servicesIn = (categoryId) => services.filter((item) => item.category === categoryId);
@@ -105,7 +105,7 @@ export const providerBand = (provider) => {
         ${portrait}
         <div data-reveal>
           <p class="eyebrow">Provider published by Anima</p>
-          <h2 class="section-title" id="provider-title">${escapeHtml(provider.name)}, <span class="serif">${escapeHtml(provider.role)}</span></h2>
+          <h2 class="section-title" id="provider-title">${scriptLead(provider.name)}, ${escapeHtml(provider.role)}</h2>
           <p class="provider-credentials">${escapeHtml(provider.credentials)}</p>
           ${bio}
           <p class="provider-verification">Credentials and current clinical role should be confirmed directly during booking.</p>
@@ -149,7 +149,7 @@ export const reviewSignal = () => `<section class="section section-pale">
       <div class="shell review-signal-grid">
         <div data-reveal>
           <p class="eyebrow">Verified client signal</p>
-          <h2 class="section-title">A 5.0 rating you can <span class="serif">check yourself.</span></h2>
+          <h2 class="section-title">A 5.0 rating you can check <span class="script">yourself.</span></h2>
           <p class="lede">Read Anima’s 18 verified Fresha reviews in the original booking profile before deciding what feels right for you.</p>
           <div class="button-row">
             <a class="button button-outline" href="${escapeHtml(SITE.freshaUrl)}" target="_blank" rel="noopener">Read verified reviews <span class="button-arrow" aria-hidden="true">↗</span></a>
@@ -164,7 +164,7 @@ export const reviewSignal = () => `<section class="section section-pale">
     </section>`;
 
 export const ctaPanel = ({ heading, accent, body, primary, secondary }) => `<div class="cta-panel" data-reveal>
-          <h2>${escapeHtml(heading)} <span class="serif">${escapeHtml(accent)}</span></h2>
+          <h2>${escapeHtml(heading)} ${scriptTail(accent)}</h2>
           <p>${escapeHtml(body)}</p>
           <div class="button-row">
             <a class="button button-light" href="${escapeHtml(primary.href)}">${escapeHtml(primary.label)} <span class="button-arrow" aria-hidden="true">↗</span></a>
@@ -202,7 +202,7 @@ ${categories
   .map(
     (category, index) => `      <section class="section treatment-category" id="${category.id}">
         <div class="shell">
-          <div class="category-heading"><span class="category-number">${twoDigit(index)}</span><h2>${escapeHtml(category.headingLead)} <span class="serif">${escapeHtml(category.headingAccent)}</span></h2></div>
+          <div class="category-heading"><span class="category-number">${twoDigit(index)}</span><h2>${scriptLead(`${category.headingLead} ${category.headingAccent}`)}</h2></div>
           <div class="category-body">
             <p>${escapeHtml(category.pageDescription)}</p>
             <div class="service-tags">
@@ -440,7 +440,7 @@ export const journalSection = (posts) => `
         <div class="related-heading" data-reveal>
           <div>
             <p class="eyebrow"${ed("site.home.journal.eyebrow")}>From the journal</p>
-            <h2 class="section-title" id="home-journal-title">Reading for <span class="serif">better skin.</span></h2>
+            <h2 class="section-title" id="home-journal-title"><span class="script">Reading</span> for better skin.</h2>
           </div>
           <a class="text-link" href="/blog/">Read the journal <span aria-hidden="true">↗</span></a>
         </div>
@@ -467,9 +467,7 @@ export const teamSection = (team) => {
           )}
           <div data-reveal>
             <p class="eyebrow">Founder</p>
-            <h2 class="section-title" id="team-title">${escapeHtml(founder.name)}, <span class="serif">${escapeHtml(
-    founder.role
-  )}</span></h2>
+            <h2 class="section-title" id="team-title">${scriptLead(founder.name)}, ${escapeHtml(founder.role)}</h2>
             <p class="provider-credentials">${escapeHtml(founder.credentials)}</p>
             ${founder.bio.map((paragraph, index) => `<p${index === 0 ? ' class="lede"' : ""}>${escapeHtml(paragraph)}</p>`).join("\n            ")}
             <p class="provider-verification">Titles, credentials, and current scope of practice are confirmed directly at consultation.</p>
@@ -503,7 +501,7 @@ export const featuredPricing = ({ prices, membershipPrice, priceBySlug, formatPr
   return `
         <div class="service-section-heading" data-reveal>
           <p class="eyebrow">Published pricing</p>
-          <h2 class="section-title">The four treatments with <span class="serif">a published price.</span></h2>
+          <h2 class="section-title">The four treatments with a <span class="script">published</span> price.</h2>
           <p class="lede">${escapeHtml(tail)} These four are listed here because Anima publishes them directly.</p>
         </div>
         <div class="info-grid" data-reveal-group>

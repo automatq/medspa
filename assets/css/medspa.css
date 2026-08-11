@@ -30,41 +30,51 @@
   font-display: swap;
 }
 
-/* Cormorant — the brand serif echoing the storefront wordmark. Variable font
-   (one file per style, covers the full weight range), self-hosted to match the
-   Sequel Sans delivery above. Used for display/section headings and .serif accents. */
+/* Playfair Display — the display serif for headings. Variable font (one file
+   per style, covers the full weight range), self-hosted to match the Sequel
+   Sans delivery above. Used for display/section headings and .serif accents. */
 @font-face {
-  font-family: "Cormorant";
-  src: url("../fonts/Cormorant-normal.woff2") format("woff2");
+  font-family: "Playfair Display";
+  src: url("../fonts/PlayfairDisplay-normal.woff2") format("woff2");
   font-style: normal;
-  font-weight: 300 700;
+  font-weight: 400 900;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Cormorant";
-  src: url("../fonts/Cormorant-italic.woff2") format("woff2");
+  font-family: "Playfair Display";
+  src: url("../fonts/PlayfairDisplay-italic.woff2") format("woff2");
   font-style: italic;
-  font-weight: 300 700;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+/* Great Vibes — the connected script reserved for one accent word per heading. */
+@font-face {
+  font-family: "Great Vibes";
+  src: url("../fonts/GreatVibes-regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
   font-display: swap;
 }
 
 :root {
-  /* Palette aligned to the storefront sign: a lavender/mauve board with cool
-     near-black lettering (was a warm peach + espresso scheme). */
-  --ink: #241d29;          /* cool charcoal-aubergine — primary text (was #2c1912) */
-  --ink-soft: #5f5468;     /* muted mauve-grey — secondary text (was #5f4b42) */
-  --paper: #dcc7d6;        /* dusty lilac — .section-paper bg (was peach #f0cdb5) */
-  --paper-light: #f2ecf2;  /* barely-lilac — page/body bg (was #faeee5) */
-  --paper-pale: #fcf9fc;   /* cool near-white — .section-pale bg (was #fffaf6) */
-  --plum: #855f8c;         /* lavender-mauve accent (was #87586d) */
-  --plum-dark: #573f60;    /* deep aubergine — hovers, eyebrow text (was #654153) */
-  --plum-soft: #d3bcdc;    /* soft lilac — accents on dark sections (was #d9b7c5) */
+  /* Palette copied from the reference design: deep navy lettering on warm
+     cream grounds, with lavender kept as the accent family (was dusty
+     lilac + charcoal-aubergine). */
+  --ink: #22304e;          /* deep navy — primary text (was #241d29) */
+  --ink-soft: #4d5a75;     /* slate — secondary text (was #5f5468) */
+  --paper: #ece2d2;        /* warm cream — .section-paper bg (was lilac #dcc7d6) */
+  --paper-light: #f6f0e6;  /* light cream — page/body bg (was #f2ecf2) */
+  --paper-pale: #fbf8f2;   /* near-white cream — .section-pale bg (was #fcf9fc) */
+  --plum: #7b6397;         /* lavender accent (was #855f8c) */
+  --plum-dark: #554373;    /* deep lavender — hovers, small accents (was #573f60) */
+  --plum-soft: #cfc0e6;    /* soft lavender — accents on dark sections (was #d3bcdc) */
   --gold: #d6a95e;         /* warm gold accent, kept */
-  --line: rgba(36, 29, 45, 0.18);
-  --line-light: rgba(253, 251, 253, 0.2);
-  --white: #fdfbfd;        /* cool near-white (was warm #fffaf6) */
-  --shadow: 0 18px 54px rgba(40, 26, 48, 0.14);
+  --line: rgba(34, 48, 78, 0.18);
+  --line-light: rgba(253, 250, 244, 0.2);
+  --white: #fdfaf4;        /* warm near-white (was cool #fdfbfd) */
+  --shadow: 0 18px 54px rgba(24, 36, 58, 0.14);
   --radius-sm: 10px;
   --radius-md: 20px;
   --radius-lg: 32px;
@@ -72,8 +82,9 @@
   --narrow: 780px;
   --header-height: 92px;
   --font-sans: "Sequel Sans", "Helvetica Neue", sans-serif;
-  --font-serif: "Cormorant", Georgia, "Times New Roman", serif;
-  --font-display: "Cormorant", Georgia, serif;
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-script: "Great Vibes", "Snell Roundhand", "Apple Chancery", cursive;
 }
 
 /* Font pairings the clinic can switch between from the editor toolbar. Each one
@@ -87,7 +98,7 @@
 }
 
 [data-font-theme="editorial"] {
-  --font-sans: "Cormorant", Georgia, "Times New Roman", serif;
+  --font-sans: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 
 [data-font-theme="system"] {
@@ -223,27 +234,18 @@ summary {
 }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  display: block;
   margin: 0 0 20px;
-  color: var(--plum-dark);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-.eyebrow::before {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--plum);
-  content: "";
-}
-
 .section-dark .eyebrow {
-  color: var(--plum-soft);
+  color: var(--paper-pale);
 }
 
 .display-title,
@@ -251,25 +253,25 @@ summary {
 .section-title {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.02;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.13;
   text-wrap: balance;
 }
 
 .display-title {
   max-width: 760px;
-  font-size: clamp(3.25rem, 7.4vw, 7.8rem);
+  font-size: clamp(2.8rem, 5.6vw, 5.25rem);
 }
 
 .page-title {
   max-width: 920px;
-  font-size: clamp(3.1rem, 7vw, 7.2rem);
+  font-size: clamp(2.7rem, 5.4vw, 5.25rem);
 }
 
 .section-title {
   max-width: 880px;
-  font-size: clamp(2.55rem, 5vw, 5.5rem);
+  font-size: clamp(2.35rem, 4.2vw, 4.25rem);
 }
 
 .serif {
@@ -277,6 +279,51 @@ summary {
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.005em;
+}
+
+/* One accent word per heading, set in the connected script. Sized relative to
+   the heading so it scales everywhere; the near-zero line-height keeps the
+   script's tall swashes from inflating the heading's line boxes (glyph
+   overflow is harmless). Never letter-space a connected script. */
+.script {
+  font-family: var(--font-script);
+  font-size: 1.2em;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 0.8;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--plum);
+}
+
+.section-dark .script,
+.hero .script,
+.cta-panel .script,
+.newsletter-band .script {
+  color: var(--plum-soft);
+}
+
+/* Card and list subheads follow the reference's serif subheadings ("Confident
+   clients treated"): display family, semibold, navy. .team-card h3 sits on a
+   dark surface and keeps its inherited light color. */
+.step h3,
+.info-card h3,
+.post-card h3,
+.service-process h3,
+.care-grid h3,
+.booking-aside h2,
+.team-card h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.step h3,
+.info-card h3,
+.post-card h3,
+.service-process h3,
+.care-grid h3,
+.booking-aside h2 {
+  color: var(--ink);
 }
 
 .lede {
@@ -289,7 +336,7 @@ summary {
 }
 
 .section-dark .lede {
-  color: rgba(253, 251, 253, 0.78);
+  color: rgba(253, 250, 244, 0.78);
 }
 
 .button-row {
@@ -439,7 +486,7 @@ summary {
   top: 0;
   height: var(--header-height);
   border-bottom: 1px solid var(--line);
-  background: rgba(242, 236, 242, 0.92);
+  background: rgba(246, 240, 230, 0.92);
   backdrop-filter: blur(18px);
 }
 
@@ -467,7 +514,7 @@ summary {
   border-radius: 50%;
   object-fit: cover;
   object-position: center;
-  box-shadow: 0 6px 18px rgba(36, 29, 45, 0.14);
+  box-shadow: 0 6px 18px rgba(34, 48, 78, 0.14);
 }
 
 .desktop-nav {
@@ -799,12 +846,12 @@ summary {
   background:
     linear-gradient(
       0deg,
-      rgba(20, 14, 26, 0.88) 0%,
-      rgba(20, 14, 26, 0.62) 26%,
-      rgba(20, 14, 26, 0.18) 52%,
-      rgba(20, 14, 26, 0) 72%
+      rgba(16, 24, 40, 0.88) 0%,
+      rgba(16, 24, 40, 0.62) 26%,
+      rgba(16, 24, 40, 0.18) 52%,
+      rgba(16, 24, 40, 0) 72%
     ),
-    linear-gradient(90deg, rgba(20, 14, 26, 0.5) 0%, rgba(20, 14, 26, 0.14) 46%, rgba(20, 14, 26, 0) 68%);
+    linear-gradient(90deg, rgba(16, 24, 40, 0.5) 0%, rgba(16, 24, 40, 0.14) 46%, rgba(16, 24, 40, 0) 68%);
   content: "";
 }
 
@@ -834,7 +881,7 @@ summary {
 .page-home .hero .display-title {
   max-width: 15ch;
   font-size: clamp(2.4rem, 3.6vw, 3.7rem);
-  line-height: 1.04;
+  line-height: 1.1;
 }
 
 .page-home .hero .hero-copy {
@@ -855,14 +902,10 @@ summary {
   color: var(--white);
 }
 
-.hero .eyebrow::before {
-  background: var(--plum-soft);
-}
-
 .hero-copy {
   max-width: 610px;
   margin: 24px 0 0;
-  color: rgba(253, 251, 253, 0.88);
+  color: rgba(253, 250, 244, 0.88);
   font-size: clamp(1.05rem, 1.7vw, 1.25rem);
 }
 
@@ -886,7 +929,7 @@ summary {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 18px;
-  color: rgba(253, 251, 253, 0.82);
+  color: rgba(253, 250, 244, 0.82);
   font-size: 0.92rem;
 }
 
@@ -938,7 +981,7 @@ summary {
   padding-block: clamp(86px, 11vw, 170px);
   border-bottom: 1px solid var(--line);
   background:
-    radial-gradient(circle at 82% 22%, rgba(133, 95, 140, 0.18), transparent 28%),
+    radial-gradient(circle at 82% 22%, rgba(123, 99, 151, 0.18), transparent 28%),
     var(--paper);
 }
 
@@ -1043,7 +1086,7 @@ summary {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(253, 251, 253, 0.4);
+  background: rgba(253, 250, 244, 0.4);
   text-decoration: none;
   transition:
     background-color 160ms ease-out,
@@ -1092,9 +1135,10 @@ summary {
 .category-heading h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 5vw, 5rem);
-  letter-spacing: -0.01em;
-  line-height: 1.02;
+  font-size: clamp(2.2rem, 3.6vw, 3.9rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.13;
   text-wrap: balance;
 }
 
@@ -1147,7 +1191,7 @@ summary {
 }
 
 .proof-points span {
-  color: rgba(253, 251, 253, 0.7);
+  color: rgba(253, 250, 244, 0.7);
   font-size: 0.94rem;
 }
 
@@ -1278,7 +1322,7 @@ summary {
   padding: 24px 26px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(253, 251, 253, 0.54);
+  background: rgba(253, 250, 244, 0.54);
   color: var(--ink-soft);
 }
 
@@ -1404,7 +1448,7 @@ summary {
   overflow: hidden;
   min-height: 520px;
   border-radius: var(--radius-lg);
-  background: #e3dce6;
+  background: #e6ddcc;
 }
 
 .map-wrap iframe {
@@ -1520,8 +1564,8 @@ wl-appointments-widget {
   padding: clamp(48px, 8vw, 90px);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(circle at 90% 15%, rgba(253, 251, 253, 0.17), transparent 28%),
-    var(--plum-dark);
+    radial-gradient(circle at 90% 15%, rgba(253, 250, 244, 0.17), transparent 28%),
+    var(--ink);
   color: var(--white);
 }
 
@@ -1529,16 +1573,17 @@ wl-appointments-widget {
   max-width: 780px;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 6vw, 6rem);
-  letter-spacing: -0.01em;
-  line-height: 1.02;
+  font-size: clamp(2.3rem, 4.4vw, 4rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.13;
   text-wrap: balance;
 }
 
 .cta-panel p {
   max-width: 620px;
   margin: 22px 0 0;
-  color: rgba(253, 251, 253, 0.78);
+  color: rgba(253, 250, 244, 0.78);
   font-size: 1.1rem;
 }
 
@@ -1566,7 +1611,7 @@ wl-appointments-widget {
   gap: clamp(56px, 7vw, 104px);
   padding-inline: clamp(32px, 6vw, 112px) clamp(40px, 5vw, 88px);
   background:
-    radial-gradient(circle at 4% 4%, rgba(211, 188, 220, 0.24), transparent 32%),
+    radial-gradient(circle at 4% 4%, rgba(207, 192, 230, 0.24), transparent 32%),
     var(--paper-pale);
 }
 
@@ -1582,16 +1627,16 @@ wl-appointments-widget {
   aspect-ratio: 1;
   display: block;
   overflow: hidden;
-  border: 1px solid rgba(36, 29, 45, 0.14);
+  border: 1px solid rgba(34, 48, 78, 0.14);
   border-radius: 50%;
   background: var(--paper);
-  box-shadow: 0 24px 64px rgba(68, 43, 76, 0.18);
+  box-shadow: 0 24px 64px rgba(30, 42, 66, 0.18);
   transition: transform 360ms cubic-bezier(.22, 1, .36, 1), box-shadow 360ms ease;
 }
 
 .footer-logo:hover {
   transform: translateY(-4px) rotate(-1.5deg);
-  box-shadow: 0 30px 72px rgba(68, 43, 76, 0.23);
+  box-shadow: 0 30px 72px rgba(30, 42, 66, 0.23);
 }
 
 .footer-logo img {
@@ -1603,10 +1648,11 @@ wl-appointments-widget {
 
 .footer-kicker {
   margin: 0;
-  color: var(--plum-dark);
+  color: var(--ink);
+  font-family: var(--font-display);
   font-size: 0.73rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   line-height: 1.35;
   text-transform: uppercase;
 }
@@ -1615,17 +1661,11 @@ wl-appointments-widget {
 .footer-visit h2 {
   margin: 10px 0 0;
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 4.5vw, 5.15rem);
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.9;
+  font-size: clamp(2.6rem, 4vw, 4.4rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.06;
   text-wrap: balance;
-}
-
-.footer-intro h2 em,
-.footer-visit h2 em {
-  color: var(--plum-dark);
-  font-weight: 400;
 }
 
 .footer-intro > p:last-child {
@@ -1647,7 +1687,7 @@ wl-appointments-widget {
 
 .footer-column h3 {
   margin: 0 0 14px;
-  color: var(--plum-dark);
+  color: var(--ink);
   font-size: 0.73rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1685,8 +1725,8 @@ wl-appointments-widget {
   flex-direction: column;
   padding-inline: clamp(32px, 4.3vw, 72px);
   background:
-    radial-gradient(circle at 100% 0%, rgba(253, 251, 253, 0.34), transparent 32%),
-    #ddc8dc;
+    radial-gradient(circle at 100% 0%, rgba(253, 250, 244, 0.34), transparent 32%),
+    #e3d7c3;
 }
 
 .footer-visit-heading {
@@ -1694,23 +1734,23 @@ wl-appointments-widget {
 }
 
 .footer-visit h2 {
-  font-size: clamp(3rem, 4.1vw, 4.75rem);
+  font-size: clamp(2.8rem, 3.8vw, 4.2rem);
 }
 
 .footer-map {
   position: relative;
   min-height: 250px;
   overflow: hidden;
-  border: 1px solid rgba(36, 29, 45, 0.13);
+  border: 1px solid rgba(34, 48, 78, 0.13);
   border-radius: 2px;
-  background: rgba(253, 251, 253, 0.5);
-  box-shadow: 0 22px 54px rgba(68, 43, 76, 0.16);
+  background: rgba(253, 250, 244, 0.5);
+  box-shadow: 0 22px 54px rgba(30, 42, 66, 0.16);
 }
 
 .footer-map::after {
   position: absolute;
   inset: 0;
-  border: 8px solid rgba(253, 251, 253, 0.12);
+  border: 8px solid rgba(253, 250, 244, 0.12);
   content: "";
   pointer-events: none;
 }
@@ -1731,7 +1771,7 @@ wl-appointments-widget {
   justify-content: space-between;
   gap: 24px;
   padding-block: 18px;
-  border-bottom: 1px solid rgba(36, 29, 45, 0.16);
+  border-bottom: 1px solid rgba(34, 48, 78, 0.16);
   color: var(--ink-soft);
   line-height: 1.45;
   text-decoration: none;
@@ -1761,7 +1801,7 @@ wl-appointments-widget {
   justify-content: space-between;
   gap: 20px;
   padding: 15px 20px;
-  border: 1px solid rgba(36, 29, 45, 0.3);
+  border: 1px solid rgba(34, 48, 78, 0.3);
   color: var(--ink);
   text-decoration: none;
   transition: background-color 220ms ease, color 220ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1);
@@ -1778,7 +1818,7 @@ wl-appointments-widget {
 }
 
 .footer-action:hover {
-  background: rgba(253, 251, 253, 0.42);
+  background: rgba(253, 250, 244, 0.42);
   color: var(--ink);
   transform: translateY(-2px);
 }
@@ -1790,7 +1830,7 @@ wl-appointments-widget {
 }
 
 .footer-action-primary > span {
-  color: rgba(253, 251, 253, 0.64);
+  color: rgba(253, 250, 244, 0.64);
 }
 
 .footer-action-primary:hover,
@@ -1804,7 +1844,7 @@ wl-appointments-widget {
 
 .footer-bottom {
   background: var(--ink);
-  color: rgba(253, 251, 253, 0.62);
+  color: rgba(253, 250, 244, 0.62);
 }
 
 .footer-bottom-inner {
@@ -1830,7 +1870,7 @@ wl-appointments-widget {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  color: rgba(253, 251, 253, 0.72);
+  color: rgba(253, 250, 244, 0.72);
   text-decoration: none;
 }
 
@@ -1957,7 +1997,7 @@ wl-appointments-widget {
   padding: 26px;
   border: 1px solid var(--line-light);
   border-radius: var(--radius-md);
-  background: rgba(253, 251, 253, 0.05);
+  background: rgba(253, 250, 244, 0.05);
 }
 
 .team-card .team-portrait {
@@ -1987,7 +2027,7 @@ wl-appointments-widget {
 .portrait-zoom:hover .team-portrait,
 .portrait-zoom:focus-visible .team-portrait {
   transform: scale(1.04);
-  box-shadow: 0 10px 26px rgba(12, 8, 16, 0.4);
+  box-shadow: 0 10px 26px rgba(9, 14, 24, 0.4);
 }
 
 .portrait-zoom-badge {
@@ -2098,7 +2138,7 @@ wl-appointments-widget {
   border: 0;
   opacity: 0;
   visibility: hidden;
-  background: rgba(14, 9, 18, 0.9);
+  background: rgba(10, 16, 28, 0.9);
   backdrop-filter: blur(10px);
   transition: opacity 240ms ease, visibility 0s linear 240ms;
 }
@@ -2151,16 +2191,16 @@ wl-appointments-widget {
   display: grid;
   place-items: center;
   padding: 0;
-  border: 1px solid rgba(253, 251, 253, 0.28);
+  border: 1px solid rgba(253, 250, 244, 0.28);
   border-radius: 50%;
-  background: rgba(253, 251, 253, 0.1);
+  background: rgba(253, 250, 244, 0.1);
   color: var(--white);
   cursor: pointer;
   transition: background 200ms ease, transform 200ms ease;
 }
 
 .lightbox-close:hover {
-  background: rgba(253, 251, 253, 0.22);
+  background: rgba(253, 250, 244, 0.22);
   transform: rotate(90deg);
 }
 
@@ -2185,7 +2225,7 @@ body.lightbox-open {
 
 .team-card .team-credentials,
 .team-card .team-summary {
-  color: rgba(253, 251, 253, 0.76);
+  color: rgba(253, 250, 244, 0.76);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -2195,7 +2235,7 @@ body.lightbox-open {
 .team-scope {
   padding: 10px 14px;
   border-left: 2px solid var(--plum-soft);
-  color: rgba(253, 251, 253, 0.88);
+  color: rgba(253, 250, 244, 0.88);
   font-size: 0.85rem;
   line-height: 1.55;
 }
@@ -2226,7 +2266,7 @@ body.lightbox-open {
 }
 
 .team-bio p {
-  color: rgba(253, 251, 253, 0.76);
+  color: rgba(253, 250, 244, 0.76);
   font-size: 0.9rem;
   line-height: 1.65;
 }
@@ -2367,7 +2407,7 @@ body.lightbox-open {
 
 .newsletter-band {
   padding: 34px 0;
-  background: var(--plum-dark);
+  background: var(--ink);
   color: var(--white);
 }
 
@@ -2381,12 +2421,14 @@ body.lightbox-open {
 
 .newsletter-band h2 {
   margin: 0 0 6px;
-  font-size: 1.5rem;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 500;
 }
 
 .newsletter-band p {
   max-width: 46ch;
-  color: rgba(253, 251, 253, 0.78);
+  color: rgba(253, 250, 244, 0.78);
   font-size: 0.9rem;
 }
 
@@ -2401,14 +2443,14 @@ body.lightbox-open {
   padding: 12px 14px;
   border: 1px solid var(--line-light);
   border-radius: var(--radius-sm);
-  background: rgba(253, 251, 253, 0.1);
+  background: rgba(253, 250, 244, 0.1);
   color: var(--white);
   font-family: inherit;
   font-size: 0.92rem;
 }
 
 .newsletter-band input::placeholder {
-  color: rgba(253, 251, 253, 0.55);
+  color: rgba(253, 250, 244, 0.55);
 }
 
 /* Campaign landing pages carry no site chrome. */
@@ -2417,7 +2459,7 @@ body.lightbox-open {
   top: 0;
   z-index: 40;
   border-bottom: 1px solid var(--line);
-  background: rgba(252, 249, 252, 0.94);
+  background: rgba(251, 248, 242, 0.94);
   backdrop-filter: blur(10px);
 }
 
@@ -2522,12 +2564,15 @@ body.page-lp .mobile-actions {
   margin: 42px 0 14px;
   font-family: var(--font-serif);
   font-size: 1.8rem;
+  font-weight: 600;
   line-height: 1.25;
 }
 
 .post-body h3 {
   margin: 32px 0 12px;
-  font-size: 1.15rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .post-body p {
@@ -2702,7 +2747,7 @@ body.page-lp .mobile-actions {
   .display-title,
   .page-title,
   .section-title {
-    line-height: 1.02;
+    line-height: 1.13;
   }
 
   .hero {
@@ -2712,7 +2757,7 @@ body.page-lp .mobile-actions {
 
   .hero::before {
     background:
-      linear-gradient(0deg, rgba(20, 14, 26, 0.88) 0%, rgba(20, 14, 26, 0.5) 60%, rgba(20, 14, 26, 0.12) 100%);
+      linear-gradient(0deg, rgba(16, 24, 40, 0.88) 0%, rgba(16, 24, 40, 0.5) 60%, rgba(16, 24, 40, 0.12) 100%);
   }
 
   .hero-media {
@@ -2848,7 +2893,7 @@ body.page-lp .mobile-actions {
     gap: 8px;
     padding: 8px max(12px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     border-top: 1px solid var(--line);
-    background: rgba(242, 236, 242, 0.96);
+    background: rgba(246, 240, 230, 0.96);
     backdrop-filter: blur(16px);
   }
 
@@ -2904,9 +2949,9 @@ body.page-lp .mobile-actions {
     padding: 6px;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(242, 236, 242, 0.98);
+    background: rgba(246, 240, 230, 0.98);
     backdrop-filter: blur(16px);
-    box-shadow: 0 12px 32px rgba(30, 20, 30, 0.18);
+    box-shadow: 0 12px 32px rgba(20, 30, 48, 0.18);
     z-index: 901;
   }
 
@@ -2931,7 +2976,7 @@ body.page-lp .mobile-actions {
 
   .gps-sheet a:active,
   .gps-sheet a:hover {
-    background: rgba(30, 20, 30, 0.06);
+    background: rgba(20, 30, 48, 0.06);
   }
 
   .page-booking .mobile-actions {
@@ -3209,8 +3254,8 @@ body.page-lp .mobile-actions {
   padding: clamp(36px, 5vw, 70px) 0 0;
   border-bottom: 1px solid var(--line);
   background:
-    radial-gradient(circle at 10% 20%, rgba(253, 251, 253, 0.5), transparent 26%),
-    radial-gradient(circle at 88% 10%, rgba(133, 95, 140, 0.15), transparent 28%),
+    radial-gradient(circle at 10% 20%, rgba(253, 250, 244, 0.5), transparent 26%),
+    radial-gradient(circle at 88% 10%, rgba(123, 99, 151, 0.15), transparent 28%),
     var(--paper);
 }
 
@@ -3252,16 +3297,11 @@ body.page-lp .mobile-actions {
   max-width: 760px;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(3.45rem, 6.9vw, 7.3rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.0;
+  font-size: clamp(2.9rem, 5.6vw, 5.25rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.08;
   text-wrap: balance;
-}
-
-.service-title .serif {
-  display: block;
-  color: var(--plum-dark);
 }
 
 .service-intro {
@@ -3304,8 +3344,8 @@ body.page-lp .mobile-actions {
   margin: 0;
   padding: 10px 12px;
   border-radius: 8px;
-  background: rgba(20, 14, 26, 0.74);
-  color: rgba(253, 251, 253, 0.9);
+  background: rgba(16, 24, 40, 0.74);
+  color: rgba(253, 250, 244, 0.9);
   font-size: 0.68rem;
   backdrop-filter: blur(10px);
 }
@@ -3320,7 +3360,7 @@ body.page-lp .mobile-actions {
   border-bottom: 0;
   border-radius: 18px 18px 0 0;
   background: var(--paper-pale);
-  box-shadow: 0 -10px 40px rgba(40, 26, 48, 0.06);
+  box-shadow: 0 -10px 40px rgba(24, 36, 58, 0.06);
 }
 
 .service-facts > div {
@@ -3414,7 +3454,7 @@ body.page-lp .mobile-actions {
   padding: 28px;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: rgba(253, 251, 253, 0.36);
+  background: rgba(253, 250, 244, 0.36);
   transition:
     background-color 240ms ease-out,
     transform 240ms cubic-bezier(.22, 1, .36, 1);
@@ -3543,7 +3583,7 @@ body.page-lp .mobile-actions {
   margin: 28px 0 0;
   padding-top: 18px;
   border-top: 1px solid var(--line-light);
-  color: rgba(253, 251, 253, 0.62);
+  color: rgba(253, 250, 244, 0.62);
   font-size: 0.86rem;
 }
 
@@ -3863,7 +3903,7 @@ body.page-lp .mobile-actions {
   }
 
   .service-title {
-    line-height: 0.97;
+    line-height: 1.06;
   }
 
   .service-hero-media {
@@ -4064,7 +4104,7 @@ body.page-lp .mobile-actions {
   z-index: 9998;
   display: grid;
   place-items: center;
-  background: radial-gradient(120% 90% at 50% 38%, #3b2a44 0%, #241d29 55%, #171019 100%);
+  background: radial-gradient(120% 90% at 50% 38%, #33436b 0%, #22304e 55%, #141d33 100%);
   color: var(--white);
   transform: translateY(0);
   opacity: 1;
@@ -4106,7 +4146,7 @@ body.intro-lock { overflow: hidden; }
 .intro-logo::before {
   z-index: -1;
   inset: -14%;
-  background: radial-gradient(circle, rgba(211, 188, 220, 0.24), transparent 68%);
+  background: radial-gradient(circle, rgba(207, 192, 230, 0.24), transparent 68%);
   opacity: 0;
   transform: scale(0.8);
   animation: introBrandHalo 0.8s ease 0.2s forwards;
@@ -4115,7 +4155,7 @@ body.intro-lock { overflow: hidden; }
 .intro-logo::after {
   z-index: 2;
   inset: -8px;
-  border: 1px solid rgba(253, 251, 253, 0.35);
+  border: 1px solid rgba(253, 250, 244, 0.35);
   opacity: 0;
   transform: scale(0.92);
   animation: introBrandRing 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.32s forwards;

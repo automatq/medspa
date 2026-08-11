@@ -2,7 +2,7 @@ import { categories, services } from "../data/services.mjs";
 
 // Bump whenever assets/css or assets/js changes — /assets/* is served
 // immutable for a year, so a stale version ships unstyled sections.
-export const assetVersion = "20260811-editor-idle";
+export const assetVersion = "20260811-navy-playfair";
 
 // Canonical URLs still point at the WordPress origin while the rebuild is staged;
 // absolute asset URLs (og:image, JSON-LD) resolve from the Vercel deployment.
@@ -47,6 +47,26 @@ export const escapeHtml = (value = "") =>
     .replaceAll("'", "&#039;");
 
 export const serviceHref = (service) => `/services/${service.slug}/`;
+
+// Preload the two display faces used above the fold on every page, so the
+// serif headline and script accent don't flash their fallback fonts.
+export const fontPreloads = `<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/PlayfairDisplay-normal.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/GreatVibes-regular.woff2">`;
+
+// Headings carry exactly one word in the connected script (`.script`). These
+// wrap the last or first word of a phrase so data-driven copy (service accents,
+// people's names) gets the treatment without hand-editing every entry.
+export const scriptTail = (text) => {
+  const words = escapeHtml(text).split(" ");
+  const last = words.pop();
+  return `${words.join(" ")}${words.length ? " " : ""}<span class="script">${last}</span>`;
+};
+
+export const scriptLead = (text) => {
+  const words = escapeHtml(text).split(" ");
+  const first = words.shift();
+  return `<span class="script">${first}</span>${words.length ? " " : ""}${words.join(" ")}`;
+};
 
 const current = (active, target) => (active === target ? ' aria-current="page"' : "");
 
@@ -154,7 +174,7 @@ export const footer = () => `<footer class="site-footer">
           </a>
           <div class="footer-intro">
             <p class="footer-kicker">Medical aesthetics · Skin · Wellness</p>
-            <h2 id="footer-heading">Care that feels <em>considered.</em></h2>
+            <h2 id="footer-heading">Care that feels <span class="script">considered.</span></h2>
             <p>Personalized treatments and thoughtful guidance in the heart of Etobicoke’s Lakeshore Village.</p>
           </div>
         </div>
@@ -183,7 +203,7 @@ export const footer = () => `<footer class="site-footer">
       <section class="footer-visit" aria-labelledby="footer-visit-title">
         <div class="footer-visit-heading" data-reveal>
           <p class="footer-kicker">Lakeshore Village · Etobicoke</p>
-          <h2 id="footer-visit-title">Visit <em>Anima.</em></h2>
+          <h2 id="footer-visit-title">Visit <span class="script">Anima.</span></h2>
         </div>
         <div class="footer-map" data-reveal style="--reveal-delay: 70ms">
           <iframe src="https://www.google.com/maps?q=2885%20Lakeshore%20Blvd%20West%2C%20Etobicoke%2C%20ON%20M8V%201J1&amp;output=embed" title="Map showing Anima Med Spa at 2885 Lakeshore Boulevard West in Etobicoke" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>

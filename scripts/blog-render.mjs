@@ -24,11 +24,11 @@ import {
   renderBlocks,
 } from "./components.mjs";
 import { breadcrumbList, cleanJson, graph } from "./schema.mjs";
-import { SITE, assetVersion, escapeHtml, footer, mobileActions, navigation } from "./site-shell.mjs";
+import { SITE, assetVersion, escapeHtml, fontPreloads, footer, mobileActions, navigation } from "./site-shell.mjs";
 
 const head = ({ title, description, canonical, image, extraJson }) => `  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f2ecf2">
+  <meta name="theme-color" content="#f6f0e6">
   <meta name="description" content="${escapeHtml(description)}">
   <title>${escapeHtml(title)}</title>
   <link rel="canonical" href="${escapeHtml(canonical)}">
@@ -39,6 +39,7 @@ const head = ({ title, description, canonical, image, extraJson }) => `  <meta c
   ${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ""}
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="${SITE.icon}" type="image/png">
+  ${fontPreloads}
   <link rel="stylesheet" href="/assets/css/medspa.css?v=${assetVersion}">
   <script src="/assets/js/medspa.js?v=${assetVersion}" defer></script>
   <script type="application/ld+json">${cleanJson(extraJson)}</script>`;
@@ -97,7 +98,7 @@ ${head({
           <span aria-current="page">Journal</span>
         </nav>
         <p class="eyebrow">Journal</p>
-        <h1 class="page-title" data-split-title>Your guide to <span class="serif">better skin.</span></h1>
+        <h1 class="page-title" data-split-title>Your guide to better <span class="script">skin.</span></h1>
         <p class="lede">Treatment education, aftercare, and seasonal guidance written by the team at Anima. General information only — your own plan is confirmed at consultation.</p>
       </div>
     </section>
@@ -219,7 +220,7 @@ ${head({ title: post.seoTitle, description: post.metaDescription, canonical, ima
           <div class="related-heading" data-reveal>
             <div>
               <p class="eyebrow">Mentioned in this article</p>
-              <h2 class="section-title">Related <span class="serif">treatments.</span></h2>
+              <h2 class="section-title">Related <span class="script">treatments.</span></h2>
             </div>
             <a class="text-link" href="/service-light.html">View all treatments <span aria-hidden="true">↗</span></a>
           </div>
