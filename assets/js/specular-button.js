@@ -19,6 +19,11 @@
  * already, followMouse is always on, and autoAnimate (with its `speed` sweep) is
  * always off — a highlight rotating forever in a sticky header on every page is
  * the one version of this effect the rest of the site's motion would disown.
+ *
+ * Touch screens have no cursor for it to lean toward, which for a while meant
+ * they got nothing. They now get the two moments that stand in for proximity:
+ * one turn of the light when the pill first comes into view, and the tap itself.
+ * Both end back at the resting hairline, so nothing animates indefinitely.
  */
 
 /**
@@ -315,12 +320,75 @@ const attach = (host, overrides) => {
     if (nearness > 0 || bright > 0) wake();
   };
 
+  /**
+   * One turn of the light around the pill, then back to the resting hairline.
+   *
+   * This is not upstream's `autoAnimate`, which never stops — the objection to
+   * that one stands. It fires once, when the pill first comes into view, and is
+   * the touch equivalent of a cursor arriving: the same gesture the rest of the
+   * site makes with [data-reveal], spent on the one control that matters.
+   */
+  const sweep = () => {
+    const start = performance.now();
+    const from = angle;
+    const turn = (now) => {
+      const t = Math.min((now - start) / 1400, 1);
+      const eased = t < 0.5 ? 2 * t * t : 1 - ((2 - 2 * t) ** 2) / 2;
+      aim = from + eased * Math.PI * 2;
+      // Rises and falls, so it ends where it started rather than snapping dark.
+      nearness = Math.sin(Math.PI * t);
+      wake();
+      if (t < 1) {
+        requestAnimationFrame(turn);
+      } else {
+        aim = null;
+        nearness = 0;
+      }
+    };
+    requestAnimationFrame(turn);
+  };
+
+  // Only a tap on the pill itself. Proximity is 240px, which on a phone is most
+  // of the screen — every tap anywhere would otherwise flash the sticky bar.
+  const onTouch = (event) => {
+    const rect = bounds();
+    if (
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom
+    ) {
+      return;
+    }
+    onPointerMove(event);
+  };
+
+  const release = () => {
+    nearness = 0;
+    wake();
+  };
+
   new ResizeObserver(() => {
     resize();
     render();
   }).observe(host);
   resize();
   render();
+
+  // A touch screen has no cursor to lean toward, so the two moments that stand
+  // in for proximity are the tap and the pill's first appearance.
+  if (window.matchMedia("(hover: none)").matches) {
+    window.addEventListener("pointerdown", onTouch);
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
+
+    const entrance = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      entrance.disconnect();
+      sweep();
+    });
+    entrance.observe(host);
+  }
 
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("scroll", remeasure, { passive: true });
@@ -337,5 +405,11 @@ const attach = (host, overrides) => {
 };
 
 export const init = (overrides) => {
-  document.querySelectorAll("[data-specular]").forEach((host) => attach(host, overrides));
+  document.querySelectorAll("[data-specular]").forEach((host) => {
+    // The header pill is display:none below 800px and the sticky bar's is hidden
+    // above it, so on any given screen one of them is not there. Attaching to it
+    // would spend a WebGL context on a canvas measured at zero.
+    if (!host.getClientRects().length) return;
+    attach(host, overrides);
+  });
 };

@@ -2,7 +2,7 @@ import { categories, services } from "../data/services.mjs";
 
 // Bump whenever assets/css or assets/js changes — /assets/* is served
 // immutable for a year, so a stale version ships unstyled sections.
-export const assetVersion = "20260811-navy-playfair";
+export const assetVersion = "20260811-specular-touch";
 
 // Canonical URLs still point at the WordPress origin while the rebuild is staged;
 // absolute asset URLs (og:image, JSON-LD) resolve from the Vercel deployment.
@@ -70,19 +70,36 @@ export const scriptLead = (text) => {
 
 const current = (active, target) => (active === target ? ' aria-current="page"' : "");
 
+// The desktop directory mirrors the original site's menu: four ruled columns,
+// with laser + wellness stacked in the third and the brow/lash and permanent
+// makeup categories folded into one "Beauty enhancements" column. Each entry
+// is { title, ids } where ids lists the service categories the group pools.
+const MEGA_COLUMNS = [
+  [{ title: "Injectable treatments", ids: ["injectables"] }],
+  [{ title: "Skin & facial rejuvenation", ids: ["skin"] }],
+  [
+    { title: "Laser treatments", ids: ["laser"] },
+    { title: "Wellness & body treatments", ids: ["wellness"] },
+  ],
+  [{ title: "Beauty enhancements", ids: ["beauty", "permanent-makeup"] }],
+];
+
 export const navigation = (active = "") => {
-  const megaGroups = categories
-    .map((category) => {
-      const links = services
-        .filter((item) => item.category === category.id)
-        .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)}</a>`)
-        .join("");
-      return `<div class="mega-menu-group">
-                <h2>${escapeHtml(category.shortLabel)}</h2>
+  const megaColumns = MEGA_COLUMNS.map((groups) => {
+    const rendered = groups
+      .map((group) => {
+        const links = group.ids
+          .flatMap((id) => services.filter((item) => item.category === id))
+          .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)}</a>`)
+          .join("");
+        return `<div class="mega-menu-group">
+                <h2>${escapeHtml(group.title)}</h2>
                 ${links}
               </div>`;
-    })
-    .join("");
+      })
+      .join("");
+    return `<div class="mega-menu-col">${rendered}</div>`;
+  }).join("");
 
   // Deliberately the same shape as megaGroups above: below 1100px the directory
   // renders as a card that mirrors the desktop mega-menu, so both share styling
@@ -110,15 +127,7 @@ export const navigation = (active = "") => {
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
           </button>
           <div class="mega-menu" id="treatments-menu">
-            <div class="mega-menu-intro">
-              <p class="eyebrow">Complete treatment directory</p>
-              <a href="/service-light.html">View all ${services.length} treatments <span aria-hidden="true">↗</span></a>
-            </div>
-            <div class="mega-menu-grid">${megaGroups}</div>
-            <div class="mega-menu-footer">
-              <p>Not sure where to begin? A complimentary consultation can help you compare fit, downtime, and current pricing.</p>
-              <a class="button button-plum" href="/book-now.html">Book now <span class="button-arrow" aria-hidden="true">↗</span></a>
-            </div>
+            <div class="mega-menu-grid">${megaColumns}</div>
           </div>
         </div>
         <a class="nav-link" href="/glow-plan/"${current(active, "glow-plan")}>Glow Plan</a>
@@ -253,5 +262,5 @@ export const mobileActions = () => `<nav class="mobile-actions" aria-label="Quic
       </div>
     </div>
     <a href="${SITE.phoneHref}">Call</a>
-    <a href="${SITE.bookHref}">Book now</a>
+    <a href="${SITE.bookHref}" data-specular>Book now</a>
   </nav>`;

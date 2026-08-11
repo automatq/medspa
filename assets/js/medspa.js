@@ -633,16 +633,15 @@
   };
 
   /**
-   * The header's Book now pill gets a WebGL rim highlight that leans toward the
-   * cursor. It is decoration on a link and nothing depends on it, so the module
-   * is fetched only where it can be seen and wanted: a real pointer that can
-   * hover, and a visitor who has not asked for less motion. Everyone else keeps
-   * the plain pill and never downloads it.
+   * The Book now pills get a WebGL rim highlight — leaning toward the cursor on
+   * a desktop, and on a phone lit by the tap and by one sweep when the pill
+   * first appears. It is decoration on a link and nothing depends on it, so it
+   * is still withheld from anyone who has asked for less motion, and the module
+   * is only fetched on a page that has a pill to put it on.
    */
   const startSpecularButtons = () => {
     if (!document.querySelector("[data-specular]")) return;
     if (reduceMotion.matches) return;
-    if (!window.matchMedia("(pointer: fine) and (hover: hover)").matches) return;
     import(assetUrl("/assets/js/specular-button.js"))
       .then((module) => module.init())
       .catch(() => {});
