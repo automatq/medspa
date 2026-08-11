@@ -332,8 +332,21 @@ summary {
   color: var(--white);
 }
 
-.button-primary:hover {
-  background: var(--plum-dark);
+/* .section-dark is also var(--ink), so the primary pill would be invisible on
+   it — same fill, same background. Invert it there rather than asking every
+   dark section to remember a different class. */
+.section-dark .button-primary {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.section-dark .button-primary:visited {
+  color: var(--ink);
+}
+
+.section-dark .button-primary:hover {
+  background: var(--plum-soft);
+  color: var(--ink);
 }
 
 .button-plum {
@@ -1114,12 +1127,6 @@ summary {
 }
 
 /* Trust and proof */
-.proof-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.65fr);
-  gap: clamp(48px, 8vw, 120px);
-}
-
 .proof-points {
   margin: 44px 0 0;
   padding: 0;
@@ -1144,53 +1151,31 @@ summary {
   font-size: 0.94rem;
 }
 
-.profile-card {
-  align-self: start;
-  padding: 30px;
-  border: 1px solid var(--line-light);
-  border-radius: var(--radius-md);
-  background: rgba(253, 251, 253, 0.05);
-}
-
-.profile-monogram {
-  width: 84px;
-  height: 84px;
+/* Founder feature. The homepage used to introduce Sally in a 320px aside with
+   an 84px avatar — the smallest photograph on a page whose treatment cards run
+   full width. She leads the section now: portrait first at reading size, then
+   the trust points that used to carry it alone. Mirrors .service-provider-grid
+   on the about page so the two readings of her agree. */
+.founder-feature {
   display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--plum);
-  font-family: var(--font-serif);
-  font-size: 2.3rem;
-  font-style: italic;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(48px, 8vw, 120px);
 }
 
-/* Photographic stand-in for the monogram, same footprint. Framed from the top
-   so a portrait crops to the face rather than the centre of the frame. */
-.profile-photo {
-  display: block;
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center top;
-}
+/* The portrait rules live with the other .portrait-zoom overrides further down —
+   they have to come after it, or its `width: max-content` collapses a box whose
+   only child is absolutely positioned to zero. */
 
-.profile-card h3 {
-  margin: 24px 0 4px;
-  font-size: 1.65rem;
-}
-
-.profile-role {
-  margin: 0;
+.founder-role {
+  margin: 22px 0 0;
   color: var(--plum-soft);
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
-.profile-card p:not(.profile-role) {
-  color: rgba(253, 251, 253, 0.72);
-}
-
-.profile-card a {
-  color: var(--white);
+.founder-feature .button-row {
+  margin-top: 38px;
 }
 
 .review-card {
@@ -1975,8 +1960,7 @@ wl-appointments-widget {
   background: rgba(253, 251, 253, 0.05);
 }
 
-.team-card .team-portrait,
-.team-card .profile-monogram {
+.team-card .team-portrait {
   width: 74px;
   height: 74px;
   border-radius: 50%;
@@ -2038,6 +2022,44 @@ wl-appointments-widget {
 .provider-portrait-zoom {
   width: auto;
   border-radius: 180px 18px 180px 18px;
+}
+
+/* Homepage founder feature. Same arrangement as the about page's portrait, a
+   size up. Must stay below .portrait-zoom: its `width: max-content` measures a
+   box whose only child is absolutely positioned as zero wide. */
+.founder-portrait-zoom {
+  width: auto;
+  border-radius: 200px 20px 200px 20px;
+}
+
+.founder-portrait {
+  position: relative;
+  display: block;
+  min-height: 560px;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.founder-portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Framed from the top so the crop keeps the face, not the middle of the frame. */
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+
+.founder-portrait-zoom .portrait-zoom-badge {
+  right: 20px;
+  bottom: 20px;
+  width: 44px;
+  height: 44px;
+}
+
+.founder-portrait-zoom .portrait-zoom-badge svg {
+  width: 18px;
+  height: 18px;
 }
 
 .provider-portrait-zoom .portrait-zoom-badge {
@@ -2722,9 +2744,14 @@ body.page-lp .mobile-actions {
   }
 
   .split,
-  .proof-layout,
+  .founder-feature,
   .booking-layout {
     grid-template-columns: 1fr;
+  }
+
+  /* A 560px portrait is most of a phone screen before a word is read. */
+  .founder-portrait {
+    min-height: 420px;
   }
 
   .split.reverse > :first-child {
@@ -2748,10 +2775,6 @@ body.page-lp .mobile-actions {
     margin: 34px 0 0;
     grid-template-columns: 1fr;
     gap: 28px;
-  }
-
-  .profile-card {
-    max-width: 520px;
   }
 
   .contact-grid,
