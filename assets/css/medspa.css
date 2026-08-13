@@ -3764,17 +3764,24 @@ body.page-lp .mobile-actions {
   }
 }
 
+/* The mask that hides each word before it slides up. Its padding has to clear
+   the tallest ink the word can carry, because splitTitle walks text nodes and
+   so wraps the .script accent too — and the script's swashes reach well past
+   the near-zero line box that .script sets. Padding is cancelled by the equal
+   negative margin, so the heading's metrics are unchanged. */
 .split-word {
   display: inline-block;
   overflow: hidden;
-  padding: .14em .12em .18em;
-  margin: -.14em -.12em -.18em;
+  padding: .4em .18em .3em;
+  margin: -.4em -.18em -.3em;
   vertical-align: bottom;
 }
 
+/* Must travel past its own height plus the bottom padding, or the resting word
+   peeks out of the taller mask before the sequence starts. */
 .split-word > span {
   display: inline-block;
-  transform: translateY(calc(110% + .2em));
+  transform: translateY(calc(110% + .45em));
   transition: transform 720ms cubic-bezier(.22, 1, .36, 1);
   transition-delay: var(--word-delay, 0ms);
 }

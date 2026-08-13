@@ -309,17 +309,17 @@ test("motion is progressive, dependency-free, reduced-motion safe, and below bud
   assert.match(splitWordRule, /overflow:\s*hidden/, "split titles must keep their masked entrance");
   assert.match(
     splitWordRule,
-    /padding:\s*\.14em\s+\.12em\s+\.18em/,
+    /padding:\s*\.4em\s+\.18em\s+\.3em/,
     "split-title masks need room for display-font ascenders, descenders, and swashes"
   );
   assert.match(
     splitWordRule,
-    /margin:\s*-.14em\s+-.12em\s+-.18em/,
+    /margin:\s*-.4em\s+-.18em\s+-.3em/,
     "the glyph safety gutter must not change title wrapping or line spacing"
   );
   assert.match(
     splitWordInnerRule,
-    /translateY\(calc\(110%\s*\+\s*\.2em\)\)/,
+    /translateY\(calc\(110%\s*\+\s*\.45em\)\)/,
     "split words must begin below the expanded mask"
   );
   assert.match(
