@@ -140,7 +140,7 @@
 
     document
       .querySelectorAll(
-        ".trust-band-grid, .category-index, .service-list, .service-tags, .steps, .info-grid, .contact-grid, .faq-list, .proof-points"
+        ".category-index, .service-list, .service-tags, .steps, .info-grid, .contact-grid, .faq-list, .proof-points"
       )
       .forEach((element) => element.setAttribute("data-reveal-group", ""));
 

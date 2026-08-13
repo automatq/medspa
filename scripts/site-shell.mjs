@@ -1,4 +1,4 @@
-import { categories, services } from "../data/services.mjs";
+import { services } from "../data/services.mjs";
 
 // Bump whenever assets/css or assets/js changes — /assets/* is served
 // immutable for a year, so a stale version ships unstyled sections.
@@ -70,52 +70,42 @@ export const scriptLead = (text) => {
 
 const current = (active, target) => (active === target ? ' aria-current="page"' : "");
 
-// The desktop directory mirrors the original site's menu: four ruled columns,
-// with laser + wellness stacked in the third and the brow/lash and permanent
-// makeup categories folded into one "Beauty enhancements" column. Each entry
-// is { title, ids } where ids lists the service categories the group pools.
-const MEGA_COLUMNS = [
-  [{ title: "Injectable treatments", ids: ["injectables"] }],
-  [{ title: "Skin & facial rejuvenation", ids: ["skin"] }],
-  [
-    { title: "Laser treatments", ids: ["laser"] },
-    { title: "Wellness & body treatments", ids: ["wellness"] },
-  ],
-  [{ title: "Beauty enhancements", ids: ["beauty", "permanent-makeup"] }],
+// The treatment directory shared by both menus, mirroring the original site:
+// five groups, with the brow/lash and permanent-makeup categories folded into
+// one "Beauty enhancements" group. Each entry is { title, ids } where ids
+// lists the service categories the group pools.
+const MEGA_GROUPS = [
+  { title: "Injectable treatments", ids: ["injectables"] },
+  { title: "Skin & facial rejuvenation", ids: ["skin"] },
+  { title: "Laser treatments", ids: ["laser"] },
+  { title: "Wellness & body treatments", ids: ["wellness"] },
+  { title: "Beauty enhancements", ids: ["beauty", "permanent-makeup"] },
 ];
 
-export const navigation = (active = "") => {
-  const megaColumns = MEGA_COLUMNS.map((groups) => {
-    const rendered = groups
-      .map((group) => {
-        const links = group.ids
-          .flatMap((id) => services.filter((item) => item.category === id))
-          .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)}</a>`)
-          .join("");
-        return `<div class="mega-menu-group">
+// Desktop lays those groups into four ruled columns (laser stacked above
+// wellness in the third); mobile stacks the same groups in one column.
+const MEGA_COLUMNS = [[0], [1], [2, 3], [4]];
+
+const directoryGroup = (group, className) => {
+  const links = group.ids
+    .flatMap((id) => services.filter((item) => item.category === id))
+    .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)}</a>`)
+    .join("");
+  return `<div class="${className}">
                 <h2>${escapeHtml(group.title)}</h2>
                 ${links}
               </div>`;
-      })
-      .join("");
-    return `<div class="mega-menu-col">${rendered}</div>`;
-  }).join("");
+};
 
-  // Deliberately the same shape as megaGroups above: below 1100px the directory
-  // renders as a card that mirrors the desktop mega-menu, so both share styling
-  // rather than maintaining two visual languages for the same content.
-  const mobileGroups = categories
-    .map((category) => {
-      const links = services
-        .filter((item) => item.category === category.id)
-        .map((item) => `<a href="${serviceHref(item)}">${escapeHtml(item.navName || item.name)}</a>`)
-        .join("");
-      return `<div class="mobile-menu-group">
-                <h2>${escapeHtml(category.shortLabel)}</h2>
-                ${links}
-              </div>`;
-    })
-    .join("");
+export const navigation = (active = "") => {
+  const megaColumns = MEGA_COLUMNS.map(
+    (indexes) =>
+      `<div class="mega-menu-col">${indexes
+        .map((i) => directoryGroup(MEGA_GROUPS[i], "mega-menu-group"))
+        .join("")}</div>`
+  ).join("");
+
+  const mobileGroups = MEGA_GROUPS.map((group) => directoryGroup(group, "mobile-menu-group")).join("");
 
   return `<header class="site-header">
     <div class="shell header-inner">
@@ -158,18 +148,7 @@ export const navigation = (active = "") => {
       <a href="/blog/"${current(active, "blog")}>Journal <span aria-hidden="true">↗</span></a>
     </div>
     <div class="mobile-menu-services">
-      <div class="mobile-menu-intro">
-        <p class="eyebrow">Complete treatment directory</p>
-        <a href="/service-light.html">View all ${services.length} treatments <span aria-hidden="true">↗</span></a>
-      </div>
       <div class="mobile-menu-grid">${mobileGroups}</div>
-      <div class="mobile-menu-footer">
-        <p>Not sure where to begin? A complimentary consultation can help you compare fit, downtime, and current pricing.</p>
-        <div class="mobile-menu-contact">
-          <a class="button button-plum" href="${SITE.bookHref}">Book now <span class="button-arrow" aria-hidden="true">↗</span></a>
-          <a class="button button-outline" href="${SITE.phoneHref}">Call ${SITE.phoneDisplay}</a>
-        </div>
-      </div>
     </div>
   </nav>`;
 };
