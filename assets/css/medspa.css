@@ -1941,9 +1941,11 @@ wl-appointments-widget {
   background: rgba(253, 250, 244, 0.05);
 }
 
+/* Portraits carry the section, so they scale with the card rather than sitting
+   at a fixed thumbnail size. The clamp keeps them inside the 260px column. */
 .team-card .team-portrait {
-  width: 74px;
-  height: 74px;
+  width: clamp(104px, 12vw, 136px);
+  height: clamp(104px, 12vw, 136px);
   border-radius: 50%;
   object-fit: cover;
 }

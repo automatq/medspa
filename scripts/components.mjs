@@ -282,7 +282,7 @@ export const teamCard = (member) => {
         member,
         `<img class="team-portrait" src="${member.imageBase}-640.webp" alt="${escapeHtml(
           member.alt
-        )}" width="74" height="74" loading="lazy">`
+        )}" width="136" height="136" loading="lazy">`
       )
     : `<p class="profile-monogram" aria-hidden="true">${escapeHtml(member.initials)}</p>`;
 
