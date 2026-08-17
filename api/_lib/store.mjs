@@ -1,69 +1,118 @@
 /**
- * Override storage on Upstash Redis, reached through its REST API with plain
- * `fetch` — no client library, keeping the project's zero-runtime-dependency
- * character intact.
+ * Override storage on Neon Postgres, reached over HTTP with the serverless
+ * driver. Each call is a single request — no pool to keep warm and nothing to
+ * tear down, which is what a serverless function wants.
  *
- * Everything lives in one hash so a page load is a single HGETALL rather than N
- * round trips. Values are strings, exactly like preet's `site_copy` table.
+ * Both maps the site needs (copy overrides and composer posts) share one table
+ * keyed by (hash, key), so they cannot collide and a page load stays a single
+ * SELECT rather than N round trips. Values are strings, exactly like preet's
+ * `site_copy` table.
  *
- * Env (set by the Vercel KV / Upstash integration):
- *   KV_REST_API_URL
- *   KV_REST_API_TOKEN
+ * Env (Neon connection string):
+ *   DATABASE_URL
+ *
+ * Schema lives in scripts/init-db.mjs — run it once against a new database.
  */
 
-const HASH = "anima:copy";
+import { neon } from "@neondatabase/serverless";
 
-const config = () => {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token) throw new Error("KV_REST_API_URL / KV_REST_API_TOKEN are not set");
-  return { url: url.replace(/\/$/, ""), token };
+const HASH = "anima:copy";
+const TIMEOUT_MS = 5000;
+
+let client;
+const sql = () => {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL is not set");
+  // Cached across invocations on a warm function; the driver holds no socket,
+  // so this is just avoiding re-parsing the connection string.
+  if (!client) client = neon(url);
+  return client;
 };
 
 /**
- * Exported so api/_lib/posts.mjs can drive its own hash without duplicating the
- * auth, timeout and error handling below.
+ * A slow store must not hold a page load open indefinitely. The HTTP driver has
+ * no per-query deadline, so the race supplies one.
  */
-export const command = async (parts) => {
-  const { url, token } = config();
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify(parts),
-    // A slow store must not hold a page load open indefinitely.
-    signal: AbortSignal.timeout(5000),
-  });
-
-  if (!response.ok) {
-    throw new Error(`store ${parts[0]} failed: ${response.status}`);
+const withTimeout = async (promise, label) => {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`store ${label} timed out`)), TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
   }
-  const body = await response.json();
-  if (body.error) throw new Error(`store ${parts[0]} failed: ${body.error}`);
-  return body.result;
 };
 
-/** Upstash returns HGETALL as a flat [k, v, k, v] array. */
+/** Every key in one map, as a plain object. */
 export const readHash = async (hash) => {
-  const flat = (await command(["HGETALL", hash])) || [];
+  const rows = await withTimeout(
+    sql()`SELECT key, value FROM kv WHERE hash = ${hash}`,
+    "read"
+  );
   const map = {};
-  for (let index = 0; index < flat.length; index += 2) map[flat[index]] = flat[index + 1];
+  for (const row of rows) map[row.key] = row.value;
   return map;
 };
+
+/** One key, or null when nothing is stored under it. */
+export const readField = async (hash, key) => {
+  const rows = await withTimeout(
+    sql()`SELECT value FROM kv WHERE hash = ${hash} AND key = ${key}`,
+    "read"
+  );
+  return rows.length ? rows[0].value : null;
+};
+
+export const writeField = (hash, key, value) =>
+  withTimeout(
+    sql()`INSERT INTO kv (hash, key, value, updated_at) VALUES (${hash}, ${key}, ${value}, now())
+          ON CONFLICT (hash, key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+    "write"
+  );
+
+export const deleteField = (hash, key) =>
+  withTimeout(sql()`DELETE FROM kv WHERE hash = ${hash} AND key = ${key}`, "delete");
 
 /** The whole override map. */
 export const readAll = () => readHash(HASH);
 
-export const writeKey = (key, value) => command(["HSET", HASH, key, value]);
+export const writeKey = (key, value) => writeField(HASH, key, value);
 
-export const deleteKey = (key) => command(["HDEL", HASH, key]);
+export const deleteKey = (key) => deleteField(HASH, key);
 
 /**
  * Fixed-window rate limit, used on login only. preet has none, which leaves its
  * single shared password open to unlimited guessing.
+ *
+ * Redis got expiry for free via EXPIRE; here the window is part of the key and
+ * expired rows are swept on the way past, so the table cannot grow without
+ * bound even though nothing runs on a schedule.
  */
 export const rateLimit = async (bucket, { limit, windowSeconds }) => {
-  const key = `anima:rl:${bucket}:${Math.floor(Date.now() / 1000 / windowSeconds)}`;
-  const count = await command(["INCR", key]);
-  if (count === 1) await command(["EXPIRE", key, windowSeconds]);
+  const window = Math.floor(Date.now() / 1000 / windowSeconds);
+  const key = `${bucket}:${window}`;
+  const expiresAt = new Date((window + 1) * windowSeconds * 1000);
+
+  const rows = await withTimeout(
+    sql()`INSERT INTO rate_limit (bucket, count, expires_at) VALUES (${key}, 1, ${expiresAt})
+          ON CONFLICT (bucket) DO UPDATE SET count = rate_limit.count + 1
+          RETURNING count`,
+    "rate-limit"
+  );
+  const count = Number(rows[0].count);
+
+  // Cheap at login volume, and it keeps the sweep next to the only writer.
+  if (count === 1) {
+    try {
+      await withTimeout(sql()`DELETE FROM rate_limit WHERE expires_at < now()`, "sweep");
+    } catch {
+      // A failed sweep must never block a sign-in.
+    }
+  }
+
   return { allowed: count <= limit, count };
 };

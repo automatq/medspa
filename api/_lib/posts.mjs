@@ -13,7 +13,7 @@
  */
 import { postsNewestFirst } from "../../data/blog.mjs";
 import { normalizePost, sortPosts } from "../../data/post-schema.mjs";
-import { command, readHash } from "./store.mjs";
+import { deleteField, readField, readHash, writeField } from "./store.mjs";
 
 const HASH = "anima:posts";
 
@@ -34,7 +34,7 @@ export const readPosts = async () => {
 };
 
 export const readPost = async (slug) => {
-  const raw = await command(["HGET", HASH, slug]);
+  const raw = await readField(HASH, slug);
   if (!raw) return null;
   try {
     return normalizePost(JSON.parse(raw));
@@ -43,9 +43,9 @@ export const readPost = async (slug) => {
   }
 };
 
-export const writePost = (post) => command(["HSET", HASH, post.slug, JSON.stringify(post)]);
+export const writePost = (post) => writeField(HASH, post.slug, JSON.stringify(post));
 
-export const deletePost = (slug) => command(["HDEL", HASH, slug]);
+export const deletePost = (slug) => deleteField(HASH, slug);
 
 /**
  * The journal as a visitor sees it: repo posts plus published stored ones,
