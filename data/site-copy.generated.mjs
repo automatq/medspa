@@ -549,7 +549,6 @@ export const GENERATED_COPY = {
   "text.c0dc88568cb8": "EMS Body Contouring FAQ.",
   "text.c0ecef87357f": "At $159 per month over a 12-month term, the plan commits $1,908 before treatment costs. It rewards a regular cadence; it is poor value for occasional visits.",
   "text.c1458a3a84f9": "Laser Tattoo Removal →",
-  "text.c15321ff550e": "This form opens your own email app with the message filled in. Nothing is sent from this page, so you stay in control of what goes out.",
   "text.c243cda1bb12": "Chemical peels",
   "text.c2b1c81df8cb": "create changes that look natural and hold",
   "text.c2b440be1353": "← Intimate Brightening",

@@ -343,7 +343,6 @@ const field = ({ id, name, label, type = "text", autocomplete, required = true, 
 export const contactForm = () => `<form class="contact-form" data-mailto-form data-mailto-to="${escapeHtml(
   SITE.email
 )}" data-mailto-subject="Website enquiry">
-          <p class="form-note">This form opens your own email app with the message filled in. Nothing is sent from this page, so you stay in control of what goes out.</p>
           ${field({ id: "cf-name", name: "name", label: "Name", autocomplete: "name" })}
           ${field({ id: "cf-phone", name: "phone", label: "Phone", type: "tel", autocomplete: "tel" })}
           ${field({ id: "cf-email", name: "email", label: "Email", type: "email", autocomplete: "email" })}

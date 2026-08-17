@@ -2262,16 +2262,6 @@ body.lightbox-open {
   gap: 18px;
 }
 
-.form-note {
-  margin: 0;
-  padding: 14px 16px;
-  border-left: 2px solid var(--plum);
-  background: var(--paper-pale);
-  color: var(--ink-soft);
-  font-size: 0.88rem;
-  line-height: 1.55;
-}
-
 .field {
   display: grid;
   gap: 6px;
