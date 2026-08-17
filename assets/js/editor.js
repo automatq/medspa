@@ -49,20 +49,6 @@ const showToast = (message, kind = "ok") => {
   showToast.timer = setTimeout(() => (toast.hidden = true), kind === "err" ? 6000 : 2200);
 };
 
-/**
- * Font pairings, mirroring FONT_THEMES in data/editable.mjs and the
- * `[data-font-theme]` blocks in medspa.css. The label is what the clinic reads,
- * so it describes the result rather than naming the families.
- */
-const FONT_THEMES = [
-  ["classic", "Classic — serif headings"],
-  ["modern", "Modern — sans headings"],
-  ["editorial", "Editorial — serif throughout"],
-  ["system", "System — device fonts"],
-];
-
-const FONT_THEME_KEY = "site.theme.fonts";
-
 let statusNode;
 let toggleNode;
 
@@ -86,40 +72,10 @@ const buildToolbar = () => {
     <span class="anima-editor-dot" aria-hidden="true"></span>
     <span class="anima-editor-status">Ready</span>
     <button type="button" data-editor-toggle>Edit</button>
-    <label class="anima-editor-fonts">Fonts
-      <select data-editor-fonts>
-        ${FONT_THEMES.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}
-      </select>
-    </label>
     <a href="/admin/posts/">Write a post</a>
     <button type="button" data-editor-logout>Sign out</button>
     <span class="anima-editor-toast" role="status" aria-live="polite" hidden></span>`;
   document.body.append(bar);
-
-  const fonts = bar.querySelector("[data-editor-fonts]");
-  // Whatever the page is already showing, so the control opens on the truth.
-  fonts.value = document.documentElement.dataset.fontTheme || "classic";
-
-  fonts.addEventListener("change", async () => {
-    const value = fonts.value;
-    const previous = document.documentElement.dataset.fontTheme || "classic";
-    // Switch first: the point of the control is seeing the pairing on the page.
-    document.documentElement.dataset.fontTheme = value;
-    try {
-      await api(`/api/admin/copy?key=${encodeURIComponent(FONT_THEME_KEY)}`, {
-        method: "PUT",
-        body: JSON.stringify({ value }),
-      });
-      try {
-        localStorage.setItem("anima-font-theme", value);
-      } catch {}
-      showToast("Fonts updated for everyone");
-    } catch (error) {
-      document.documentElement.dataset.fontTheme = previous;
-      fonts.value = previous;
-      showToast(error.message, "err");
-    }
-  });
 
   toast = bar.querySelector(".anima-editor-toast");
   statusNode = bar.querySelector(".anima-editor-status");

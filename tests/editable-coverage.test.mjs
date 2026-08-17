@@ -102,7 +102,7 @@ test("the editor starts idle and has to be switched on", async () => {
   assert.match(editor, /setEditing\(false\)/, "init must leave the editor idle");
 });
 
-test("every font theme the picker offers is actually styled", async () => {
+test("every font theme is styled and allowlisted, with no picker in the toolbar", async () => {
   const css = await readFile(join(root, "assets/css/medspa.css"), "utf8");
   const editor = await readFile(join(root, "assets/js/editor.js"), "utf8");
   const runtime = await readFile(join(root, "assets/js/medspa.js"), "utf8");
@@ -112,7 +112,12 @@ test("every font theme the picker offers is actually styled", async () => {
     if (theme !== "classic") {
       assert.match(css, new RegExp(`\\[data-font-theme="${theme}"\\]`), `${theme} has no CSS`);
     }
-    assert.ok(editor.includes(`"${theme}"`), `${theme} is missing from the toolbar picker`);
+    // The runtime still honours a stored theme even though nothing in the UI
+    // can set one, so an unrecognised value must still be refused.
     assert.ok(runtime.includes(`"${theme}"`), `${theme} is missing from the runtime allowlist`);
   }
+
+  // Typography is a design decision, not day-to-day copy — the clinic has no
+  // control for it, and putting one back is a deliberate act, not a slip.
+  assert.doesNotMatch(editor, /data-editor-fonts/, "the toolbar must not offer a font picker");
 });
