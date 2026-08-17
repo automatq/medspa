@@ -100,7 +100,84 @@ const inRange = (ranges, index) => ranges.some(([start, end]) => index >= start 
 /** Text worth an editing affordance: real words, not a lone "↗" or a bare number. */
 const isProse = (text) => text.length >= 2 && /[a-z]/i.test(text);
 
-const annotate = (html, guarded, collected) => {
+/**
+ * Headings the leaf pass cannot reach.
+ *
+ * Nearly every real heading carries the script accent — `<h2>A <span
+ * class="script">clinic</span> in Lakeshore Village.</h2>` — and the leaf
+ * pattern skips anything with nested markup, so the clinic could edit the plain
+ * headings and nothing else. Storing the heading's HTML is not an option
+ * either: overrides are applied with `textContent`, so markup would land on the
+ * page as literal angle brackets.
+ *
+ * So each run of words becomes its own leaf instead. The accent keeps its
+ * styling because the span is never rewritten, only keyed.
+ *
+ * Fragments are keyed by their own text like everything else, so a heading that
+ * reads the same as a label elsewhere shares its key and renaming one renames
+ * both — the same trade the leaf pass already makes.
+ */
+const HEADING = /<(h[1-6])\b([^>]*)>([\s\S]*?)<\/\1>/gi;
+const SCRIPT_SPAN = /<span class="script"([^>]*)>([^<]*)<\/span>/gi;
+/** Wrappers this pass added last run — one attribute, so the accent never matches. */
+const OWN_WRAPPER = /<span data-copy-key="[^"]*">([\s\S]*?)<\/span>/gi;
+
+const annotateHeadings = (html, guarded, collected) => {
+  const skip = rangesToSkip(html);
+
+  return html.replace(HEADING, (match, tag, attributes, inner, index) => {
+    if (inRange(skip, index)) return match;
+    // Everything else is a leaf the pass below already handles.
+    if (!/<span class="script"/i.test(inner)) return match;
+
+    // Re-derive from bare markup so a second run is a no-op rather than nesting
+    // wrappers inside wrappers.
+    const bare = inner
+      .replace(OWN_WRAPPER, "$1")
+      .replace(SCRIPT_SPAN, (_m, attrs, text) => `<span class="script"${attrs.replace(/\s*\bdata-copy-key="[^"]*"/i, "")}>${text}</span>`);
+
+    const claim = (text) => {
+      const key = keyFor(text);
+      collected.set(key, text);
+      return key;
+    };
+
+    /** A run of plain words between accents. Anything carrying markup is left alone. */
+    const wrapRun = (chunk) => {
+      if (!chunk || chunk.includes("<")) return chunk;
+      const text = decodeEntities(chunk).trim();
+      if (!isProse(text) || guarded.has(text)) return chunk;
+      const lead = chunk.match(/^\s*/)[0];
+      const tail = chunk.match(/\s*$/)[0];
+      const body = chunk.slice(lead.length, chunk.length - tail.length);
+      return `${lead}<span data-copy-key="${claim(text)}">${body}</span>${tail}`;
+    };
+
+    let out = "";
+    let cursor = 0;
+    SCRIPT_SPAN.lastIndex = 0;
+    for (let accent; (accent = SCRIPT_SPAN.exec(bare)); ) {
+      out += wrapRun(bare.slice(cursor, accent.index));
+      const text = decodeEntities(accent[2]).trim();
+      out +=
+        isProse(text) && !guarded.has(text)
+          ? `<span class="script"${accent[1]} data-copy-key="${claim(text)}">${accent[2]}</span>`
+          : accent[0];
+      cursor = accent.index + accent[0].length;
+    }
+    out += wrapRun(bare.slice(cursor));
+
+    // A key on the heading itself would let an override replace the whole thing
+    // with flat text, taking the accent span with it.
+    const cleaned = attributes.replace(/\s*\bdata-copy-key="[^"]*"/i, "");
+    return `<${tag}${cleaned}>${out}</${tag}>`;
+  });
+};
+
+const annotate = (source, guarded, collected) => {
+  // Headings first: this rewrites their innards, so the leaf pass below has to
+  // measure its skip ranges against the result rather than the original.
+  const html = annotateHeadings(source, guarded, collected);
   const skip = rangesToSkip(html);
   // `[^<]*` keeps this to leaf elements on purpose. The editor commits
   // `textContent`, which would flatten any nested markup — a link wrapping an
