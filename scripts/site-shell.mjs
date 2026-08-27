@@ -218,6 +218,7 @@ export const footer = () => `<footer class="site-footer">
         <div class="footer-legal">
           <span>© <span data-year>2026</span> Anima Med Spa</span>
           <a href="/privacy/">Privacy</a>
+          <a href="https://automatqmarketing.com" target="_blank" rel="noopener">Built by Automatq Marketing</a>
         </div>
         <div class="footer-social" aria-label="Anima Med Spa on social media">
           <a href="https://www.instagram.com/animamedspa/" target="_blank" rel="noopener">Instagram</a>

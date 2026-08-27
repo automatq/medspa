@@ -897,6 +897,7 @@ export const GENERATED_COPY = {
   "text.f47954077406": "You choose a treatment at member pricing. What you book is decided with your provider, not fixed in advance.",
   "text.f487d2432d2d": "Campaign pages use a third-party form provider",
   "text.f4bb094f2a5f": "book online",
+  "text.f4d53470beb2": "Built by Automatq Marketing",
   "text.f525f1e32d17": "Wellness & body treatments",
   "text.f5c93c07b048": "Injectables require an individual consultation. Your plan may depend on anatomy, treatment history, product amount, health history, and the outcome you want.",
   "text.f5f68557084e": "Laser Hair Removal FAQ.",
